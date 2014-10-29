@@ -382,6 +382,17 @@ Py_Initialize(void)
     Py_InitializeEx(1);
 }
 
+/* P/Invoke doesn't support variable export, shit
+ */
+void
+Py_Initialize4THBUnity(void)
+{
+    Py_NoSiteFlag = 1;
+    Py_DontWriteBytecodeFlag = 1;
+    Py_NoUserSiteDirectory = 1;
+    Py_InitializeEx(0);
+}
+
 
 #ifdef COUNT_ALLOCS
 extern void dump_counts(FILE*);
