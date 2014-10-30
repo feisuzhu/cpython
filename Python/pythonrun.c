@@ -163,6 +163,7 @@ Py_InitializeEx(int install_sigs)
     if (initialized)
         return;
     initialized = 1;
+    _PyGC_InitGlobalState();
 
     if ((p = Py_GETENV("PYTHONDEBUG")) && *p != '\0')
         Py_DebugFlag = add_flag(Py_DebugFlag, p);

@@ -1382,6 +1382,46 @@ static PyMethodDef GcMethods[] = {
     {NULL,      NULL}           /* Sentinel */
 };
 
+
+void _PyGC_InitGlobalState(void)
+{
+
+    struct gc_generation _generations[NUM_GENERATIONS] = {
+        /* PyGC_Head,                               threshold,      count */
+        {{{GEN_HEAD(0), GEN_HEAD(0), 0}},           700,            0},
+        {{{GEN_HEAD(1), GEN_HEAD(1), 0}},           10,             0},
+        {{{GEN_HEAD(2), GEN_HEAD(2), 0}},           10,             0},
+    };
+    memcpy(generations, _generations, sizeof(generations));
+
+    //*
+    _PyGC_generation0 = GEN_HEAD(0);
+    enabled = 1;
+    collecting = 0;
+    garbage = NULL;
+    gc_str = NULL;
+    delstr = NULL;
+    long_lived_total = 0;
+    long_lived_pending = 0;
+    // */
+    /*
+    #define assign(var,val) do { \
+            printf("%s: %08lx -> %08lx\n", #var, ((void*)(var)), ((void*)(val))); \
+            var = val; \
+        } while(0);
+
+    assign(_PyGC_generation0, GEN_HEAD(0));
+    assign(enabled, 1);
+    assign(collecting, 0);
+    assign(garbage, NULL);
+    assign(gc_str, NULL);
+    assign(delstr, NULL);
+    assign(long_lived_total, 0);
+    assign(long_lived_pending, 0);
+    #undef assign
+    // */
+}
+
 PyMODINIT_FUNC
 initgc(void)
 {
