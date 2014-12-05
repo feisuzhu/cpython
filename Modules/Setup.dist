@@ -1,4 +1,5 @@
-# -*- makefile -*-
+#-*- makefile -*-
+# vim: noet
 # The file Setup is used by the makesetup script to construct the files
 # Makefile and config.c, from Makefile.pre and config.c.in,
 # respectively.  The file Setup itself is initially copied from
@@ -498,3 +499,72 @@ _codecs_tw cjkcodecs/_codecs_tw.c
 # Another example -- the 'xxsubtype' module shows C-level subtyping in action
 # xxsubtype xxsubtype.c
 greenlet greenlet/greenlet.c
+
+gevent_core \
+	gevent110ext/gevent.corecext.c \
+	-DLIBEV_EMBED=1 \
+	-DEV_COMMON= \
+	-DEV_CLEANUP_ENABLE=0 \
+	-DEV_EMBED_ENABLE=0 \
+	-DEV_PERIODIC_ENABLE=0 \
+	-IModules/gevent110ext/libev \
+	-Ilibev
+
+gevent_ares \
+	gevent110ext/gevent.ares.c \
+	gevent110ext/c-ares/ares__close_sockets.c \
+	gevent110ext/c-ares/ares__get_hostent.c \
+	gevent110ext/c-ares/ares__read_line.c \
+	gevent110ext/c-ares/ares__timeval.c \
+	gevent110ext/c-ares/ares_cancel.c \
+	gevent110ext/c-ares/ares_create_query.c \
+	gevent110ext/c-ares/ares_data.c \
+	gevent110ext/c-ares/ares_destroy.c \
+	gevent110ext/c-ares/ares_expand_name.c \
+	gevent110ext/c-ares/ares_expand_string.c \
+	gevent110ext/c-ares/ares_fds.c \
+	gevent110ext/c-ares/ares_free_hostent.c \
+	gevent110ext/c-ares/ares_free_string.c \
+	gevent110ext/c-ares/ares_getenv.c \
+	gevent110ext/c-ares/ares_gethostbyaddr.c \
+	gevent110ext/c-ares/ares_gethostbyname.c \
+	gevent110ext/c-ares/ares_getnameinfo.c \
+	gevent110ext/c-ares/ares_getopt.c \
+	gevent110ext/c-ares/ares_getsock.c \
+	gevent110ext/c-ares/ares_init.c \
+	gevent110ext/c-ares/ares_library_init.c \
+	gevent110ext/c-ares/ares_llist.c \
+	gevent110ext/c-ares/ares_mkquery.c \
+	gevent110ext/c-ares/ares_nowarn.c \
+	gevent110ext/c-ares/ares_options.c \
+	gevent110ext/c-ares/ares_parse_a_reply.c \
+	gevent110ext/c-ares/ares_parse_aaaa_reply.c \
+	gevent110ext/c-ares/ares_parse_mx_reply.c \
+	gevent110ext/c-ares/ares_parse_naptr_reply.c \
+	gevent110ext/c-ares/ares_parse_ns_reply.c \
+	gevent110ext/c-ares/ares_parse_ptr_reply.c \
+	gevent110ext/c-ares/ares_parse_soa_reply.c \
+	gevent110ext/c-ares/ares_parse_srv_reply.c \
+	gevent110ext/c-ares/ares_parse_txt_reply.c \
+	gevent110ext/c-ares/ares_platform.c \
+	gevent110ext/c-ares/ares_process.c \
+	gevent110ext/c-ares/ares_query.c \
+	gevent110ext/c-ares/ares_search.c \
+	gevent110ext/c-ares/ares_send.c \
+	gevent110ext/c-ares/ares_strcasecmp.c \
+	gevent110ext/c-ares/ares_strdup.c \
+	gevent110ext/c-ares/ares_strerror.c \
+	gevent110ext/c-ares/ares_timeout.c \
+	gevent110ext/c-ares/ares_version.c \
+	gevent110ext/c-ares/ares_writev.c \
+	gevent110ext/c-ares/bitncmp.c \
+	gevent110ext/c-ares/inet_net_pton.c \
+	gevent110ext/c-ares/inet_ntop.c \
+	gevent110ext/c-ares/windows_port.c \
+	-DHAVE_CONFIG_H= \
+	-DCARES_EMBED=1 \
+	-IModules/gevent110ext/c-ares \
+	-Ic-ares
+
+gevent_semaphore gevent110ext/gevent._semaphore.c
+gevent_util gevent110ext/gevent._util.c

@@ -127,8 +127,12 @@ sed -e 's/[ 	]*#.*//' -e '/^[ 	]*$/d' |
 		done
 
 		# Output DEFS in reverse order so first definition overrides
+        if echo "$line" | grep '^[A-Z_]*=[^ ]*$' > /dev/null; then
+            DEFS="$line$NL$DEFS"
+            continue;
+        fi
+
 		case $line in
-		*=*)	DEFS="$line$NL$DEFS"; continue;;
 		'include '*)	DEFS="$line$NL$DEFS"; continue;;
 		'*noobjects*')
 			case $noobjects in

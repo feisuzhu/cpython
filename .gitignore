@@ -45,3 +45,9 @@ tags
 coverage/
 externals/
 htmlcov/
+ares_build.h
+ares_config.h
+config.h
+.deps
+libtool
+stamp-h1
