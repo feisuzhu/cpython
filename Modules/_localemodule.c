@@ -219,47 +219,70 @@ PyLocale_localeconv(PyObject* self)
     /* hopefully, the localeconv result survives the C library calls
        involved herein */
 
-#define RESULT_STRING(s)\
+#ifdef ANDROID
+#define RESULT_STRING(s, d)\
+    x = PyString_FromString(d);\
+    PyDict_SetItemString(result, #s, x);\
+    Py_XDECREF(x)
+
+#define RESULT_INT(i, d)\
+    x = PyInt_FromLong(d);\
+    PyDict_SetItemString(result, #i, x);\
+    Py_XDECREF(x)
+#else
+#define RESULT_STRING(s, d)\
     x = PyString_FromString(l->s);\
     if (!x) goto failed;\
     PyDict_SetItemString(result, #s, x);\
     Py_XDECREF(x)
 
-#define RESULT_INT(i)\
+#define RESULT_INT(i, d)\
     x = PyInt_FromLong(l->i);\
     if (!x) goto failed;\
     PyDict_SetItemString(result, #i, x);\
     Py_XDECREF(x)
+#endif
 
     /* Numeric information */
-    RESULT_STRING(decimal_point);
-    RESULT_STRING(thousands_sep);
+    RESULT_STRING(decimal_point, ".");
+    RESULT_STRING(thousands_sep, "");
+
+#ifdef ANDROID
+    x = PyList_New(0);
+#else
     x = copy_grouping(l->grouping);
-    if (!x)
-        goto failed;
+#endif
+    if (!x) goto failed;
     PyDict_SetItemString(result, "grouping", x);
     Py_XDECREF(x);
 
+
     /* Monetary information */
-    RESULT_STRING(int_curr_symbol);
-    RESULT_STRING(currency_symbol);
-    RESULT_STRING(mon_decimal_point);
-    RESULT_STRING(mon_thousands_sep);
+    RESULT_STRING(int_curr_symbol, "");
+    RESULT_STRING(currency_symbol, "");
+    RESULT_STRING(mon_decimal_point, "");
+    RESULT_STRING(mon_thousands_sep, "");
+
+#ifdef ANDROID
+    x = PyList_New(0);
+#else
     x = copy_grouping(l->mon_grouping);
+#endif
     if (!x)
         goto failed;
     PyDict_SetItemString(result, "mon_grouping", x);
     Py_XDECREF(x);
-    RESULT_STRING(positive_sign);
-    RESULT_STRING(negative_sign);
-    RESULT_INT(int_frac_digits);
-    RESULT_INT(frac_digits);
-    RESULT_INT(p_cs_precedes);
-    RESULT_INT(p_sep_by_space);
-    RESULT_INT(n_cs_precedes);
-    RESULT_INT(n_sep_by_space);
-    RESULT_INT(p_sign_posn);
-    RESULT_INT(n_sign_posn);
+
+    RESULT_STRING(positive_sign, "");
+    RESULT_STRING(negative_sign, "");
+    RESULT_INT(int_frac_digits, CHAR_MAX);
+    RESULT_INT(frac_digits, CHAR_MAX);
+    RESULT_INT(p_cs_precedes, CHAR_MAX);
+    RESULT_INT(p_sep_by_space, CHAR_MAX);
+    RESULT_INT(n_cs_precedes, CHAR_MAX);
+    RESULT_INT(n_sep_by_space, CHAR_MAX);
+    RESULT_INT(p_sign_posn, CHAR_MAX);
+    RESULT_INT(n_sign_posn, CHAR_MAX);
     return result;
 
   failed:

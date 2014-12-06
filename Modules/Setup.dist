@@ -192,7 +192,7 @@ _bisect _bisectmodule.c	# Bisection algorithms
 unicodedata unicodedata.c    # static Unicode character database
 
 # access to ISO C locale support
-_locale _localemodule.c  # -lintl
+# _locale _localemodule.c  # -lintl
 
 # Standard I/O baseline
 _io -I$(srcdir)/Modules/_io _io/bufferedio.c _io/bytesio.c _io/fileio.c _io/iobase.c _io/_iomodule.c _io/stringio.c _io/textio.c
@@ -216,9 +216,6 @@ _csv _csv.c
 # Socket module helper for socket(2)
 _socket socketmodule.c timemodule.c
 
-# Socket module helper for SSL support; you must comment out the other
-# socket line above, and possibly edit the SSL variable:
-SSL=/usr/local/ssl
 _ssl _ssl.c \
 	-DUSE_SSL -I$(SSL)/include -I$(SSL)/include/openssl \
 	-L$(SSL)/lib -lssl -lcrypto
@@ -501,9 +498,14 @@ _codecs_tw cjkcodecs/_codecs_tw.c
 # Another example -- the 'xxsubtype' module shows C-level subtyping in action
 # xxsubtype xxsubtype.c
 
+# Socket module helper for SSL support; you must comment out the other
+# socket line above, and possibly edit the SSL variable:
+SSL=/usr/local/ssl
+
 # bz2 bz2module.c
 _json _json.c
-_hashlib _hashopenssl.c
+_hashlib _hashopenssl.c -I$(SSL)/include -I$(SSL)/include/openssl -L$(SSL)/lib -lssl -lcrypto
+
 select selectmodule.c
 syslog syslogmodule.c
 fcntl fcntlmodule.c
