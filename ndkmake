@@ -1,0 +1,44 @@
+#!/bin/sh
+
+ANDROID_NDK=~/android-ndk-r10c
+ANDROID_ABI="armeabi-v7a"
+ANDROID_NATIVE_API_LEVEL="android-8"
+PYTHON_VERSION="2.7.9"
+
+output_dir=ndkbuild
+rm -rf $output_dir
+mkdir -p $output_dir/host
+mkdir -p $output_dir/arm
+
+# create Python Host version 
+./configure --prefix=$output_dir/host
+make
+make install
+mv Parser/pgen $output_dir/host/bin
+
+cd $output_dir
+
+
+# ???? what it does?
+## fix setup.py
+#mv setup.py setup.py.orig
+#cat setup.py.orig | awk '{ if (NR==316) {print "    " $0} else {print $0}}' > setup.py
+
+MY_HOSTPYTHON=$output_dir/host/bin/python
+MY_HOSTPGEN=$output_dir/host/bin/pgen
+
+export ANDROID_NDK
+export PATH="$ANDROID_NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86/bin/:$ANDROID_NDK:$ANDROID_NDK/tools:/usr/local/bin:/usr/bin:/bin"
+export ARCH=$ANDROID_ABI
+export CFLAGS="-DANDROID -mandroid -fomit-frame-pointer --sysroot $ANDROID_NDK/platforms/$ANDROID_NATIVE_API_LEVEL/arch-arm"
+export CXXFLAGS="$CFLAGS"
+export CC="arm-linux-androideabi-gcc $CFLAGS"
+export CXX="arm-linux-androideabi-g++ $CXXFLAGS"
+export AR="arm-linux-androideabi-ar"
+export RANLIB="arm-linux-androideabi-ranlib"
+export STRIP="arm-linux-androideabi-strip --strip-unneeded"
+export MAKE="make -j8 install HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN CROSS_COMPILE=arm-eabi- CROSS_COMPILE_TARGET=yes"
+
+./configure LDFLAGS="-Wl,--allow-shlib-undefined" CFLAGS="-mandroid -fomit-frame-pointer --sysroot $ANDROID_NDK/platforms/$ANDROID_NATIVE_API_LEVEL/arch-arm" HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --host=arm-eabi --build=i686-pc-linux-gnu --enable-shared --prefix="$output_dir/Android-Python-$PYTHON_VERSION"
+sed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
+$MAKE
