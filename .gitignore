@@ -51,3 +51,4 @@ config.h
 .deps
 libtool
 stamp-h1
+pybuilddir.txt

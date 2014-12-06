@@ -578,3 +578,6 @@ gevent_ares \
 
 gevent_semaphore gevent110ext/gevent._semaphore.c
 gevent_util gevent110ext/gevent._util.c
+
+msgpack_packer msgpack/_packer.cpp
+msgpack_unpacker msgpack/_unpacker.cpp
