@@ -4,13 +4,19 @@
 
 PYTHON_VERSION="2.7.9"
 
+SHARED="--enable-shared"
+# SHARED=""
+
+PYDEBUG="--with-pydebug"
+PYDEBUG=""
+
 BASEDIR=`pwd`
 output_dir=$BASEDIR/ndkbuild
 rm -rf $output_dir/arm
 
 if [ ! -f $output_dir/host/bin/python ]; then
     mkdir -p $output_dir/host
-    # create Python Host version 
+    # create Python Host version
     ./configure --prefix=$output_dir/host
     make -j8
     make -j8 Parser/pgen
@@ -30,20 +36,20 @@ MY_HOSTPYTHON=$output_dir/host/bin/python
 MY_HOSTPGEN=$output_dir/host/pgen
 
 if [ x$1 != xnoconf ]; then
-    if ! ./configure CONFIG_SITE=config.site.ndk LDFLAGS="-Wl,--allow-shlib-undefined" CFLAGS="-mandroid -fomit-frame-pointer --sysroot $ANDROID_NDK/platforms/$ANDROID_NATIVE_API_LEVEL/arch-arm" HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu --enable-shared --prefix="$output_dir/arm" --disable-ipv6; then
+    if ! ./configure CONFIG_SITE=config.site.ndk LDFLAGS="-Wl,--allow-shlib-undefined" HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu $SHARED --prefix="$output_dir/arm" --disable-ipv6 $PYDEBUG; then
         exit 1;
     fi
 
     cd $BASEDIR/Modules/gevent110ext/c-ares
     rm ares_build.h
     rm ares_config.h
-    CONFIG_COMMANDS= CONFIG_FILES= ./configure CFLAGS="-mandroid -fomit-frame-pointer --sysroot $ANDROID_NDK/platforms/$ANDROID_NATIVE_API_LEVEL/arch-arm" --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu
+    CONFIG_COMMANDS= CONFIG_FILES= ./configure --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu
 
     cd $BASEDIR/Modules/gevent110ext/libev
     rm config.h
-    ./configure CFLAGS="-mandroid -fomit-frame-pointer --sysroot $ANDROID_NDK/platforms/$ANDROID_NATIVE_API_LEVEL/arch-arm" --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu
+    ./configure --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu
 
     cd $BASEDIR
 fi
 sed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
-make -j8 install HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN CROSS_COMPILE=arm-linux-androideabi- CROSS_COMPILE_TARGET=yes
+make -j8 HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN CROSS_COMPILE=arm-linux-androideabi- CROSS_COMPILE_TARGET=yes

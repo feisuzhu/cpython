@@ -3494,78 +3494,78 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 AC_MSG_RESULT($va_list_is_array)
 
 # sigh -- gethostbyname_r is a mess; it can have 3, 5 or 6 arguments :-(
-AH_TEMPLATE(HAVE_GETHOSTBYNAME_R,
-  [Define this if you have some version of gethostbyname_r()])
-
-AC_CHECK_FUNC(gethostbyname_r, [
-  AC_DEFINE(HAVE_GETHOSTBYNAME_R)
-  AC_MSG_CHECKING([gethostbyname_r with 6 args])
-  OLD_CFLAGS=$CFLAGS
-  CFLAGS="$CFLAGS $MY_CPPFLAGS $MY_THREAD_CPPFLAGS $MY_CFLAGS"
-  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-#   include <netdb.h>
-  ]], [[
-    char *name;
-    struct hostent *he, *res;
-    char buffer[2048];
-    int buflen = 2048;
-    int h_errnop;
-
-    (void) gethostbyname_r(name, he, buffer, buflen, &res, &h_errnop)
-  ]])],[
-    AC_DEFINE(HAVE_GETHOSTBYNAME_R)
-    AC_DEFINE(HAVE_GETHOSTBYNAME_R_6_ARG, 1,
-    [Define this if you have the 6-arg version of gethostbyname_r().])
-    AC_MSG_RESULT(yes)
-  ],[
-    AC_MSG_RESULT(no)
-    AC_MSG_CHECKING([gethostbyname_r with 5 args])
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-#       include <netdb.h>
-      ]], [[
-        char *name;
-        struct hostent *he;
-        char buffer[2048];
-        int buflen = 2048;
-        int h_errnop;
-
-        (void) gethostbyname_r(name, he, buffer, buflen, &h_errnop)
-      ]])],
-      [
-        AC_DEFINE(HAVE_GETHOSTBYNAME_R)
-        AC_DEFINE(HAVE_GETHOSTBYNAME_R_5_ARG, 1,
-          [Define this if you have the 5-arg version of gethostbyname_r().])
-        AC_MSG_RESULT(yes)
-      ], [
-        AC_MSG_RESULT(no)
-        AC_MSG_CHECKING([gethostbyname_r with 3 args])
-        AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-#           include <netdb.h>
-          ]], [[
-            char *name;
-            struct hostent *he;
-            struct hostent_data data;
-
-            (void) gethostbyname_r(name, he, &data);
-          ]])],
-          [
-            AC_DEFINE(HAVE_GETHOSTBYNAME_R)
-            AC_DEFINE(HAVE_GETHOSTBYNAME_R_3_ARG, 1,
-              [Define this if you have the 3-arg version of gethostbyname_r().])
-            AC_MSG_RESULT(yes)
-          ], [
-           AC_MSG_RESULT(no)
-        ])
-    ])
-  ])
-  CFLAGS=$OLD_CFLAGS
-], [
-  AC_CHECK_FUNCS(gethostbyname)
-])
-AC_SUBST(HAVE_GETHOSTBYNAME_R_6_ARG)
-AC_SUBST(HAVE_GETHOSTBYNAME_R_5_ARG)
-AC_SUBST(HAVE_GETHOSTBYNAME_R_3_ARG)
-AC_SUBST(HAVE_GETHOSTBYNAME_R)
+# AH_TEMPLATE(HAVE_GETHOSTBYNAME_R,
+#   [Define this if you have some version of gethostbyname_r()])
+# 
+# AC_CHECK_FUNC(gethostbyname_r, [
+#   AC_DEFINE(HAVE_GETHOSTBYNAME_R)
+#   AC_MSG_CHECKING([gethostbyname_r with 6 args])
+#   OLD_CFLAGS=$CFLAGS
+#   CFLAGS="$CFLAGS $MY_CPPFLAGS $MY_THREAD_CPPFLAGS $MY_CFLAGS"
+#   AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+# #   include <netdb.h>
+#   ]], [[
+#     char *name;
+#     struct hostent *he, *res;
+#     char buffer[2048];
+#     int buflen = 2048;
+#     int h_errnop;
+# 
+#     (void) gethostbyname_r(name, he, buffer, buflen, &res, &h_errnop)
+#   ]])],[
+#     AC_DEFINE(HAVE_GETHOSTBYNAME_R)
+#     AC_DEFINE(HAVE_GETHOSTBYNAME_R_6_ARG, 1,
+#     [Define this if you have the 6-arg version of gethostbyname_r().])
+#     AC_MSG_RESULT(yes)
+#   ],[
+#     AC_MSG_RESULT(no)
+#     AC_MSG_CHECKING([gethostbyname_r with 5 args])
+#     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+# #       include <netdb.h>
+#       ]], [[
+#         char *name;
+#         struct hostent *he;
+#         char buffer[2048];
+#         int buflen = 2048;
+#         int h_errnop;
+# 
+#         (void) gethostbyname_r(name, he, buffer, buflen, &h_errnop)
+#       ]])],
+#       [
+#         AC_DEFINE(HAVE_GETHOSTBYNAME_R)
+#         AC_DEFINE(HAVE_GETHOSTBYNAME_R_5_ARG, 1,
+#           [Define this if you have the 5-arg version of gethostbyname_r().])
+#         AC_MSG_RESULT(yes)
+#       ], [
+#         AC_MSG_RESULT(no)
+#         AC_MSG_CHECKING([gethostbyname_r with 3 args])
+#         AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+# #           include <netdb.h>
+#           ]], [[
+#             char *name;
+#             struct hostent *he;
+#             struct hostent_data data;
+# 
+#             (void) gethostbyname_r(name, he, &data);
+#           ]])],
+#           [
+#             AC_DEFINE(HAVE_GETHOSTBYNAME_R)
+#             AC_DEFINE(HAVE_GETHOSTBYNAME_R_3_ARG, 1,
+#               [Define this if you have the 3-arg version of gethostbyname_r().])
+#             AC_MSG_RESULT(yes)
+#           ], [
+#            AC_MSG_RESULT(no)
+#         ])
+#     ])
+#   ])
+#   CFLAGS=$OLD_CFLAGS
+# ], [
+#   AC_CHECK_FUNCS(gethostbyname)
+# ])
+# AC_SUBST(HAVE_GETHOSTBYNAME_R_6_ARG)
+# AC_SUBST(HAVE_GETHOSTBYNAME_R_5_ARG)
+# AC_SUBST(HAVE_GETHOSTBYNAME_R_3_ARG)
+# AC_SUBST(HAVE_GETHOSTBYNAME_R)
 AC_SUBST(HAVE_GETHOSTBYNAME)
 
 # checks for system services
