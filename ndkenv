@@ -1,12 +1,12 @@
 #!/bin/sh
 
-export ANDROID_NDK=~/android-ndk-r10c
+export ANDROID_NDK=~/android-ndk-r10d
 export ANDROID_ABI="armeabi-v7a"
 export ANDROID_NATIVE_API_LEVEL="android-15"
-export PATH="$ANDROID_NDK/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/:$ANDROID_NDK:$ANDROID_NDK/tools:/usr/local/bin:/usr/bin:/bin"
+export PATH="$ANDROID_NDK/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/bin/:$ANDROID_NDK:$ANDROID_NDK/tools:/usr/local/bin:/usr/bin:/bin"
 export ARCH=$ANDROID_ABI
-export CFLAGS="-DANDROID -mandroid -fomit-frame-pointer --sysroot $ANDROID_NDK/platforms/$ANDROID_NATIVE_API_LEVEL/arch-arm"
-export CFLAGS="-DANDROID -mandroid -fno-omit-frame-pointer --sysroot $ANDROID_NDK/platforms/$ANDROID_NATIVE_API_LEVEL/arch-arm"
+# export CFLAGS="-DANDROID -mandroid -fomit-frame-pointer --sysroot $ANDROID_NDK/platforms/$ANDROID_NATIVE_API_LEVEL/arch-arm"
+export CFLAGS="-DANDROID -mandroid -g -fno-omit-frame-pointer --sysroot $ANDROID_NDK/platforms/$ANDROID_NATIVE_API_LEVEL/arch-arm"
 
 # export CFLAGS="-DANDROID -mandroid -g -O0 --sysroot $ANDROID_NDK/platforms/$ANDROID_NATIVE_API_LEVEL/arch-arm"
 

@@ -52,4 +52,4 @@ if [ x$1 != xnoconf ]; then
     cd $BASEDIR
 fi
 sed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
-make -j8 HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN CROSS_COMPILE=arm-linux-androideabi- CROSS_COMPILE_TARGET=yes
+nice make -j8 HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN CROSS_COMPILE=arm-linux-androideabi- CROSS_COMPILE_TARGET=yes
