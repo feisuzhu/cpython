@@ -8,6 +8,8 @@
 #include <netdb.h>
 #endif
 
+#include <arpa/inet.h>
+
 #include "ares.h"
 
 #include "cares_ntop.h"

@@ -322,6 +322,9 @@ then
 	*-*-cygwin*)
 		ac_sys_system=Cygwin
 		;;
+	*-*-darwin*)
+		ac_sys_system=Darwin
+		;;
 	*)
 		# for now, limit cross builds to known configurations
 		MACHDEP="unknown"
@@ -368,6 +371,9 @@ if test "$cross_compiling" = yes; then
 	*-*-cygwin*)
 		_host_cpu=
 		;;
++	*-*-darwin*)
++		_host_cpu=$host_cpu
++		;;
 	*)
 		# for now, limit cross builds to known configurations
 		MACHDEP="unknown"

@@ -54,3 +54,4 @@ stamp-h1
 pybuilddir.txt
 *.swp
 ndkbuild/
+iosbuild/
