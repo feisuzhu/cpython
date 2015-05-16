@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-. ndkenv
+. ndkenv_i686
 
 PYTHON_VERSION="2.7.9"
 
@@ -12,7 +12,7 @@ PYDEBUG=""
 
 BASEDIR=`pwd`
 output_dir=$BASEDIR/ndkbuild
-rm -rf $output_dir/arm
+rm -rf $output_dir/x86
 
 if [ ! -f $output_dir/host/bin/python ]; then
     mkdir -p $output_dir/host
@@ -25,7 +25,7 @@ if [ ! -f $output_dir/host/bin/python ]; then
     make clean
 fi
 
-mkdir -p $output_dir/arm
+mkdir -p $output_dir/x86
 
 # ???? what it does?
 ## fix setup.py
@@ -36,20 +36,20 @@ MY_HOSTPYTHON=$output_dir/host/bin/python
 MY_HOSTPGEN=$output_dir/host/pgen
 
 if [ x$1 != xnoconf ]; then
-    if ! ./configure CONFIG_SITE=config.site.ndk LDFLAGS="-Wl,--allow-shlib-undefined" HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu $SHARED --prefix="$output_dir/arm" --disable-ipv6 $PYDEBUG; then
+    if ! ./configure CONFIG_SITE=config.site.ndk LDFLAGS="-Wl,--allow-shlib-undefined" HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --host=i686-linux-android --build=x86_64-unknown-linux-gnu $SHARED --prefix="$output_dir/x86" --disable-ipv6 $PYDEBUG; then
         exit 1;
     fi
 
     cd $BASEDIR/Modules/gevent110ext/c-ares
     rm ares_build.h
     rm ares_config.h
-    CONFIG_COMMANDS= CONFIG_FILES= ./configure --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu
+    CONFIG_COMMANDS= CONFIG_FILES= ./configure --host=i686-linux-android --build=x86_64-unknown-linux-gnu
 
     cd $BASEDIR/Modules/gevent110ext/libev
     rm config.h
-    ./configure --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu
+    ./configure --host=i686-linux-android --build=x86_64-unknown-linux-gnu
 
     cd $BASEDIR
 fi
 sed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
-nice make -j8 HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN CROSS_COMPILE=arm-linux-androideabi- CROSS_COMPILE_TARGET=yes
+nice make -j8 HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN CROSS_COMPILE=i686-linux-android- CROSS_COMPILE_TARGET=yes
