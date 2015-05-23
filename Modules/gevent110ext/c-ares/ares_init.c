@@ -49,6 +49,19 @@
 #define MAX_DNS_PROPERTIES    8
 #endif
 
+#if defined(__APPLE__)
+/* need to include it in order to detect IOS */
+#include "TargetConditionals.h"
+#if TARGET_OS_IPHONE == 1
+#define OS_IOS
+#endif
+
+#endif
+
+#if defined(OS_IOS) 
+#include <resolv.h>
+#endif
+
 #include "ares.h"
 #include "ares_inet_net_pton.h"
 #include "ares_library_init.h"
@@ -77,7 +90,8 @@ static const char *try_option(const char *p, const char *q, const char *opt);
 static int init_id_key(rc4_key* key,int key_data_len);
 
 #if !defined(WIN32) && !defined(WATT32) && \
-    !defined(ANDROID) && !defined(__ANDROID__)
+    !defined(ANDROID) && !defined(__ANDROID__) && !defined(OS_IOS)
+
 static int sortlist_alloc(struct apattern **sortlist, int *nsort,
                           struct apattern *pat);
 static int ip_addr(const char *s, ssize_t len, struct in_addr *addr);
@@ -1055,7 +1069,7 @@ static int get_DNS_Windows(char **outptr)
 
 static int init_by_resolv_conf(ares_channel channel)
 {
-#if !defined(ANDROID) && !defined(__ANDROID__) && !defined(WATT32)
+#if !defined(ANDROID) && !defined(__ANDROID__) && !defined(WATT32) && !defined(OS_IOS)
   char *line = NULL;
 #endif
   int status = -1, nservers = 0, nsort = 0;
@@ -1147,6 +1161,36 @@ static int init_by_resolv_conf(ares_channel channel)
       break;
     status = ARES_EOF;
   }
+
+#elif defined(OS_IOS)
+  struct __res_state res;
+  int result = res_ninit(&res);
+  unsigned int i = 0;
+
+  DEBUGF(fprintf(stderr, "res_ninit result = %d res.nscount = %d\n",
+                 result, res.nscount));
+  for (; i < res.nscount; ++i) {
+      sa_family_t family = res.nsaddr_list[i].sin_family;
+      if (family == AF_INET) {
+          char str[INET_ADDRSTRLEN];
+          inet_ntop(AF_INET, &res.nsaddr_list[i].sin_addr, str, INET_ADDRSTRLEN);
+          status = config_nameserver(&servers, &nservers, str);
+          DEBUGF(fprintf(stderr, "config_nameserver[%d] %s, status = %d\n",
+                         i, str, status));
+      } else if (family == AF_INET6) {
+          char str[INET6_ADDRSTRLEN];
+          inet_ntop(AF_INET6, &res.nsaddr_list[i].sin_addr, str, INET6_ADDRSTRLEN);
+          status = config_nameserver(&servers, &nservers, str);
+          DEBUGF(fprintf(stderr, "config_nameserver[%d] %s, status = %d\n",
+                         i, str, status));
+      }
+
+      if (status != ARES_SUCCESS)
+          break;
+  }
+
+  status = ARES_EOF;
+  res_ndestroy(&res);
 #else
   {
     char *p;
@@ -1463,7 +1507,8 @@ static int init_by_defaults(ares_channel channel)
 }
 
 #if !defined(WIN32) && !defined(WATT32) && \
-    !defined(ANDROID) && !defined(__ANDROID__)
+    !defined(ANDROID) && !defined(__ANDROID__) && \
+    !defined(OS_IOS)
 static int config_domain(ares_channel channel, char *str)
 {
   char *q;
@@ -1511,7 +1556,7 @@ static int config_lookup(ares_channel channel, const char *str,
   channel->lookups = strdup(lookups);
   return (channel->lookups) ? ARES_SUCCESS : ARES_ENOMEM;
 }
-#endif  /* !WIN32 & !WATT32 & !ANDROID & !__ANDROID__ */
+#endif  /* !WIN32 & !WATT32 & !ANDROID & !__ANDROID__ & !OS_IOS */
 
 #ifndef WATT32
 static int config_nameserver(struct server_state **servers, int *nservers,
@@ -1576,7 +1621,8 @@ static int config_nameserver(struct server_state **servers, int *nservers,
   return ARES_SUCCESS;
 }
 
-#if !defined(WIN32) && !defined(ANDROID) && !defined(__ANDROID__)
+#if !defined(WIN32) && !defined(ANDROID) && !defined(__ANDROID__) && !defined(OS_IOS)
+
 static int config_sortlist(struct apattern **sortlist, int *nsort,
                            const char *str)
 {
@@ -1657,7 +1703,7 @@ static int config_sortlist(struct apattern **sortlist, int *nsort,
 
   return ARES_SUCCESS;
 }
-#endif  /* !WIN32 & !ANDROID & !__ANDROID__ */
+#endif  /* !WIN32 & !ANDROID & !__ANDROID__ & !OS_IOS */
 #endif  /* !WATT32 */
 
 static int set_search(ares_channel channel, const char *str)
@@ -1757,7 +1803,7 @@ static const char *try_option(const char *p, const char *q, const char *opt)
 }
 
 #if !defined(WIN32) && !defined(WATT32) && \
-    !defined(ANDROID) && !defined(__ANDROID__)
+    !defined(ANDROID) && !defined(__ANDROID__) && !defined(OS_IOS)
 static char *try_config(char *s, const char *opt, char scc)
 {
   size_t len;
@@ -1873,7 +1919,7 @@ static void natural_mask(struct apattern *pat)
   else
     pat->mask.addr4.s_addr = htonl(IN_CLASSC_NET);
 }
-#endif  /* !WIN32 & !WATT32 & !ANDROID & !__ANDROID__ */
+#endif  /* !WIN32 & !WATT32 & !ANDROID & !__ANDROID__ & !OS_IOS */
 
 /* initialize an rc4 key. If possible a cryptographically secure random key
    is generated using a suitable function (for example win32's RtlGenRandom as
