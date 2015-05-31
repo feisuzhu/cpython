@@ -2,7 +2,7 @@
 
 set -x
 
-PYTHON_VERSION="2.7.9"
+PYTHON_VERSION="2.7.10"
 
 PYDEBUG="--with-pydebug"
 PYDEBUG=""
@@ -14,6 +14,18 @@ rm -rf $output_dir/arm
 if [ ! -f $output_dir/host/bin/python ]; then
     mkdir -p $output_dir/host
     # create Python Host version
+    export CC=
+    export CXX=
+
+    cd $BASEDIR/Modules/gevent110ext/c-ares
+    rm -f ares_build.h ares_config.h
+    CONFIG_COMMANDS= CONFIG_FILES= ./configure
+
+    cd $BASEDIR/Modules/gevent110ext/libev
+    rm -f config.h
+    ./configure
+
+    cd $BASEDIR
     ./configure --prefix=$output_dir/host
     nice make -j4
     nice make -j4 Parser/pgen
@@ -69,9 +81,9 @@ function build-fat
     lipo $DIR/*/libpython2.7.a -create -output $OUTPUT
 }
 
-build aarch64-apple-darwin arm64 iphoneos arm64 -miphoneos-version-min=6.0 -fno-omit-frame-pointer -mno-thumb
+# build aarch64-apple-darwin arm64 iphoneos arm64 -miphoneos-version-min=6.0 -fno-omit-frame-pointer -mno-thumb
 build armv7-apple-darwin armv7 iphoneos armv7 -miphoneos-version-min=6.0 -fno-omit-frame-pointer -mno-thumb
-build armv7s-apple-darwin armv7s iphoneos armv7s -miphoneos-version-min=6.0 -fno-omit-frame-pointer -mno-thumb
-build i386-apple-darwin i386 iphonesimulator i386 -miphoneos-version-min=6.0 -fno-omit-frame-pointer
+# build armv7s-apple-darwin armv7s iphoneos armv7s -miphoneos-version-min=6.0 -fno-omit-frame-pointer -mno-thumb
+# build i386-apple-darwin i386 iphonesimulator i386 -miphoneos-version-min=6.0 -fno-omit-frame-pointer
 
 build-fat /tmp/pyios libpython2.7.a
