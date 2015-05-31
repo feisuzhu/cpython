@@ -1,7 +1,5 @@
 #!/bin/bash -x
 
-. ndkenv
-
 PYTHON_VERSION="2.7.9"
 
 SHARED="--enable-shared"
@@ -16,14 +14,29 @@ rm -rf $output_dir/arm
 
 if [ ! -f $output_dir/host/bin/python ]; then
     mkdir -p $output_dir/host
+
+    echo > Modules/Setup.local
     # create Python Host version
     ./configure --prefix=$output_dir/host
+
+    cd $BASEDIR/Modules/gevent110ext/c-ares
+    rm ares_{build,config}.h
+    CONFIG_COMMANDS= CONFIG_FILES= ./configure
+
+    cd $BASEDIR/Modules/gevent110ext/libev
+    rm config.h
+    ./configure
+
+    cd $BASEDIR
+
     nice make -j8
     nice make -j8 Parser/pgen
     mv Parser/pgen $output_dir/host
     make install
     make clean
 fi
+
+. ndkenv
 
 mkdir -p $output_dir/arm
 
@@ -36,6 +49,8 @@ MY_HOSTPYTHON=$output_dir/host/bin/python
 MY_HOSTPGEN=$output_dir/host/pgen
 
 if [ x$1 != xnoconf ]; then
+    echo SSL=/home/proton/androidlibs/openssl > Modules/Setup.local
+
     if ! ./configure CONFIG_SITE=config.site.ndk LDFLAGS="-Wl,--allow-shlib-undefined" HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu $SHARED --prefix="$output_dir/arm" --disable-ipv6 $PYDEBUG; then
         exit 1;
     fi
