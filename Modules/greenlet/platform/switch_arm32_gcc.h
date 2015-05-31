@@ -24,30 +24,37 @@
 #define STACK_REFPLUS 1
 
 #ifdef SLP_EVAL
-#define STACK_MAGIC 0
-#define REG_SP "sp"
-#define REG_SPSP "sp,sp"
-#ifdef __thumb__
-#define REG_FP "r7"
-#define REG_FPFP "r7,r7"
-#define REGS_TO_SAVE_GENERAL "r4", "r5", "r6", "r8", "r9", "r10", "r11", "lr"
-#else
-#define REG_FP "fp"
-#define REG_FPFP "fp,fp"
-#define REGS_TO_SAVE_GENERAL "r4", "r5", "r6", "r7", "r8", "r9", "r10", "lr"  // fp == r11
-#endif
-#if defined(__SOFTFP__)
-#define REGS_TO_SAVE REGS_TO_SAVE_GENERAL
-#elif defined(__VFP_FP__)
-#define REGS_TO_SAVE REGS_TO_SAVE_GENERAL, "d8", "d9", "d10", "d11", \
-                                           "d12", "d13", "d14", "d15"
-#elif defined(__MAVERICK__)
-#define REGS_TO_SAVE REGS_TO_SAVE_GENERAL, "mvf4", "mvf5", "mvf6", "mvf7", \
-                                           "mvf8", "mvf9", "mvf10", "mvf11", \
-                                           "mvf12", "mvf13", "mvf14", "mvf15"
-#else
-#define REGS_TO_SAVE REGS_TO_SAVE_GENERAL, "f4", "f5", "f6", "f7"
-#endif
+
+# define STACK_MAGIC 0
+# define REG_SP "sp"
+# define REG_SPSP "sp,sp"
+# ifdef __APPLE__
+#     define REG_FP "r7"
+#     define REG_FPFP "r7,r7"
+#     define REGS_TO_SAVE_GENERAL "r4", "r5", "r6", "r8", "r10", "r11", "lr"
+# else
+#     ifdef __thumb__
+#         define REG_FP "r7"
+#         define REG_FPFP "r7,r7"
+#         define REGS_TO_SAVE_GENERAL "r4", "r5", "r6", "r8", "r9", "r10", "r11", "lr"
+#     else
+#         define REG_FP "fp"
+#         define REG_FPFP "fp,fp"
+#         define REGS_TO_SAVE_GENERAL "r4", "r5", "r6", "r7", "r8", "r9", "r10", "lr"  // fp == r11
+#     endif
+# endif
+# if defined(__SOFTFP__)
+#     define REGS_TO_SAVE REGS_TO_SAVE_GENERAL
+# elif defined(__VFP_FP__)
+#     define REGS_TO_SAVE REGS_TO_SAVE_GENERAL, "d8", "d9", "d10", "d11", \
+                                                "d12", "d13", "d14", "d15"
+# elif defined(__MAVERICK__)
+#     define REGS_TO_SAVE REGS_TO_SAVE_GENERAL, "mvf4", "mvf5", "mvf6", "mvf7", \
+                                                "mvf8", "mvf9", "mvf10", "mvf11", \
+                                                "mvf12", "mvf13", "mvf14", "mvf15"
+# else
+#     define REGS_TO_SAVE REGS_TO_SAVE_GENERAL, "f4", "f5", "f6", "f7"
+# endif
 
 static int
 #ifdef __GNUC__
@@ -56,8 +63,7 @@ __attribute__((optimize("no-omit-frame-pointer")))
 slp_switch(void)
 {
         void *fp;
-        register int *stackref, stsizediff;
-        int result;
+        register int *stackref, stsizediff, result;
         __asm__ volatile ("" : : : REGS_TO_SAVE);
         __asm__ volatile ("mov r0," REG_FP "\n\tstr r0,%0" : "=m" (fp) : : "r0");
         __asm__ ("mov %0," REG_SP : "=r" (stackref));
@@ -68,11 +74,11 @@ slp_switch(void)
                     "add " REG_FPFP ",%0\n"
                     :
                     : "r" (stsizediff)
+                    : REGS_TO_SAVE
                     );
                 SLP_RESTORE_STATE();
         }
         __asm__ volatile ("ldr r0,%1\n\tmov " REG_FP ",r0\n\tmov %0, #0" : "=r" (result) : "m" (fp) : "r0");
-        __asm__ volatile ("" : : : REGS_TO_SAVE);
         return result;
 }
 

@@ -27,18 +27,24 @@ MY_HOSTPGEN=$output_dir/host/pgen
 
 function build
 {
+    make clean
+
     local HOST=$1; local ARCH=$2; local SDK=$3; local OUTPUT=$4
+    shift 4
+
 
     mkdir -p /tmp/pyios/$OUTPUT
 
     make clean
 
     SDK_PATH=$(xcrun -sdk $SDK --show-sdk-path)
+    #GCC=$(xcrun -sdk $SDK -find gcc)
     GCC=$(xcrun -sdk $SDK -find gcc)
-    export CC="${GCC} -arch ${ARCH} -isysroot ${SDK_PATH} -fno-omit-frame-pointer"
+    FLAGS=$@
+    export CC="${GCC} -arch ${ARCH} -isysroot ${SDK_PATH} $FLAGS"
     export CXX=$CC
 
-    if ! ./configure CONFIG_SITE=config.site.ndk HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --prefix="/tmp/pyios/$OUTPUT" --host=$HOST --build=x86_64-apple-darwin --disable-toolbox-glue --disable-ipv6 $PYDEBUG; then
+    if ! ./configure CONFIG_SITE=config.site.ndk HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --prefix="/tmp/pyios/$OUTPUT" --host=$HOST --build=x86_64-apple-darwin14.3.0 --disable-toolbox-glue --disable-ipv6 $PYDEBUG; then
         exit 1;
     fi
 
@@ -63,9 +69,9 @@ function build-fat
     lipo $DIR/*/libpython2.7.a -create -output $OUTPUT
 }
 
-build aarch64-apple-darwin arm64 iphoneos arm64
-build armv7-apple-darwin armv7 iphoneos armv7
-build armv7s-apple-darwin armv7s iphoneos armv7s
-build i386-apple-darwin i386 macosx i386
+build aarch64-apple-darwin arm64 iphoneos arm64 -miphoneos-version-min=6.0 -fno-omit-frame-pointer -mno-thumb
+build armv7-apple-darwin armv7 iphoneos armv7 -miphoneos-version-min=6.0 -fno-omit-frame-pointer -mno-thumb
+build armv7s-apple-darwin armv7s iphoneos armv7s -miphoneos-version-min=6.0 -fno-omit-frame-pointer -mno-thumb
+build i386-apple-darwin i386 iphonesimulator i386 -miphoneos-version-min=6.0 -fno-omit-frame-pointer
 
 build-fat /tmp/pyios libpython2.7.a

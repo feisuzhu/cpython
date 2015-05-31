@@ -329,6 +329,9 @@ static int g_save(PyGreenlet* g, char* stop)
 			PyErr_NoMemory();
 			return -1;
 		}
+		/* Debug
+		fprintf(stderr, "Saving stack: %08lX -> %08lX, size=%X\n", g->stack_start+sz1, c+sz1, sz2-sz1);
+		// */
 		memcpy(c+sz1, g->stack_start+sz1, sz2-sz1);
 		g->stack_copy = c;
 		g->stack_saved = sz2;
@@ -340,9 +343,12 @@ static void GREENLET_NOINLINE(slp_restore_state)(void)
 {
 	PyGreenlet* g = ts_target;
 	PyGreenlet* owner = ts_current;
-	
+
 	/* Restore the heap copy back into the C stack */
 	if (g->stack_saved != 0) {
+		/* Debug
+		fprintf(stderr, "Restore stack: %08lX -> %08lX, size=%X\n", g->stack_copy, g->stack_start, g->stack_saved);
+		// */
 		memcpy(g->stack_start, g->stack_copy, g->stack_saved);
 		PyMem_Free(g->stack_copy);
 		g->stack_copy = NULL;
@@ -365,7 +371,7 @@ static int GREENLET_NOINLINE(slp_save_state)(char* stackref)
 		owner = owner->stack_prev;  /* not saved if dying */
 	else
 		owner->stack_start = stackref;
-	
+
 	while (owner->stack_stop < target_stop) {
 		/* ts_current is entierely within the area to free */
 		if (g_save(owner, owner->stack_stop))
@@ -453,7 +459,21 @@ static int g_switchstack(void)
 		current->exc_value = tstate->exc_value;
 		current->exc_traceback = tstate->exc_traceback;
 	}
+	/* Debug
+	{
+	    register int fp, sp;
+	    __asm__ volatile ("mov %0, r7\n\tmov %1, sp\n\t" : "=r"(fp), "=r"(sp));
+	    fprintf(stderr, "Before slp_switch: fp = %08lX, sp = %08lX\n", fp, sp);
+	}
+	// */
 	err = slp_switch();
+	/* Debug
+	{
+	    register int fp, sp;
+	    __asm__ volatile ("mov %0, r7\n\tmov %1, sp\n\t" : "=r"(fp), "=r"(sp));
+	    fprintf(stderr, "After slp_switch: fp = %08lX, sp = %08lX\n", fp, sp);
+	}
+	// */
 	if (err < 0) {   /* error */
 		PyGreenlet* current = ts_current;
 		current->top_frame = NULL;
@@ -532,6 +552,24 @@ g_switch(PyGreenlet* target, PyObject* args, PyObject* kwargs)
 		Py_XDECREF(kwargs);
 		return NULL;
 	}
+	/* Debug
+	{
+	    // PyObject *name = PyDict_GetItemString(target->dict, "gr_name");
+	    PyObject *name = PyObject_Repr(target);
+	    PyObject *repr = PyObject_Repr(args);
+	    if(name == NULL) {
+		PyErr_Clear();
+		fprintf(stderr, "greenlet: Switching to 0x%08lx\n", target);
+	    } else {
+		fprintf(stderr, "greenlet: Switching to %s, args = %s\n",
+		    PyString_AsString(name),
+		    PyString_AsString(repr)
+		);
+	    }
+	    Py_XDECREF(name);
+	    Py_XDECREF(repr);
+	}
+	// End debug */
 	run_info = green_statedict(target);
 	if (run_info == NULL || run_info != ts_current->run_info) {
 		Py_XDECREF(args);
@@ -550,7 +588,17 @@ g_switch(PyGreenlet* target, PyObject* args, PyObject* kwargs)
 	while (target) {
 		if (PyGreenlet_ACTIVE(target)) {
 			ts_target = target;
+			/* Debug
+			int r7b4;
+			__asm__ volatile ("str r7, %0": "=m"(r7b4));
+			fprintf(stderr, "greenlet: Before switch: r7 == 0x%08lX\n", r7b4);
+			// */
 			err = g_switchstack();
+			/* Debug
+			int r7af;
+			__asm__ volatile ("str r7, %0": "=m"(r7af));
+			fprintf(stderr, "greenlet: After switch: r7bf == %08lX, r7 == 0x%08lX", r7b4, r7af);
+			// */
 			break;
 		}
 		if (!PyGreenlet_STARTED(target)) {
@@ -1499,7 +1547,7 @@ PyTypeObject PyGreenlet_Type = {
 	(initproc)green_init,			/* tp_init */
 	GREENLET_tp_alloc,			/* tp_alloc */
 	green_new,				/* tp_new */
-	GREENLET_tp_free,			/* tp_free */        
+	GREENLET_tp_free,			/* tp_free */
 	(inquiry)GREENLET_tp_is_gc,		/* tp_is_gc */
 };
 
