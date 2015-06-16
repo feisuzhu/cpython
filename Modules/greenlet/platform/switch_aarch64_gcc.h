@@ -15,8 +15,8 @@
 
 #ifdef SLP_EVAL
 #define STACK_MAGIC 0
-#define REGS_TO_SAVE "r19", "r20", "r21", "r22", "r23", "r24", "r25", "r26", \
-                     "r27", "r28", "r30" /* aka lr */, \
+#define REGS_TO_SAVE "x19", "x20", "x21", "x22", "x23", "x24", "x25", "x26", \
+                     "x27", "x28", "x30" /* aka lr */, \
                      "v8", "v9", "v10", "v11", \
                      "v12", "v13", "v14", "v15"
 
