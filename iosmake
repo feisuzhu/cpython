@@ -81,9 +81,9 @@ function build-fat
     lipo $DIR/*/libpython2.7.a -create -output $OUTPUT
 }
 
-# build aarch64-apple-darwin arm64 iphoneos arm64 -miphoneos-version-min=6.0 -fno-omit-frame-pointer -mno-thumb
+build aarch64-apple-darwin arm64 iphoneos arm64 -miphoneos-version-min=6.0 -fno-omit-frame-pointer -DPY_FORMAT_LONG_LONG=ll
 build armv7-apple-darwin armv7 iphoneos armv7 -miphoneos-version-min=6.0 -fno-omit-frame-pointer -mno-thumb
-# build armv7s-apple-darwin armv7s iphoneos armv7s -miphoneos-version-min=6.0 -fno-omit-frame-pointer -mno-thumb
-# build i386-apple-darwin i386 iphonesimulator i386 -miphoneos-version-min=6.0 -fno-omit-frame-pointer
+build armv7s-apple-darwin armv7s iphoneos armv7s -miphoneos-version-min=6.0 -fno-omit-frame-pointer -mno-thumb
+build i386-apple-darwin i386 iphonesimulator i386 -miphoneos-version-min=6.0 -fno-omit-frame-pointer
 
 build-fat /tmp/pyios libpython2.7.a
