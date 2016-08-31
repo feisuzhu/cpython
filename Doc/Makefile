@@ -8,7 +8,7 @@ PYTHON       = python
 SPHINXBUILD  = sphinx-build
 PAPER        =
 SOURCES      =
-DISTVERSION  = $(shell $(PYTHON) tools/patchlevel.py)
+DISTVERSION  = $(shell $(PYTHON) tools/extensions/patchlevel.py)
 
 ALLSPHINXOPTS = -b $(BUILDER) -d build/doctrees -D latex_paper_size=$(PAPER) \
                 $(SPHINXOPTS) . build/$(BUILDER) $(SOURCES)
@@ -161,7 +161,7 @@ autobuild-dev:
 	-make suspicious
 
 # for quick rebuilds (HTML only)
-autobuild-html:
+autobuild-dev-html:
 	make html SPHINXOPTS='-A daily=1 -A versionswitcher=1'
 
 # for stable releases: only build if not in pre-release stage (alpha, beta)
@@ -173,3 +173,9 @@ autobuild-stable:
 	esac
 	@make autobuild-dev
 
+autobuild-stable-html:
+	@case $(DISTVERSION) in *[ab]*) \
+		echo "Not building; $(DISTVERSION) is not a release version."; \
+		exit 1;; \
+	esac
+	@make autobuild-dev-html

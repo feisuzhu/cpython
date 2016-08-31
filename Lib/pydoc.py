@@ -28,7 +28,7 @@ to a file named "<name>.html".
 
 Module docs for core modules are assumed to be in
 
-    http://docs.python.org/library/
+    https://docs.python.org/library/
 
 This can be overridden by setting the PYTHONDOCS environment variable
 to a different URL or to a local directory containing the Library
@@ -255,7 +255,7 @@ def synopsis(filename, cache={}):
         if info and 'b' in info[2]: # binary modules have to be imported
             try: module = imp.load_module('__temp__', file, filename, info[1:])
             except: return None
-            result = (module.__doc__ or '').splitlines()[0]
+            result = module.__doc__.splitlines()[0] if module.__doc__ else None
             del sys.modules['__temp__']
         else: # text modules can be directly examined
             result = source_synopsis(file)
@@ -374,7 +374,9 @@ class Doc:
 
     docmodule = docclass = docroutine = docother = docproperty = docdata = fail
 
-    def getdocloc(self, object):
+    def getdocloc(self, object,
+                  basedir=os.path.join(sys.exec_prefix, "lib",
+                                       "python"+sys.version[0:3])):
         """Return the location of module docs or None"""
 
         try:
@@ -383,9 +385,8 @@ class Doc:
             file = '(built-in)'
 
         docloc = os.environ.get("PYTHONDOCS",
-                                "http://docs.python.org/library")
-        basedir = os.path.join(sys.exec_prefix, "lib",
-                               "python"+sys.version[0:3])
+                                "https://docs.python.org/library")
+        basedir = os.path.normcase(basedir)
         if (isinstance(object, type(os)) and
             (object.__name__ in ('errno', 'exceptions', 'gc', 'imp',
                                  'marshal', 'posix', 'signal', 'sys',
@@ -393,10 +394,10 @@ class Doc:
              (file.startswith(basedir) and
               not file.startswith(os.path.join(basedir, 'site-packages')))) and
             object.__name__ not in ('xml.etree', 'test.pydoc_mod')):
-            if docloc.startswith("http://"):
-                docloc = "%s/%s" % (docloc.rstrip("/"), object.__name__)
+            if docloc.startswith(("http://", "https://")):
+                docloc = "%s/%s" % (docloc.rstrip("/"), object.__name__.lower())
             else:
-                docloc = os.path.join(docloc, object.__name__ + ".html")
+                docloc = os.path.join(docloc, object.__name__.lower() + ".html")
         else:
             docloc = None
         return docloc
@@ -1540,7 +1541,7 @@ def resolve(thing, forceload=0):
     """Given an object or a path to an object, get the object and its name."""
     if isinstance(thing, str):
         object = locate(thing, forceload)
-        if not object:
+        if object is None:
             raise ImportError, 'no Python documentation found for %r' % thing
         return object, thing
     else:
@@ -2020,7 +2021,7 @@ class ModuleScanner:
                         path = None
                 else:
                     module = loader.load_module(modname)
-                    desc = (module.__doc__ or '').splitlines()[0]
+                    desc = module.__doc__.splitlines()[0] if module.__doc__ else ''
                     path = getattr(module,'__file__',None)
                 if find(lower(modname + ' - ' + desc), key) >= 0:
                     callback(path, modname, desc)
@@ -2244,8 +2245,11 @@ def gui():
             if self.scanner:
                 self.scanner.quit = 1
             self.scanner = ModuleScanner()
+            def onerror(modname):
+                pass
             threading.Thread(target=self.scanner.run,
-                             args=(self.update, key, self.done)).start()
+                             args=(self.update, key, self.done),
+                             kwargs=dict(onerror=onerror)).start()
 
         def update(self, path, modname, desc):
             if modname[-9:] == '.__init__':

@@ -1377,15 +1377,13 @@ s_init(PyObject *self, PyObject *args, PyObject *kwds)
 
     if (PyString_Check(o_format)) {
         Py_INCREF(o_format);
-        Py_CLEAR(soself->s_format);
-        soself->s_format = o_format;
+        Py_XSETREF(soself->s_format, o_format);
     }
     else if (PyUnicode_Check(o_format)) {
         PyObject *str = PyUnicode_AsEncodedString(o_format, "ascii", NULL);
         if (str == NULL)
             return -1;
-        Py_CLEAR(soself->s_format);
-        soself->s_format = str;
+        Py_XSETREF(soself->s_format, str);
     }
     else {
         PyErr_Format(PyExc_TypeError,
@@ -1657,8 +1655,8 @@ static PyObject *
 s_pack_into(PyObject *self, PyObject *args)
 {
     PyStructObject *soself;
-    char *buffer;
-    Py_ssize_t buffer_len, offset;
+    Py_buffer buf;
+    Py_ssize_t offset;
 
     /* Validate arguments.  +1 is for the first arg as buffer. */
     soself = (PyStructObject *)self;
@@ -1683,33 +1681,35 @@ s_pack_into(PyObject *self, PyObject *args)
     }
 
     /* Extract a writable memory buffer from the first argument */
-    if ( PyObject_AsWriteBuffer(PyTuple_GET_ITEM(args, 0),
-                                                            (void**)&buffer, &buffer_len) == -1 ) {
+    if (!PyArg_Parse(PyTuple_GET_ITEM(args, 0), "w*", &buf))
         return NULL;
-    }
-    assert( buffer_len >= 0 );
 
     /* Extract the offset from the first argument */
     offset = PyInt_AsSsize_t(PyTuple_GET_ITEM(args, 1));
-    if (offset == -1 && PyErr_Occurred())
+    if (offset == -1 && PyErr_Occurred()) {
+        PyBuffer_Release(&buf);
         return NULL;
+    }
 
     /* Support negative offsets. */
     if (offset < 0)
-        offset += buffer_len;
+        offset += buf.len;
 
     /* Check boundaries */
-    if (offset < 0 || (buffer_len - offset) < soself->s_size) {
+    if (offset < 0 || (buf.len - offset) < soself->s_size) {
         PyErr_Format(StructError,
                      "pack_into requires a buffer of at least %zd bytes",
                      soself->s_size);
+        PyBuffer_Release(&buf);
         return NULL;
     }
 
     /* Call the guts */
-    if ( s_pack_internal(soself, args, 2, buffer + offset) != 0 ) {
+    if (s_pack_internal(soself, args, 2, (char *)buf.buf + offset) != 0) {
+        PyBuffer_Release(&buf);
         return NULL;
     }
+    PyBuffer_Release(&buf);
 
     Py_RETURN_NONE;
 }
@@ -1735,7 +1735,7 @@ s_sizeof(PyStructObject *self, void *unused)
 {
     Py_ssize_t size;
 
-    size = sizeof(PyStructObject) + sizeof(formatcode) * (self->s_len + 1);
+    size = _PyObject_SIZE(Py_TYPE(self)) + sizeof(formatcode) * (self->s_len + 1);
     return PyLong_FromSsize_t(size);
 }
 

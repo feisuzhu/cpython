@@ -4,8 +4,6 @@
 
 /* Itertools module written and maintained
    by Raymond D. Hettinger <python@rcn.com>
-   Copyright (c) 2003 Python Software Foundation.
-   All rights reserved.
 */
 
 
@@ -494,8 +492,7 @@ tee_next(teeobject *to)
         link = teedataobject_jumplink(to->dataobj);
         if (link == NULL)
             return NULL;
-        Py_DECREF(to->dataobj);
-        to->dataobj = (teedataobject *)link;
+        Py_SETREF(to->dataobj, (teedataobject *)link);
         to->index = 0;
     }
     value = teedataobject_getitem(to->dataobj, to->index);
@@ -1410,7 +1407,7 @@ PyDoc_STRVAR(starmap_doc,
 "starmap(function, sequence) --> starmap object\n\
 \n\
 Return an iterator whose values are returned from the function evaluated\n\
-with a argument tuple taken from the given sequence.");
+with an argument tuple taken from the given sequence.");
 
 static PyTypeObject starmap_type = {
     PyVarObject_HEAD_INIT(NULL, 0)
@@ -1750,7 +1747,7 @@ iterable, until all of the iterables are exhausted.");
 PyDoc_STRVAR(chain_from_iterable_doc,
 "chain.from_iterable(iterable) --> chain object\n\
 \n\
-Alternate chain() contructor taking a single iterable argument\n\
+Alternate chain() constructor taking a single iterable argument\n\
 that evaluates lazily.");
 
 static PyMethodDef chain_methods[] = {
@@ -1842,11 +1839,19 @@ product_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
         }
     }
 
-    assert(PyTuple_Check(args));
-    nargs = (repeat == 0) ? 0 : PyTuple_GET_SIZE(args);
+    assert(PyTuple_CheckExact(args));
+    if (repeat == 0) {
+        nargs = 0;
+    } else {
+        nargs = PyTuple_GET_SIZE(args);
+        if ((size_t)nargs > PY_SSIZE_T_MAX/sizeof(Py_ssize_t)/repeat) {
+            PyErr_SetString(PyExc_OverflowError, "repeat argument too large");
+            return NULL;
+        }
+    }
     npools = nargs * repeat;
 
-    indices = PyMem_Malloc(npools * sizeof(Py_ssize_t));
+    indices = PyMem_New(Py_ssize_t, npools);
     if (indices == NULL) {
         PyErr_NoMemory();
         goto error;
@@ -2093,7 +2098,7 @@ combinations_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
         goto error;
     }
 
-    indices = PyMem_Malloc(r * sizeof(Py_ssize_t));
+    indices = PyMem_New(Py_ssize_t, r);
     if (indices == NULL) {
         PyErr_NoMemory();
         goto error;
@@ -2342,7 +2347,7 @@ cwr_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
         goto error;
     }
 
-    indices = PyMem_Malloc(r * sizeof(Py_ssize_t));
+    indices = PyMem_New(Py_ssize_t, r);
     if (indices == NULL) {
         PyErr_NoMemory();
         goto error;
@@ -2535,18 +2540,18 @@ def permutations(iterable, r=None):
     cycles = range(n-r+1, n+1)[::-1]
     yield tuple(pool[i] for i in indices[:r])
     while n:
-    for i in reversed(range(r)):
-        cycles[i] -= 1
-        if cycles[i] == 0:
-        indices[i:] = indices[i+1:] + indices[i:i+1]
-        cycles[i] = n - i
+        for i in reversed(range(r)):
+            cycles[i] -= 1
+            if cycles[i] == 0:
+                indices[i:] = indices[i+1:] + indices[i:i+1]
+                cycles[i] = n - i
+            else:
+                j = cycles[i]
+                indices[i], indices[-j] = indices[-j], indices[i]
+                yield tuple(pool[i] for i in indices[:r])
+                break
         else:
-        j = cycles[i]
-        indices[i], indices[-j] = indices[-j], indices[i]
-        yield tuple(pool[i] for i in indices[:r])
-        break
-    else:
-        return
+            return
 */
 
 typedef struct {
@@ -2595,8 +2600,8 @@ permutations_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
         goto error;
     }
 
-    indices = PyMem_Malloc(n * sizeof(Py_ssize_t));
-    cycles = PyMem_Malloc(r * sizeof(Py_ssize_t));
+    indices = PyMem_New(Py_ssize_t, n);
+    cycles = PyMem_New(Py_ssize_t, r);
     if (indices == NULL || cycles == NULL) {
         PyErr_NoMemory();
         goto error;

@@ -337,8 +337,12 @@ _PyImport_ReleaseLock(void)
 void
 _PyImport_ReInitLock(void)
 {
-    if (import_lock != NULL)
+    if (import_lock != NULL) {
         import_lock = PyThread_allocate_lock();
+        if (import_lock == NULL) {
+            Py_FatalError("PyImport_ReInitLock failed to create a new lock");
+        }
+    }
     import_lock_thread = -1;
     import_lock_level = 0;
 }
@@ -628,25 +632,43 @@ _PyImport_FindExtension(char *name, char *filename)
    Because the former action is most common, THIS DOES NOT RETURN A
    'NEW' REFERENCE! */
 
-PyObject *
-PyImport_AddModule(const char *name)
+static PyObject *
+_PyImport_AddModuleObject(PyObject *name)
 {
     PyObject *modules = PyImport_GetModuleDict();
     PyObject *m;
 
-    if ((m = PyDict_GetItemString(modules, name)) != NULL &&
-        PyModule_Check(m))
+    if ((m = _PyDict_GetItemWithError(modules, name)) != NULL &&
+        PyModule_Check(m)) {
         return m;
-    m = PyModule_New(name);
-    if (m == NULL)
+    }
+    if (PyErr_Occurred()) {
         return NULL;
-    if (PyDict_SetItemString(modules, name, m) != 0) {
+    }
+    m = PyModule_New(PyString_AS_STRING(name));
+    if (m == NULL) {
+        return NULL;
+    }
+    if (PyDict_SetItem(modules, name, m) != 0) {
         Py_DECREF(m);
         return NULL;
     }
+    assert(Py_REFCNT(m) > 1);
     Py_DECREF(m); /* Yes, it still exists, in modules! */
 
     return m;
+}
+
+PyObject *
+PyImport_AddModule(const char *name)
+{
+    PyObject *nameobj, *module;
+    nameobj = PyString_FromString(name);
+    if (nameobj == NULL)
+        return NULL;
+    module = _PyImport_AddModuleObject(nameobj);
+    Py_DECREF(nameobj);
+    return module;
 }
 
 /* Remove name from sys.modules, if it's there. */

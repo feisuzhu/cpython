@@ -24,6 +24,11 @@ built-in function :func:`open`, but accepts Universal Resource Locators (URLs)
 instead of filenames.  Some restrictions apply --- it can only open URLs for
 reading, and no seek operations are available.
 
+.. seealso::
+
+    The `Requests package <http://requests.readthedocs.org/>`_
+    is recommended for a higher-level HTTP client interface.
+
 .. warning:: When opening HTTPS URLs, it does not attempt to validate the
    server certificate.  Use at your own risk!
 
@@ -113,7 +118,7 @@ High-level interface
    causes environmental proxy settings to be used as discussed above.  For
    example::
 
-      # Use http://www.someproxy.com:3128 for http proxying
+      # Use http://www.someproxy.com:3128 for HTTP proxying
       proxies = {'http': 'http://www.someproxy.com:3128'}
       filehandle = urllib.urlopen(some_url, proxies=proxies)
       # Don't use any proxies
@@ -275,7 +280,7 @@ Utility functions
 
 .. function:: url2pathname(path)
 
-   Convert the path component *path* from an percent-encoded URL to the local syntax for a
+   Convert the path component *path* from a percent-encoded URL to the local syntax for a
    path.  This does not accept a complete URL.  This function uses :func:`unquote`
    to decode *path*.
 
@@ -287,11 +292,23 @@ Utility functions
    in case insensitive way, for all operating systems first, and when it cannot
    find it, looks for proxy information from Mac OSX System Configuration for
    Mac OS X and Windows Systems Registry for Windows.
+   If both lowercase and uppercase environment variables exist (and disagree),
+   lowercase is preferred.
+
+    .. note::
+
+        If the environment variable ``REQUEST_METHOD`` is set, which usually
+        indicates your script is running in a CGI environment, the environment
+        variable ``HTTP_PROXY`` (uppercase ``_PROXY``) will be ignored. This is
+        because that variable can be injected by a client using the "Proxy:"
+        HTTP header. If you need to use an HTTP proxy in a CGI environment,
+        either use ``ProxyHandler`` explicitly, or make sure the variable name
+        is in lowercase (or at least the ``_proxy`` suffix).
 
 .. note::
     urllib also exposes certain utility functions like splittype, splithost and
-    others parsing url into various components. But it is recommended to use
-    :mod:`urlparse` for parsing urls than using these functions directly.
+    others parsing URL into various components. But it is recommended to use
+    :mod:`urlparse` for parsing URLs rather than using these functions directly.
     Python 3 does not expose these helper functions from :mod:`urllib.parse`
     module.
 

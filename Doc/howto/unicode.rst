@@ -32,8 +32,8 @@ For a while people just wrote programs that didn't display accents.  I remember
 looking at Apple ][ BASIC programs, published in French-language publications in
 the mid-1980s, that had lines like these::
 
-   PRINT "FICHIER EST COMPLETE."
-   PRINT "CARACTERE NON ACCEPTE."
+   PRINT "MISE A JOUR TERMINEE"
+   PRINT "PARAMETRES ENREGISTRES"
 
 Those messages should contain accents, and they just look wrong to someone who
 can read French.
@@ -211,7 +211,7 @@ origin and development of Unicode.
 
 To help understand the standard, Jukka Korpela has written an introductory guide
 to reading the Unicode character tables, available at
-<http://www.cs.tut.fi/~jkorpela/unicode/guide.html>.
+<https://www.cs.tut.fi/~jkorpela/unicode/guide.html>.
 
 Another good introductory article was written by Joel Spolsky
 <http://www.joelonsoftware.com/articles/Unicode.html>.
@@ -619,7 +619,9 @@ default filesystem encoding is UTF-8, running the following program::
    print os.listdir('.')
    print os.listdir(u'.')
 
-will produce the following output::
+will produce the following output:
+
+.. code-block:: shell-session
 
    amk:~$ python t.py
    ['.svn', 'filename\xe4\x94\x80abc', ...]

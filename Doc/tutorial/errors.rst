@@ -180,14 +180,14 @@ One may also instantiate an exception first before raising it and add any
 attributes to it as desired. ::
 
    >>> try:
-   ...    raise Exception('spam', 'eggs')
+   ...     raise Exception('spam', 'eggs')
    ... except Exception as inst:
-   ...    print type(inst)     # the exception instance
-   ...    print inst.args      # arguments stored in .args
-   ...    print inst           # __str__ allows args to be printed directly
-   ...    x, y = inst.args
-   ...    print 'x =', x
-   ...    print 'y =', y
+   ...     print type(inst)     # the exception instance
+   ...     print inst.args      # arguments stored in .args
+   ...     print inst           # __str__ allows args to be printed directly
+   ...     x, y = inst.args
+   ...     print 'x =', x
+   ...     print 'y =', y
    ...
    <type 'exceptions.Exception'>
    ('spam', 'eggs')
@@ -345,7 +345,7 @@ example::
 A *finally clause* is always executed before leaving the :keyword:`try`
 statement, whether an exception has occurred or not. When an exception has
 occurred in the :keyword:`try` clause and has not been handled by an
-:keyword:`except` clause (or it has occurred in a :keyword:`except` or
+:keyword:`except` clause (or it has occurred in an :keyword:`except` or
 :keyword:`else` clause), it is re-raised after the :keyword:`finally` clause has
 been executed.  The :keyword:`finally` clause is also executed "on the way out"
 when any other clause of the :keyword:`try` statement is left via a

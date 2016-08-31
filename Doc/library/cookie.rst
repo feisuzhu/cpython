@@ -116,7 +116,7 @@ Cookie Objects
 
    Return an encoded value. *val* can be any type, but return value must be a
    string. This method does nothing in :class:`BaseCookie` --- it exists so it can
-   be overridden
+   be overridden.
 
    In general, it should be the case that :meth:`value_encode` and
    :meth:`value_decode` are inverses on the range of *value_decode*.
@@ -173,7 +173,7 @@ Morsel Objects
    * ``version``
    * ``httponly``
 
-   The attribute :attr:`httponly` specifies that the cookie is only transfered
+   The attribute :attr:`httponly` specifies that the cookie is only transferred
    in HTTP requests, and is not accessible through JavaScript. This is intended
    to mitigate some forms of cross-site scripting.
 

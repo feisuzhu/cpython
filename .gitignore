@@ -6,6 +6,10 @@
 *.pyo
 *.rej
 *~
+*.gc??
+*.profclang?
+*.profraw
+*.dyn
 Doc/build/
 Doc/tools/docutils/
 Doc/tools/jinja2/
@@ -38,7 +42,7 @@ config.status
 libpython*.a
 libpython*.so*
 pyconfig.h
-python
+python$
 python-gdb.py
 tags
 .coverage

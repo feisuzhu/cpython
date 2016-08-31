@@ -125,8 +125,7 @@ bufferediobase_read1(PyObject *self, PyObject *args)
 PyDoc_STRVAR(bufferediobase_write_doc,
     "Write the given buffer to the IO stream.\n"
     "\n"
-    "Returns the number of bytes written, which is never less than\n"
-    "len(b).\n"
+    "Returns the number of bytes written, which is always len(b).\n"
     "\n"
     "Raises BlockingIOError if the buffer is full and the\n"
     "underlying raw stream cannot accept more data at the moment.\n");
@@ -391,7 +390,7 @@ buffered_sizeof(buffered *self, void *unused)
 {
     Py_ssize_t res;
 
-    res = sizeof(buffered);
+    res = _PyObject_SIZE(Py_TYPE(self));
     if (self->buffer)
         res += self->buffer_size;
     return PyLong_FromSsize_t(res);
@@ -483,15 +482,8 @@ buffered_close(buffered *self, PyObject *args)
     res = PyObject_CallMethodObjArgs(self->raw, _PyIO_str_close, NULL);
 
     if (exc != NULL) {
-        if (res != NULL) {
-            Py_CLEAR(res);
-            PyErr_Restore(exc, val, tb);
-        }
-        else {
-            Py_DECREF(exc);
-            Py_XDECREF(val);
-            Py_XDECREF(tb);
-        }
+        _PyErr_ReplaceException(exc, val, tb);
+        Py_CLEAR(res);
     }
 
 end:
@@ -1035,8 +1027,7 @@ found:
         Py_CLEAR(res);
         goto end;
     }
-    Py_CLEAR(res);
-    res = _PyBytes_Join(_PyIO_empty_bytes, chunks);
+    Py_XSETREF(res, _PyBytes_Join(_PyIO_empty_bytes, chunks));
 
 end:
     LEAVE_BUFFERED(self)
@@ -1222,7 +1213,7 @@ buffered_repr(buffered *self)
 
     nameobj = PyObject_GetAttrString((PyObject *) self, "name");
     if (nameobj == NULL) {
-        if (PyErr_ExceptionMatches(PyExc_AttributeError))
+        if (PyErr_ExceptionMatches(PyExc_Exception))
             PyErr_Clear();
         else
             return NULL;
@@ -1271,9 +1262,8 @@ bufferedreader_init(buffered *self, PyObject *args, PyObject *kwds)
     if (_PyIOBase_check_readable(raw, Py_True) == NULL)
         return -1;
 
-    Py_CLEAR(self->raw);
     Py_INCREF(raw);
-    self->raw = raw;
+    Py_XSETREF(self->raw, raw);
     self->buffer_size = buffer_size;
     self->readable = 1;
     self->writable = 0;
@@ -1694,9 +1684,8 @@ bufferedwriter_init(buffered *self, PyObject *args, PyObject *kwds)
     if (_PyIOBase_check_writable(raw, Py_True) == NULL)
         return -1;
 
-    Py_CLEAR(self->raw);
     Py_INCREF(raw);
-    self->raw = raw;
+    Py_XSETREF(self->raw, raw);
     self->readable = 0;
     self->writable = 1;
 
@@ -2200,12 +2189,25 @@ bufferedrwpair_writable(rwpair *self, PyObject *args)
 static PyObject *
 bufferedrwpair_close(rwpair *self, PyObject *args)
 {
+    PyObject *exc = NULL, *val, *tb;
     PyObject *ret = _forward_call(self->writer, "close", args);
     if (ret == NULL)
-        return NULL;
-    Py_DECREF(ret);
-
-    return _forward_call(self->reader, "close", args);
+        PyErr_Fetch(&exc, &val, &tb);
+    else
+        Py_DECREF(ret);
+    ret = _forward_call(self->reader, "close", args);
+    if (exc != NULL) {
+        if (ret != NULL) {
+            Py_CLEAR(ret);
+            PyErr_Restore(exc, val, tb);
+        }
+        else {
+            Py_DECREF(exc);
+            Py_XDECREF(val);
+            Py_XDECREF(tb);
+        }
+    }
+    return ret;
 }
 
 static PyObject *
@@ -2338,9 +2340,8 @@ bufferedrandom_init(buffered *self, PyObject *args, PyObject *kwds)
     if (_PyIOBase_check_writable(raw, Py_True) == NULL)
         return -1;
 
-    Py_CLEAR(self->raw);
     Py_INCREF(raw);
-    self->raw = raw;
+    Py_XSETREF(self->raw, raw);
     self->buffer_size = buffer_size;
     self->readable = 1;
     self->writable = 1;

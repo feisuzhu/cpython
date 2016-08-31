@@ -556,10 +556,10 @@ _PyLong_FromByteArray(const unsigned char* bytes, size_t n,
         size_t i;
         const unsigned char* p = pendbyte;
         const int pincr = -incr;  /* search MSB to LSB */
-        const unsigned char insignficant = is_signed ? 0xff : 0x00;
+        const unsigned char insignificant = is_signed ? 0xff : 0x00;
 
         for (i = 0; i < n; ++i, p += pincr) {
-            if (*p != insignficant)
+            if (*p != insignificant)
                 break;
         }
         numsignificantbytes = n - i;
@@ -3315,9 +3315,9 @@ long_true_divide(PyObject *v, PyObject *w)
     /* Round by directly modifying the low digit of x. */
     mask = (digit)1 << (extra_bits - 1);
     low = x->ob_digit[0] | inexact;
-    if (low & mask && low & (3*mask-1))
+    if ((low & mask) && (low & (3U*mask-1U)))
         low += mask;
-    x->ob_digit[0] = low & ~(mask-1U);
+    x->ob_digit[0] = low & ~(2U*mask-1U);
 
     /* Convert x to a double dx; the conversion is exact. */
     dx = x->ob_digit[--x_size];
@@ -3715,6 +3715,11 @@ long_lshift(PyObject *v, PyObject *w)
         PyErr_SetString(PyExc_ValueError, "negative shift count");
         goto lshift_error;
     }
+
+    if (Py_SIZE(a) == 0) {
+        return PyLong_FromLong(0);
+    }
+
     /* wordshift, remshift = divmod(shiftby, PyLong_SHIFT) */
     wordshift = shiftby / PyLong_SHIFT;
     remshift  = shiftby - wordshift * PyLong_SHIFT;
@@ -4068,7 +4073,7 @@ long_subtype_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
     tmp = (PyLongObject *)long_new(&PyLong_Type, args, kwds);
     if (tmp == NULL)
         return NULL;
-    assert(PyLong_CheckExact(tmp));
+    assert(PyLong_Check(tmp));
     n = Py_SIZE(tmp);
     if (n < 0)
         n = -n;

@@ -21,7 +21,7 @@ implementing a widget's behavior from the code implementing its appearance.
 
 .. seealso::
 
-   `Tk Widget Styling Support <http://www.tcl.tk/cgi-bin/tct/tip/48>`_
+   `Tk Widget Styling Support <https://www.tcl.tk/cgi-bin/tct/tip/48>`_
       The document which brought up theming support for Tk
 
 
@@ -293,7 +293,7 @@ Besides the methods inherited from :class:`Widget` (:meth:`Widget.cget`,
 :meth:`Widget.configure`, :meth:`Widget.identify`, :meth:`Widget.instate`
 and :meth:`Widget.state`) and those inherited from :class:`Entry`
 (:meth:`Entry.bbox`, :meth:`Entry.delete`, :meth:`Entry.icursor`,
-:meth:`Entry.index`, :meth:`Entry.inset`, :meth:`Entry.selection`,
+:meth:`Entry.index`, :meth:`Entry.insert`, :meth:`Entry.selection`,
 :meth:`Entry.xview`), this class has some other methods, described at
 :class:`ttk.Combobox`.
 
@@ -544,9 +544,9 @@ ttk.Notebook
       This will extend the bindings for the toplevel window containing the
       notebook as follows:
 
-      * Control-Tab: selects the tab following the currently selected one.
-      * Shift-Control-Tab: selects the tab preceding the currently selected one.
-      * Alt-K: where K is the mnemonic (underlined) character of any tab, will
+      * :kbd:`Control-Tab`: selects the tab following the currently selected one.
+      * :kbd:`Shift-Control-Tab`: selects the tab preceding the currently selected one.
+      * :kbd:`Alt-K`: where *K* is the mnemonic (underlined) character of any tab, will
         select that tab.
 
       Multiple notebooks in a single toplevel may be enabled for traversal,
@@ -686,7 +686,7 @@ the widget option ``displaycolumns``. The tree widget can also display column
 headings. Columns may be accessed by number or symbolic names listed in the
 widget option columns. See `Column Identifiers`_.
 
-Each item is identified by an unique name. The widget will generate item IDs
+Each item is identified by a unique name. The widget will generate item IDs
 if they are not supplied by the caller. There is a distinguished root item,
 named ``{}``. The root item itself is not displayed; its children appear at the
 top level of the hierarchy.

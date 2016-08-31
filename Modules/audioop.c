@@ -55,7 +55,7 @@ fbound(double val, double minval, double maxval)
  */
 #define BIAS 0x84   /* define the add-in bias for 16 bit samples */
 #define CLIP 32635
-#define SIGN_BIT        (0x80)          /* Sign bit for a A-law byte. */
+#define SIGN_BIT        (0x80)          /* Sign bit for an A-law byte. */
 #define QUANT_MASK      (0xf)           /* Quantization field mask. */
 #define SEG_SHIFT       (4)             /* Left shift for segment number. */
 #define SEG_MASK        (0x70)          /* Segment field mask. */
@@ -121,7 +121,7 @@ static PyInt16 _st_ulaw2linear16[256] = {
 
 /*
  * linear2ulaw() accepts a 14-bit signed integer and encodes it as u-law data
- * stored in a unsigned char.  This function should only be called with
+ * stored in an unsigned char.  This function should only be called with
  * the data shifted such that it only contains information in the lower
  * 14-bits.
  *
@@ -229,8 +229,8 @@ static PyInt16 _st_alaw2linear16[256] = {
 };
 
 /*
- * linear2alaw() accepts an 13-bit signed integer and encodes it as A-law data
- * stored in a unsigned char.  This function should only be called with
+ * linear2alaw() accepts a 13-bit signed integer and encodes it as A-law data
+ * stored in an unsigned char.  This function should only be called with
  * the data shifted such that it only contains information in the lower
  * 13-bits.
  *
@@ -1130,7 +1130,7 @@ audioop_ratecv(PyObject *self, PyObject *args)
     /* divide weightA and weightB by their greatest common divisor */
     d = gcd(weightA, weightB);
     weightA /= d;
-    weightA /= d;
+    weightB /= d;
 
     if ((size_t)nchannels > PY_SIZE_MAX/sizeof(int)) {
         PyErr_SetString(PyExc_MemoryError,
@@ -1420,18 +1420,29 @@ audioop_lin2adpcm(PyObject *self, PyObject *args)
     if (!audioop_check_parameters(len, size))
         return NULL;
 
-    str = PyString_FromStringAndSize(NULL, len/(size*2));
-    if ( str == 0 )
-        return 0;
-    ncp = (signed char *)PyString_AsString(str);
-
     /* Decode state, should have (value, step) */
     if ( state == Py_None ) {
         /* First time, it seems. Set defaults */
         valpred = 0;
         index = 0;
-    } else if ( !PyArg_ParseTuple(state, "ii", &valpred, &index) )
+    }
+    else if (!PyTuple_Check(state)) {
+        PyErr_SetString(PyExc_TypeError, "state must be a tuple or None");
+        return NULL;
+    }
+    else if (!PyArg_ParseTuple(state, "ii", &valpred, &index)) {
+        return NULL;
+    }
+    else if (valpred >= 0x8000 || valpred < -0x8000 ||
+             (size_t)index >= sizeof(stepsizeTable)/sizeof(stepsizeTable[0])) {
+        PyErr_SetString(PyExc_ValueError, "bad state");
+        return NULL;
+    }
+
+    str = PyString_FromStringAndSize(NULL, len/(size*2));
+    if ( str == 0 )
         return 0;
+    ncp = (signed char *)PyString_AsString(str);
 
     step = stepsizeTable[index];
     bufferstep = 1;
@@ -1529,8 +1540,19 @@ audioop_adpcm2lin(PyObject *self, PyObject *args)
         /* First time, it seems. Set defaults */
         valpred = 0;
         index = 0;
-    } else if ( !PyArg_ParseTuple(state, "ii", &valpred, &index) )
-        return 0;
+    }
+    else if (!PyTuple_Check(state)) {
+        PyErr_SetString(PyExc_TypeError, "state must be a tuple or None");
+        return NULL;
+    }
+    else if (!PyArg_ParseTuple(state, "ii", &valpred, &index)) {
+        return NULL;
+    }
+    else if (valpred >= 0x8000 || valpred < -0x8000 ||
+             (size_t)index >= sizeof(stepsizeTable)/sizeof(stepsizeTable[0])) {
+        PyErr_SetString(PyExc_ValueError, "bad state");
+        return NULL;
+    }
 
     if (len > (INT_MAX/2)/size) {
         PyErr_SetString(PyExc_MemoryError,

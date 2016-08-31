@@ -164,12 +164,9 @@ Directory and files operations
 
    Recursively move a file or directory (*src*) to another location (*dst*).
 
-   If the destination is a directory or a symlink to a directory, then *src* is
-   moved inside that directory.
-
-   The destination directory must not already exist.  If the destination already
-   exists but is not a directory, it may be overwritten depending on
-   :func:`os.rename` semantics.
+   If the destination is an existing directory, then *src* is moved inside that
+   directory. If the destination already exists but is not a directory, it may
+   be overwritten depending on :func:`os.rename` semantics.
 
    If the destination is on the current filesystem, then :func:`os.rename` is
    used.  Otherwise, *src* is copied (using :func:`shutil.copy2`) to *dst* and
@@ -294,7 +291,7 @@ provided.  They rely on the :mod:`zipfile` and :mod:`tarfile` modules.
 .. function:: get_archive_formats()
 
    Return a list of supported formats for archiving.
-   Each element of the returned sequence is a tuple ``(name, description)``
+   Each element of the returned sequence is a tuple ``(name, description)``.
 
    By default :mod:`shutil` provides these formats:
 
@@ -345,7 +342,9 @@ found in the :file:`.ssh` directory of the user::
     >>> make_archive(archive_name, 'gztar', root_dir)
     '/Users/tarek/myarchive.tar.gz'
 
-The resulting archive contains::
+The resulting archive contains:
+
+.. code-block:: shell-session
 
     $ tar -tzvf /Users/tarek/myarchive.tar.gz
     drwx------ tarek/staff       0 2010-02-01 16:23:40 ./

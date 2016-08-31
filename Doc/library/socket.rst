@@ -262,12 +262,12 @@ The module :mod:`socket` exports the following constants and functions:
    method.
 
    The following example fetches address information for a hypothetical TCP
-   connection to ``www.python.org`` on port 80 (results may differ on your
+   connection to ``example.org`` on port 80 (results may differ on your
    system if IPv6 isn't enabled)::
 
-      >>> socket.getaddrinfo("www.python.org", 80, 0, 0, socket.IPPROTO_TCP)
-      [(2, 1, 6, '', ('82.94.164.162', 80)),
-       (10, 1, 6, '', ('2001:888:2000:d::a2', 80, 0, 0))]
+      >>> socket.getaddrinfo("example.org", 80, 0, 0, socket.IPPROTO_TCP)
+      [(10, 1, 6, '', ('2606:2800:220:1:248:1893:25c8:1946', 80, 0, 0)),
+       (2, 1, 6, '', ('93.184.216.34', 80))]
 
    .. versionadded:: 2.2
 
@@ -640,7 +640,7 @@ correspond to Unix system calls applicable to sockets.
 
    The :meth:`ioctl` method is a limited interface to the WSAIoctl system
    interface.  Please refer to the `Win32 documentation
-   <http://msdn.microsoft.com/en-us/library/ms741621%28VS.85%29.aspx>`_ for more
+   <https://msdn.microsoft.com/en-us/library/ms741621%28VS.85%29.aspx>`_ for more
    information.
 
    On other platforms, the generic :func:`fcntl.fcntl` and :func:`fcntl.ioctl`
@@ -757,7 +757,7 @@ correspond to Unix system calls applicable to sockets.
    Set blocking or non-blocking mode of the socket: if *flag* is 0, the socket is
    set to non-blocking, else to blocking mode.  Initially all sockets are in
    blocking mode.  In non-blocking mode, if a :meth:`recv` call doesn't find any
-   data, or if a :meth:`send` call can't immediately dispose of the data, a
+   data, or if a :meth:`send` call can't immediately dispose of the data, an
    :exc:`error` exception is raised; in blocking mode, the calls block until they
    can proceed. ``s.setblocking(0)`` is equivalent to ``s.settimeout(0.0)``;
    ``s.setblocking(1)`` is equivalent to ``s.settimeout(None)``.

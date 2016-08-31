@@ -26,8 +26,10 @@
 # appreciate the advantages.
 #
 
+import os
+import Tkinter
 from Tkinter import *
-from Tkinter import _flatten, _cnfmerge, _default_root
+from Tkinter import _flatten, _cnfmerge
 
 # WARNING - TkVersion is a limited precision floating point number
 if TkVersion < 3.999:
@@ -72,7 +74,6 @@ TCL_ALL_EVENTS    = 0
 # BEWARE - this is implemented by copying some code from the Widget class
 #          in Tkinter (to override Widget initialization) and is therefore
 #          liable to break.
-import Tkinter, os
 
 # Could probably add this to Tkinter.Misc
 class tixCommand:
@@ -221,7 +222,7 @@ class Tk(Tkinter.Tk, tixCommand):
         self.tk.eval('package require Tix')
 
     def destroy(self):
-        # For safety, remove an delete_window binding before destroy
+        # For safety, remove the delete_window binding before destroy
         self.protocol("WM_DELETE_WINDOW", "")
         Tkinter.Tk.destroy(self)
 
@@ -476,7 +477,7 @@ class DisplayStyle:
     (multiple) Display Items"""
 
     def __init__(self, itemtype, cnf={}, **kw):
-        master = _default_root              # global from Tkinter
+        master = Tkinter._default_root
         if not master and 'refwindow' in cnf: master=cnf['refwindow']
         elif not master and 'refwindow' in kw:  master= kw['refwindow']
         elif not master: raise RuntimeError, "Too early to create display style: no root window"
@@ -702,7 +703,7 @@ class DirSelectBox(TixWidget):
 
 class ExFileSelectBox(TixWidget):
     """ExFileSelectBox - MS Windows style file select box.
-    It provides an convenient method for the user to select files.
+    It provides a convenient method for the user to select files.
 
     Subwidget       Class
     ---------       -----
@@ -760,7 +761,7 @@ class DirSelectDialog(TixWidget):
 # Should inherit from a Dialog class
 class ExFileSelectDialog(TixWidget):
     """ExFileSelectDialog - MS Windows style file select dialog.
-    It provides an convenient method for the user to select files.
+    It provides a convenient method for the user to select files.
 
     Subwidgets       Class
     ----------       -----
@@ -1052,8 +1053,8 @@ class InputOnly(TixWidget):
 
 class LabelEntry(TixWidget):
     """LabelEntry - Entry field with label. Packages an entry widget
-    and a label into one mega widget. It can beused be used to simplify
-    the creation of ``entry-form'' type of interface.
+    and a label into one mega widget. It can be used to simplify the creation
+    of ``entry-form'' type of interface.
 
     Subwidgets       Class
     ----------       -----

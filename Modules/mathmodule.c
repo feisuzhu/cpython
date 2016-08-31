@@ -379,9 +379,8 @@ m_lgamma(double x)
    Implementations of the error function erf(x) and the complementary error
    function erfc(x).
 
-   Method: following 'Numerical Recipes' by Flannery, Press et. al. (2nd ed.,
-   Cambridge University Press), we use a series approximation for erf for
-   small x, and a continued fraction approximation for erfc(x) for larger x;
+   Method: we use a series approximation for erf for small x, and a continued
+   fraction approximation for erfc(x) for larger x;
    combined with the relations erf(-x) = -erf(x) and erfc(x) = 1.0 - erf(x),
    this gives us erf(x) and erfc(x) for all x.
 
@@ -809,18 +808,18 @@ math_2(PyObject *args, double (*func) (double, double), char *funcname)
 FUNC1(acos, acos, 0,
       "acos(x)\n\nReturn the arc cosine (measured in radians) of x.")
 FUNC1(acosh, m_acosh, 0,
-      "acosh(x)\n\nReturn the hyperbolic arc cosine (measured in radians) of x.")
+      "acosh(x)\n\nReturn the inverse hyperbolic cosine of x.")
 FUNC1(asin, asin, 0,
       "asin(x)\n\nReturn the arc sine (measured in radians) of x.")
 FUNC1(asinh, m_asinh, 0,
-      "asinh(x)\n\nReturn the hyperbolic arc sine (measured in radians) of x.")
+      "asinh(x)\n\nReturn the inverse hyperbolic sine of x.")
 FUNC1(atan, atan, 0,
       "atan(x)\n\nReturn the arc tangent (measured in radians) of x.")
 FUNC2(atan2, m_atan2,
       "atan2(y, x)\n\nReturn the arc tangent (measured in radians) of y/x.\n"
       "Unlike atan(y/x), the signs of both x and y are considered.")
 FUNC1(atanh, m_atanh, 0,
-      "atanh(x)\n\nReturn the hyperbolic arc tangent (measured in radians) of x.")
+      "atanh(x)\n\nReturn the inverse hyperbolic tangent of x.")
 FUNC1(ceil, ceil, 0,
       "ceil(x)\n\nReturn the ceiling of x as a float.\n"
       "This is the smallest integral value >= x.")

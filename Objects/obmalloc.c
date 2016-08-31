@@ -1,5 +1,23 @@
 #include "Python.h"
 
+#if defined(__has_feature)  /* Clang */
+ #if __has_feature(address_sanitizer)  /* is ASAN enabled? */
+  #define ATTRIBUTE_NO_ADDRESS_SAFETY_ANALYSIS \
+        __attribute__((no_address_safety_analysis)) \
+        __attribute__ ((noinline))
+ #else
+  #define ATTRIBUTE_NO_ADDRESS_SAFETY_ANALYSIS
+ #endif
+#else
+ #if defined(__SANITIZE_ADDRESS__)  /* GCC 4.8.x, is ASAN enabled? */
+  #define ATTRIBUTE_NO_ADDRESS_SAFETY_ANALYSIS \
+        __attribute__((no_address_safety_analysis)) \
+        __attribute__ ((noinline))
+ #else
+  #define ATTRIBUTE_NO_ADDRESS_SAFETY_ANALYSIS
+ #endif
+#endif
+
 #ifdef WITH_PYMALLOC
 
 #ifdef HAVE_MMAP
@@ -149,7 +167,7 @@ static int running_on_valgrind = -1;
  * this value according to your application behaviour and memory needs.
  *
  * The following invariants must hold:
- *      1) ALIGNMENT <= SMALL_REQUEST_THRESHOLD <= 256
+ *      1) ALIGNMENT <= SMALL_REQUEST_THRESHOLD <= 512
  *      2) SMALL_REQUEST_THRESHOLD is evenly divisible by ALIGNMENT
  *
  * Note: a size threshold of 512 guarantees that newly created dictionaries
@@ -971,6 +989,7 @@ redirect:
 /* free */
 
 #undef PyObject_Free
+ATTRIBUTE_NO_ADDRESS_SAFETY_ANALYSIS
 void
 PyObject_Free(void *p)
 {
@@ -1201,6 +1220,7 @@ redirect:
  */
 
 #undef PyObject_Realloc
+ATTRIBUTE_NO_ADDRESS_SAFETY_ANALYSIS
 void *
 PyObject_Realloc(void *p, size_t nbytes)
 {

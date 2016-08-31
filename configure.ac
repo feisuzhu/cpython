@@ -8,7 +8,7 @@ m4_define(PYTHON_VERSION, 2.7)
 AC_PREREQ(2.65)
 
 AC_REVISION($Revision$)
-AC_INIT(python, PYTHON_VERSION, http://bugs.python.org/)
+AC_INIT(python, PYTHON_VERSION, https://bugs.python.org/)
 AC_CONFIG_SRCDIR([Include/object.h])
 AC_CONFIG_HEADER(pyconfig.h)
 
@@ -33,14 +33,18 @@ if test "$cross_compiling" = yes; then
 	    AC_MSG_ERROR([python$PACKAGE_VERSION interpreter not found])
 	fi
         AC_MSG_RESULT($interp)
-	PYTHON_FOR_BUILD='_PYTHON_PROJECT_BASE=$(abs_builddir) _PYTHON_HOST_PLATFORM=$(_PYTHON_HOST_PLATFORM) PYTHONPATH=$(shell test -f pybuilddir.txt && echo $(abs_builddir)/`cat pybuilddir.txt`:)$(srcdir)/Lib:$(srcdir)/Lib/plat-$(MACHDEP) '$interp
+	PYTHON_FOR_BUILD='_PYTHON_PROJECT_BASE=$(abs_builddir) _PYTHON_HOST_PLATFORM=$(_PYTHON_HOST_PLATFORM) PYTHONPATH=$(shell test -f pybuilddir.txt && echo $(abs_builddir)/`cat pybuilddir.txt`:)$(srcdir)/Lib:$(srcdir)/Lib/$(PLATDIR) '$interp
     fi
+    # Used to comment out stuff for rebuilding generated files
+    GENERATED_COMMENT='#'
 elif test "$cross_compiling" = maybe; then
     AC_MSG_ERROR([Cross compiling required --host=HOST-TUPLE and --build=ARCH])
 else
     PYTHON_FOR_BUILD='./$(BUILDPYTHON) -E'
+    GENERATED_COMMENT=''
 fi
 AC_SUBST(PYTHON_FOR_BUILD)
+AC_SUBST(GENERATED_COMMENT)
 
 dnl Ensure that if prefix is specified, it does not end in a slash. If
 dnl it does, we get path names containing '//' which is both ugly and
@@ -484,7 +488,7 @@ fi
 #
 # SGI compilers allow the specification of the both the ABI and the
 # ISA on the command line.  Depending on the values of these switches,
-# different and often incompatable code will be generated.
+# different and often incompatible code will be generated.
 #
 # The SGI_ABI variable can be used to modify the CC and LDFLAGS and
 # thus supply support for various ABI/ISA combinations.  The MACHDEP
@@ -498,6 +502,9 @@ then
         MACHDEP=`echo "${MACHDEP}${SGI_ABI}" | sed 's/ *//g'`
 fi
 AC_MSG_RESULT($MACHDEP)
+
+AC_SUBST(PLATDIR)
+PLATDIR=plat-$MACHDEP
 
 # And add extra plat-mac for darwin
 AC_SUBST(EXTRAPLATDIR)
@@ -575,6 +582,22 @@ AC_ARG_WITH(gcc,
 	*)	without_gcc=no;;
 	esac])
 AC_MSG_RESULT($without_gcc)
+
+AC_MSG_CHECKING(for --with-icc)
+AC_ARG_WITH(icc,
+            AS_HELP_STRING([--with-icc], [build with icc]),
+[
+	case $withval in
+	no)	CC=${CC:-cc}
+		with_icc=no;;
+	yes)	CC=icc
+		CXX=icpc
+		with_icc=yes;;
+	*)	CC=$withval
+		with_icc=$withval;;
+	esac], [
+	with_icc=no])
+AC_MSG_RESULT($with_icc)
 
 # If the user switches compilers, we can't believe the cache
 if test ! -z "$ac_cv_prog_CC" -a ! -z "$CC" -a "$CC" != "$ac_cv_prog_CC"
@@ -1269,6 +1292,13 @@ yes)
     ;;
 esac
 
+# ICC needs -fp-model strict or floats behave badly
+case "$CC" in
+*icc*)
+    BASECFLAGS="$BASECFLAGS -fp-model strict"
+    ;;
+esac
+
 if test "$Py_DEBUG" = 'true'; then
   :
 else
@@ -1354,6 +1384,91 @@ then
   ])
   CFLAGS=$save_CFLAGS
 fi
+
+
+# Enable LTO flags
+AC_SUBST(LTOFLAGS)
+AC_MSG_CHECKING(for --with-lto)
+AC_ARG_WITH(lto, AS_HELP_STRING([--with-lto], [Enable Link Time Optimization in PGO builds. Disabled by default.]),
+[
+if test "$withval" != no
+then
+  Py_LTO='true'
+  AC_MSG_RESULT(yes);
+else
+  Py_LTO='false'
+  AC_MSG_RESULT(no);
+fi],
+[AC_MSG_RESULT(no)])
+if test "$Py_LTO" = 'true' ; then
+  case $CC in
+    *clang*)
+      # Any changes made here should be reflected in the GCC+Darwin case below
+      LTOFLAGS="-flto"
+      ;;
+    *gcc*)
+      case $ac_sys_system in
+        Darwin*)
+          LTOFLAGS="-flto"
+          ;;
+        *)
+          LTOFLAGS="-flto -fuse-linker-plugin -ffat-lto-objects -flto-partition=none"
+          ;;
+      esac
+      ;;
+  esac
+fi
+
+
+# Enable PGO flags.
+AC_SUBST(PGO_PROF_GEN_FLAG)
+AC_SUBST(PGO_PROF_USE_FLAG)
+AC_SUBST(LLVM_PROF_MERGER)
+AC_SUBST(LLVM_PROF_FILE)
+AC_SUBST(LLVM_PROF_ERR)
+AC_SUBST(LLVM_PROF_FOUND)
+AC_CHECK_PROG(LLVM_PROF_FOUND, llvm-profdata, found, not-found)
+LLVM_PROF_ERR=no
+case $CC in
+  *clang*)
+    # Any changes made here should be reflected in the GCC+Darwin case below
+    PGO_PROF_GEN_FLAG="-fprofile-instr-generate"
+    PGO_PROF_USE_FLAG="-fprofile-instr-use=code.profclangd"
+    LLVM_PROF_MERGER="llvm-profdata merge -output=code.profclangd *.profclangr"
+    LLVM_PROF_FILE="LLVM_PROFILE_FILE=\"code-%p.profclangr\""
+    if test $LLVM_PROF_FOUND = not-found
+    then
+      LLVM_PROF_ERR=yes
+    fi
+    ;;
+  *gcc*)
+    case $ac_sys_system in
+      Darwin*)
+        PGO_PROF_GEN_FLAG="-fprofile-instr-generate"
+        PGO_PROF_USE_FLAG="-fprofile-instr-use=code.profclangd"
+        LLVM_PROF_MERGER="llvm-profdata merge -output=code.profclangd *.profclangr"
+        LLVM_PROF_FILE="LLVM_PROFILE_FILE=\"code-%p.profclangr\""
+        if test $LLVM_PROF_FOUND = not-found
+        then
+          LLVM_PROF_ERR=yes
+        fi
+        ;;
+      *)
+        PGO_PROF_GEN_FLAG="-fprofile-generate"
+        PGO_PROF_USE_FLAG="-fprofile-use -fprofile-correction"
+        LLVM_PROF_MERGER="true"
+        LLVM_PROF_FILE=""
+        ;;
+    esac
+    ;;
+  *icc*)
+    PGO_PROF_GEN_FLAG="-prof-gen"
+    PGO_PROF_USE_FLAG="-prof-use"
+    LLVM_PROF_MERGER="true"
+    LLVM_PROF_FILE=""
+    ;;
+esac
+
 
 # On some compilers, pthreads are available without further options
 # (e.g. MacOS X). On some of these systems, the compiler will not
@@ -2277,7 +2392,7 @@ LIBS="$withval $LIBS"
 ],
 [AC_MSG_RESULT(no)])
 
-AC_PATH_TOOL([PKG_CONFIG], [pkg-config])
+PKG_PROG_PKG_CONFIG
 
 # Check for use of the system expat library
 AC_MSG_CHECKING(for --with-system-expat)
@@ -2919,6 +3034,7 @@ AC_MSG_RESULT(MACHDEP_OBJS)
 AC_CHECK_FUNCS(alarm setitimer getitimer bind_textdomain_codeset chown \
  clock confstr ctermid execv fchmod fchown fork fpathconf ftime ftruncate \
  gai_strerror getgroups getlogin getloadavg getpeername getpgid getpid \
+ getentropy \
  getpriority getresuid getresgid getpwent getspnam getspent getsid getwd \
  initgroups kill killpg lchmod lchown lstat mkfifo mknod mktime mmap \
  mremap nice pathconf pause plock poll pthread_init \
@@ -3364,7 +3480,7 @@ AC_CHECK_MEMBERS([struct stat.st_blksize])
 AC_CHECK_MEMBERS([struct stat.st_flags])
 AC_CHECK_MEMBERS([struct stat.st_gen])
 AC_CHECK_MEMBERS([struct stat.st_birthtime])
-AC_STRUCT_ST_BLOCKS
+AC_CHECK_MEMBERS([struct stat.st_blocks])
 
 AC_MSG_CHECKING(for time.h that defines altzone)
 AC_CACHE_VAL(ac_cv_header_time_altzone,[
@@ -3722,7 +3838,7 @@ fi
 # so we try it on all platforms.
 
 AC_MSG_CHECKING(whether we can use gcc inline assembler to get and set x87 control word)
-AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[]], [[
   unsigned short cw;
   __asm__ __volatile__ ("fnstcw %0" : "=m" (cw));
   __asm__ __volatile__ ("fldcw %0" : : "m" (cw));
@@ -4122,6 +4238,11 @@ AC_CHECK_LIB(readline, rl_pre_input_hook,
 # also in 4.0
 AC_CHECK_LIB(readline, rl_completion_display_matches_hook,
 	AC_DEFINE(HAVE_RL_COMPLETION_DISPLAY_MATCHES_HOOK, 1,
+        [Define if you have readline 4.0]), ,$READLINE_LIBS)
+
+# also in 4.0, but not in editline
+AC_CHECK_LIB(readline, rl_resize_terminal,
+	AC_DEFINE(HAVE_RL_RESIZE_TERMINAL, 1,
         [Define if you have readline 4.0]), ,$READLINE_LIBS)
 
 # check for readline 4.2
@@ -4556,6 +4677,57 @@ for dir in $SRCDIRS; do
         mkdir $dir
     fi
 done
+
+# BEGIN_COMPUTED_GOTO 
+# Check for --with-computed-gotos
+AC_MSG_CHECKING(for --with-computed-gotos)
+AC_ARG_WITH(computed-gotos,
+            AS_HELP_STRING([--with(out)-computed-gotos],
+                           [Use computed gotos in evaluation loop (enabled by default on supported compilers)]),
+[
+if test "$withval" = yes
+then 
+  AC_DEFINE(USE_COMPUTED_GOTOS, 1,
+  [Define if you want to use computed gotos in ceval.c.]) 
+  AC_MSG_RESULT(yes)
+fi
+if test "$withval" = no
+then 
+  AC_DEFINE(USE_COMPUTED_GOTOS, 0,
+  [Define if you want to use computed gotos in ceval.c.]) 
+  AC_MSG_RESULT(no)
+fi
+],
+[AC_MSG_RESULT(no value specified)])
+
+AC_MSG_CHECKING(whether $CC supports computed gotos)
+AC_CACHE_VAL(ac_cv_computed_gotos,
+AC_RUN_IFELSE([AC_LANG_SOURCE([[[
+int main(int argc, char **argv)
+{
+    static void *targets[1] = { &&LABEL1 };
+    goto LABEL2;
+LABEL1:
+    return 0;
+LABEL2:
+    goto *targets[0];
+    return 1;
+}
+]]])],
+[ac_cv_computed_gotos=yes],
+[ac_cv_computed_gotos=no],
+[if test "${with_computed_gotos+set}" = set; then
+   ac_cv_computed_gotos="$with_computed_gotos -- configured --with(out)-computed-gotos"
+ else
+   ac_cv_computed_gotos=no
+ fi]))
+AC_MSG_RESULT($ac_cv_computed_gotos)
+case "$ac_cv_computed_gotos" in yes*)
+  AC_DEFINE(HAVE_COMPUTED_GOTOS, 1,
+  [Define if the C compiler supports computed gotos.])
+esac
+# END_COMPUTED_GOTO
+
 AC_MSG_RESULT(done)
 
 # ensurepip option

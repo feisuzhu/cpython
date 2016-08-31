@@ -35,7 +35,7 @@ static PyObject *interned;
    For PyString_FromString(), the parameter `str' points to a null-terminated
    string containing exactly `size' bytes.
 
-   For PyString_FromStringAndSize(), the parameter the parameter `str' is
+   For PyString_FromStringAndSize(), the parameter `str' is
    either NULL or else points to a string containing at least `size' bytes.
    For PyString_FromStringAndSize(), the string in the `str' parameter does
    not have to be null-terminated.  (Therefore it is safe to construct a
@@ -88,7 +88,7 @@ PyString_FromStringAndSize(const char *str, Py_ssize_t size)
     op = (PyStringObject *)PyObject_MALLOC(PyStringObject_SIZE + size);
     if (op == NULL)
         return PyErr_NoMemory();
-    PyObject_INIT_VAR(op, &PyString_Type, size);
+    (void)PyObject_INIT_VAR(op, &PyString_Type, size);
     op->ob_shash = -1;
     op->ob_sstate = SSTATE_NOT_INTERNED;
     if (str != NULL)
@@ -143,7 +143,7 @@ PyString_FromString(const char *str)
     op = (PyStringObject *)PyObject_MALLOC(PyStringObject_SIZE + size);
     if (op == NULL)
         return PyErr_NoMemory();
-    PyObject_INIT_VAR(op, &PyString_Type, size);
+    (void)PyObject_INIT_VAR(op, &PyString_Type, size);
     op->ob_shash = -1;
     op->ob_sstate = SSTATE_NOT_INTERNED;
     Py_MEMCPY(op->ob_sval, str, size+1);
@@ -449,7 +449,7 @@ PyObject *PyString_AsDecodedObject(PyObject *str,
     }
 
     /* Decode via the codec registry */
-    v = PyCodec_Decode(str, encoding, errors);
+    v = _PyCodec_DecodeText(str, encoding, errors);
     if (v == NULL)
         goto onError;
 
@@ -529,7 +529,7 @@ PyObject *PyString_AsEncodedObject(PyObject *str,
     }
 
     /* Encode via the codec registry */
-    v = PyCodec_Encode(str, encoding, errors);
+    v = _PyCodec_EncodeText(str, encoding, errors);
     if (v == NULL)
         goto onError;
 
@@ -901,7 +901,7 @@ string_print(PyStringObject *op, FILE *fp, int flags)
     fputc(quote, fp);
     for (i = 0; i < str_len; i++) {
         /* Since strings are immutable and the caller should have a
-        reference, accessing the interal buffer should not be an issue
+        reference, accessing the internal buffer should not be an issue
         with the GIL released. */
         c = op->ob_sval[i];
         if (c == quote || c == '\\')
@@ -1040,7 +1040,6 @@ string_concat(register PyStringObject *a, register PyObject *bb)
         Py_INCREF(a);
         return (PyObject *)a;
     }
-    size = Py_SIZE(a) + Py_SIZE(b);
     /* Check that string sizes are not negative, to prevent an
        overflow in cases where we are passed incorrectly-created
        strings with negative lengths (due to a bug in other code).
@@ -1051,6 +1050,7 @@ string_concat(register PyStringObject *a, register PyObject *bb)
                         "strings are too large to concat");
         return NULL;
     }
+    size = Py_SIZE(a) + Py_SIZE(b);
 
     /* Inline PyObject_NewVar */
     if (size > PY_SSIZE_T_MAX - PyStringObject_SIZE) {
@@ -1061,7 +1061,7 @@ string_concat(register PyStringObject *a, register PyObject *bb)
     op = (PyStringObject *)PyObject_MALLOC(PyStringObject_SIZE + size);
     if (op == NULL)
         return PyErr_NoMemory();
-    PyObject_INIT_VAR(op, &PyString_Type, size);
+    (void)PyObject_INIT_VAR(op, &PyString_Type, size);
     op->ob_shash = -1;
     op->ob_sstate = SSTATE_NOT_INTERNED;
     Py_MEMCPY(op->ob_sval, a->ob_sval, Py_SIZE(a));
@@ -1081,15 +1081,15 @@ string_repeat(register PyStringObject *a, register Py_ssize_t n)
     size_t nbytes;
     if (n < 0)
         n = 0;
-    /* watch out for overflows:  the size can overflow int,
+    /* watch out for overflows:  the size can overflow Py_ssize_t,
      * and the # of bytes needed can overflow size_t
      */
-    size = Py_SIZE(a) * n;
-    if (n && size / n != Py_SIZE(a)) {
+    if (n && Py_SIZE(a) > PY_SSIZE_T_MAX / n) {
         PyErr_SetString(PyExc_OverflowError,
             "repeated string is too long");
         return NULL;
     }
+    size = Py_SIZE(a) * n;
     if (size == Py_SIZE(a) && PyString_CheckExact(a)) {
         Py_INCREF(a);
         return (PyObject *)a;
@@ -1103,7 +1103,7 @@ string_repeat(register PyStringObject *a, register Py_ssize_t n)
     op = (PyStringObject *)PyObject_MALLOC(PyStringObject_SIZE + nbytes);
     if (op == NULL)
         return PyErr_NoMemory();
-    PyObject_INIT_VAR(op, &PyString_Type, size);
+    (void)PyObject_INIT_VAR(op, &PyString_Type, size);
     op->ob_shash = -1;
     op->ob_sstate = SSTATE_NOT_INTERNED;
     op->ob_sval[size] = '\0';
@@ -1627,7 +1627,7 @@ string_join(PyStringObject *self, PyObject *orig)
 #ifdef Py_USING_UNICODE
             if (PyUnicode_Check(item)) {
                 /* Defer to Unicode join.
-                 * CAUTION:  There's no gurantee that the
+                 * CAUTION:  There's no guarantee that the
                  * original sequence can be iterated over
                  * again, so we must pass seq here.
                  */
@@ -3719,7 +3719,7 @@ str_subtype_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
     tmp = string_new(&PyString_Type, args, kwds);
     if (tmp == NULL)
         return NULL;
-    assert(PyString_CheckExact(tmp));
+    assert(PyString_Check(tmp));
     n = PyString_GET_SIZE(tmp);
     pnew = type->tp_alloc(type, n);
     if (pnew != NULL) {
@@ -3865,8 +3865,7 @@ PyString_Concat(register PyObject **pv, register PyObject *w)
         return;
     }
     v = string_concat((PyStringObject *) *pv, w);
-    Py_DECREF(*pv);
-    *pv = v;
+    Py_SETREF(*pv, v);
 }
 
 void
@@ -4751,8 +4750,7 @@ PyString_InternInPlace(PyObject **p)
     t = PyDict_GetItem(interned, (PyObject *)s);
     if (t) {
         Py_INCREF(t);
-        Py_DECREF(*p);
-        *p = t;
+        Py_SETREF(*p, t);
         return;
     }
 

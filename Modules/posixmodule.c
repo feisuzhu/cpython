@@ -474,6 +474,61 @@ OverflowUp:
 #endif /* MS_WINDOWS */
 
 
+#if defined(HAVE_MKNOD) && defined(HAVE_MAKEDEV)
+static int
+_Py_Dev_Converter(PyObject *obj, void *p)
+{
+    PyObject *index = PyNumber_Index(obj);
+    if (index == NULL)
+        return 0;
+    if (PyInt_Check(index)) {
+        long x = PyInt_AS_LONG(index);
+        Py_DECREF(index);
+        if (x == -1 && PyErr_Occurred())
+            return 0;
+        if (x < 0) {
+            PyErr_SetString(PyExc_OverflowError,
+                            "can't convert negative number to unsigned long");
+            return 0;
+        }
+        *((dev_t *)p) = (unsigned long)x;
+    }
+    else if (PyLong_Check(index)) {
+#ifdef HAVE_LONG_LONG
+        *((dev_t *)p) = PyLong_AsUnsignedLongLong(index);
+#else
+        *((dev_t *)p) = PyLong_AsUnsignedLong(index);
+#endif
+        Py_DECREF(index);
+        if (PyErr_Occurred())
+            return 0;
+    }
+    else {
+        Py_DECREF(index);
+        PyErr_Format(PyExc_TypeError,
+                     "expected int/long, %s found",
+                     Py_TYPE(obj)->tp_name);
+        return 0;
+    }
+    return 1;
+}
+
+#endif
+
+#ifdef HAVE_LONG_LONG
+static PyObject *
+_PyInt_FromDev(PY_LONG_LONG v)
+{
+    if (LONG_MIN <= v && v <= LONG_MAX)
+        return PyInt_FromLong((long)v);
+    else
+        return PyLong_FromLongLong(v);
+}
+#else
+#  define _PyInt_FromDev PyInt_FromLong
+#endif
+
+
 #if defined _MSC_VER && _MSC_VER >= 1400
 /* Microsoft CRT in VS2005 and higher will verify that a filehandle is
  * valid and raise an assertion if it isn't.
@@ -1426,11 +1481,10 @@ _pystat_fromstructstat(STRUCT_STAT *st)
 #else
     PyStructSequence_SET_ITEM(v, 1, PyInt_FromLong((long)st->st_ino));
 #endif
-#if defined(HAVE_LONG_LONG) && !defined(MS_WINDOWS)
-    PyStructSequence_SET_ITEM(v, 2,
-                              PyLong_FromLongLong((PY_LONG_LONG)st->st_dev));
+#ifdef MS_WINDOWS
+    PyStructSequence_SET_ITEM(v, 2, PyLong_FromUnsignedLong(st->st_dev));
 #else
-    PyStructSequence_SET_ITEM(v, 2, PyInt_FromLong((long)st->st_dev));
+    PyStructSequence_SET_ITEM(v, 2, _PyInt_FromDev(st->st_dev));
 #endif
     PyStructSequence_SET_ITEM(v, 3, PyInt_FromLong((long)st->st_nlink));
 #if defined(MS_WINDOWS)
@@ -1592,13 +1646,9 @@ posix_do_stat(PyObject *self, PyObject *args,
     PyObject *result;
 
 #ifdef MS_WINDOWS
-    PyUnicodeObject *po;
-    if (PyArg_ParseTuple(args, wformat, &po)) {
-        Py_UNICODE *wpath = PyUnicode_AS_UNICODE(po);
-
+    Py_UNICODE *wpath;
+    if (PyArg_ParseTuple(args, wformat, &wpath)) {
         Py_BEGIN_ALLOW_THREADS
-            /* PyUnicode_AS_UNICODE result OK without
-               thread lock as it is a simple dereference. */
         res = wstatfunc(wpath, &st);
         Py_END_ALLOW_THREADS
 
@@ -1652,12 +1702,10 @@ posix_access(PyObject *self, PyObject *args)
 
 #ifdef MS_WINDOWS
     DWORD attr;
-    PyUnicodeObject *po;
-    if (PyArg_ParseTuple(args, "Ui:access", &po, &mode)) {
+    Py_UNICODE *wpath;
+    if (PyArg_ParseTuple(args, "ui:access", &wpath, &mode)) {
         Py_BEGIN_ALLOW_THREADS
-        /* PyUnicode_AS_UNICODE OK without thread lock as
-           it is a simple dereference. */
-        attr = GetFileAttributesW(PyUnicode_AS_UNICODE(po));
+        attr = GetFileAttributesW(wpath);
         Py_END_ALLOW_THREADS
         goto finish;
     }
@@ -1804,23 +1852,22 @@ posix_chmod(PyObject *self, PyObject *args)
     int res;
 #ifdef MS_WINDOWS
     DWORD attr;
-    PyUnicodeObject *po;
-    if (PyArg_ParseTuple(args, "Ui|:chmod", &po, &i)) {
+    Py_UNICODE *wpath;
+    if (PyArg_ParseTuple(args, "ui|:chmod", &wpath, &i)) {
         Py_BEGIN_ALLOW_THREADS
-        attr = GetFileAttributesW(PyUnicode_AS_UNICODE(po));
+        attr = GetFileAttributesW(wpath);
         if (attr != 0xFFFFFFFF) {
             if (i & _S_IWRITE)
                 attr &= ~FILE_ATTRIBUTE_READONLY;
             else
                 attr |= FILE_ATTRIBUTE_READONLY;
-            res = SetFileAttributesW(PyUnicode_AS_UNICODE(po), attr);
+            res = SetFileAttributesW(wpath, attr);
         }
         else
             res = 0;
         Py_END_ALLOW_THREADS
         if (!res)
-            return win32_error_unicode("chmod",
-                                       PyUnicode_AS_UNICODE(po));
+            return win32_error_unicode("chmod", wpath);
         Py_INCREF(Py_None);
         return Py_None;
     }
@@ -2246,18 +2293,18 @@ posix_listdir(PyObject *self, PyObject *args)
     char *bufptr = namebuf;
     Py_ssize_t len = sizeof(namebuf)-5; /* only claim to have space for MAX_PATH */
 
-    PyObject *po;
-    if (PyArg_ParseTuple(args, "U:listdir", &po)) {
+    Py_UNICODE *wpath;
+    if (PyArg_ParseTuple(args, "u:listdir", &wpath)) {
         WIN32_FIND_DATAW wFileData;
         Py_UNICODE *wnamebuf;
         /* Overallocate for \\*.*\0 */
-        len = PyUnicode_GET_SIZE(po);
+        len = wcslen(wpath);
         wnamebuf = malloc((len + 5) * sizeof(wchar_t));
         if (!wnamebuf) {
             PyErr_NoMemory();
             return NULL;
         }
-        wcscpy(wnamebuf, PyUnicode_AS_UNICODE(po));
+        wcscpy(wnamebuf, wpath);
         if (len > 0) {
             Py_UNICODE wch = wnamebuf[len-1];
             if (wch != L'/' && wch != L'\\' && wch != L':')
@@ -2561,9 +2608,8 @@ posix__getfullpathname(PyObject *self, PyObject *args)
     char outbuf[MAX_PATH*2];
     char *temp;
 
-    PyUnicodeObject *po;
-    if (PyArg_ParseTuple(args, "U|:_getfullpathname", &po)) {
-        Py_UNICODE *wpath = PyUnicode_AS_UNICODE(po);
+    Py_UNICODE *wpath;
+    if (PyArg_ParseTuple(args, "u|:_getfullpathname", &wpath)) {
         Py_UNICODE woutbuf[MAX_PATH*2], *woutbufp = woutbuf;
         Py_UNICODE *wtemp;
         DWORD result;
@@ -2616,15 +2662,13 @@ posix_mkdir(PyObject *self, PyObject *args)
     int mode = 0777;
 
 #ifdef MS_WINDOWS
-    PyUnicodeObject *po;
-    if (PyArg_ParseTuple(args, "U|i:mkdir", &po, &mode)) {
+    Py_UNICODE *wpath;
+    if (PyArg_ParseTuple(args, "u|i:mkdir", &wpath, &mode)) {
         Py_BEGIN_ALLOW_THREADS
-        /* PyUnicode_AS_UNICODE OK without thread lock as
-           it is a simple dereference. */
-        res = CreateDirectoryW(PyUnicode_AS_UNICODE(po), NULL);
+        res = CreateDirectoryW(wpath, NULL);
         Py_END_ALLOW_THREADS
         if (!res)
-            return win32_error_unicode("mkdir", PyUnicode_AS_UNICODE(po));
+            return win32_error_unicode("mkdir", wpath);
         Py_INCREF(Py_None);
         return Py_None;
     }
@@ -2635,8 +2679,6 @@ posix_mkdir(PyObject *self, PyObject *args)
                           Py_FileSystemDefaultEncoding, &path, &mode))
         return NULL;
     Py_BEGIN_ALLOW_THREADS
-    /* PyUnicode_AS_UNICODE OK without thread lock as
-       it is a simple dereference. */
     res = CreateDirectoryA(path, NULL);
     Py_END_ALLOW_THREADS
     if (!res) {
@@ -2779,7 +2821,7 @@ static PyObject *
 posix_stat(PyObject *self, PyObject *args)
 {
 #ifdef MS_WINDOWS
-    return posix_do_stat(self, args, "et:stat", STAT, "U:stat", win32_wstat);
+    return posix_do_stat(self, args, "et:stat", STAT, "u:stat", win32_wstat);
 #else
     return posix_do_stat(self, args, "et:stat", STAT, NULL, NULL);
 #endif
@@ -2915,7 +2957,6 @@ posix_utime(PyObject *self, PyObject *args)
 {
 #ifdef MS_WINDOWS
     PyObject *arg;
-    PyUnicodeObject *obwpath;
     wchar_t *wpath = NULL;
     char *apath = NULL;
     HANDLE hFile;
@@ -2924,8 +2965,7 @@ posix_utime(PyObject *self, PyObject *args)
     FILETIME atime, mtime;
     PyObject *result = NULL;
 
-    if (PyArg_ParseTuple(args, "UO|:utime", &obwpath, &arg)) {
-        wpath = PyUnicode_AS_UNICODE(obwpath);
+    if (PyArg_ParseTuple(args, "uO|:utime", &wpath, &arg)) {
         Py_BEGIN_ALLOW_THREADS
         hFile = CreateFileW(wpath, FILE_WRITE_ATTRIBUTES, 0,
                             NULL, OPEN_EXISTING,
@@ -4379,14 +4419,11 @@ PyDoc_STRVAR(posix__isdir__doc__,
 static PyObject *
 posix__isdir(PyObject *self, PyObject *args)
 {
-    PyObject *opath;
     char *path;
-    PyUnicodeObject *po;
+    Py_UNICODE *wpath;
     DWORD attributes;
 
-    if (PyArg_ParseTuple(args, "U|:_isdir", &po)) {
-        Py_UNICODE *wpath = PyUnicode_AS_UNICODE(po);
-
+    if (PyArg_ParseTuple(args, "u|:_isdir", &wpath)) {
         attributes = GetFileAttributesW(wpath);
         if (attributes == INVALID_FILE_ATTRIBUTES)
             Py_RETURN_FALSE;
@@ -6265,7 +6302,7 @@ posix_lstat(PyObject *self, PyObject *args)
     return posix_do_stat(self, args, "et:lstat", lstat, NULL, NULL);
 #else /* !HAVE_LSTAT */
 #ifdef MS_WINDOWS
-    return posix_do_stat(self, args, "et:lstat", STAT, "U:lstat", win32_wstat);
+    return posix_do_stat(self, args, "et:lstat", STAT, "u:lstat", win32_wstat);
 #else
     return posix_do_stat(self, args, "et:lstat", STAT, NULL, NULL);
 #endif
@@ -6539,12 +6576,10 @@ posix_open(PyObject *self, PyObject *args)
     int fd;
 
 #ifdef MS_WINDOWS
-    PyUnicodeObject *po;
-    if (PyArg_ParseTuple(args, "Ui|i:mkdir", &po, &flag, &mode)) {
+    Py_UNICODE *wpath;
+    if (PyArg_ParseTuple(args, "ui|i:mkdir", &wpath, &flag, &mode)) {
         Py_BEGIN_ALLOW_THREADS
-        /* PyUnicode_AS_UNICODE OK without thread
-           lock as it is a simple dereference. */
-        fd = _wopen(PyUnicode_AS_UNICODE(po), flag, mode);
+        fd = _wopen(wpath, flag, mode);
         Py_END_ALLOW_THREADS
         if (fd < 0)
             return posix_error();
@@ -7002,9 +7037,11 @@ posix_mknod(PyObject *self, PyObject *args)
 {
     char *filename;
     int mode = 0600;
-    int device = 0;
+    dev_t device = 0;
     int res;
-    if (!PyArg_ParseTuple(args, "s|ii:mknod", &filename, &mode, &device))
+    if (!PyArg_ParseTuple(args, "s|iO&:mknod",
+        &filename, &mode,
+        _Py_Dev_Converter, &device))
         return NULL;
     Py_BEGIN_ALLOW_THREADS
     res = mknod(filename, mode, device);
@@ -7024,8 +7061,8 @@ Extracts a device major number from a raw device number.");
 static PyObject *
 posix_major(PyObject *self, PyObject *args)
 {
-    int device;
-    if (!PyArg_ParseTuple(args, "i:major", &device))
+    dev_t device;
+    if (!PyArg_ParseTuple(args, "O&:major", _Py_Dev_Converter, &device))
         return NULL;
     return PyInt_FromLong((long)major(device));
 }
@@ -7037,8 +7074,8 @@ Extracts a device minor number from a raw device number.");
 static PyObject *
 posix_minor(PyObject *self, PyObject *args)
 {
-    int device;
-    if (!PyArg_ParseTuple(args, "i:minor", &device))
+    dev_t device;
+    if (!PyArg_ParseTuple(args, "O&:minor", _Py_Dev_Converter, &device))
         return NULL;
     return PyInt_FromLong((long)minor(device));
 }
@@ -7053,7 +7090,7 @@ posix_makedev(PyObject *self, PyObject *args)
     int major, minor;
     if (!PyArg_ParseTuple(args, "ii:makedev", &major, &minor))
         return NULL;
-    return PyInt_FromLong((long)makedev(major, minor));
+    return _PyInt_FromDev(makedev(major, minor));
 }
 #endif /* device macros */
 
@@ -8515,7 +8552,6 @@ setup_confname_table(struct constdef *table, size_t tablesize,
 {
     PyObject *d = NULL;
     size_t i;
-
     qsort(table, tablesize, sizeof(struct constdef), cmp_constdefs);
     d = PyDict_New();
     if (d == NULL)
@@ -8600,12 +8636,13 @@ static PyObject *
 win32_startfile(PyObject *self, PyObject *args)
 {
     char *filepath;
+    Py_UNICODE *wpath;
     char *operation = NULL;
     HINSTANCE rc;
 
-    PyObject *unipath, *woperation = NULL;
-    if (!PyArg_ParseTuple(args, "U|s:startfile",
-                          &unipath, &operation)) {
+    PyObject *woperation = NULL;
+    if (!PyArg_ParseTuple(args, "u|s:startfile",
+                          &wpath, &operation)) {
         PyErr_Clear();
         goto normal;
     }
@@ -8622,14 +8659,13 @@ win32_startfile(PyObject *self, PyObject *args)
 
     Py_BEGIN_ALLOW_THREADS
     rc = ShellExecuteW((HWND)0, woperation ? PyUnicode_AS_UNICODE(woperation) : 0,
-        PyUnicode_AS_UNICODE(unipath),
+        wpath,
         NULL, NULL, SW_SHOWNORMAL);
     Py_END_ALLOW_THREADS
 
     Py_XDECREF(woperation);
     if (rc <= (HINSTANCE)32) {
-        PyObject *errval = win32_error_unicode("startfile",
-                                               PyUnicode_AS_UNICODE(unipath));
+        PyObject *errval = win32_error_unicode("startfile", wpath);
         return errval;
     }
     Py_INCREF(Py_None);

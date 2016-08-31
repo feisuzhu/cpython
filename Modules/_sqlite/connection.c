@@ -116,7 +116,7 @@ int pysqlite_connection_init(pysqlite_Connection* self, PyObject* args, PyObject
             return -1;
         }
     } else {
-        /* Create a pysqlite connection from a APSW connection */
+        /* Create a pysqlite connection from an APSW connection */
         class_attr = PyObject_GetAttrString(database, "__class__");
         if (class_attr) {
             class_attr_str = PyObject_Str(class_attr);
@@ -228,8 +228,8 @@ void pysqlite_flush_statement_cache(pysqlite_Connection* self)
         node = node->next;
     }
 
-    Py_DECREF(self->statement_cache);
-    self->statement_cache = (pysqlite_Cache*)PyObject_CallFunction((PyObject*)&pysqlite_CacheType, "O", self);
+    Py_SETREF(self->statement_cache,
+              (pysqlite_Cache *)PyObject_CallFunction((PyObject *)&pysqlite_CacheType, "O", self));
     Py_DECREF(self);
     self->statement_cache->decref_factory = 0;
 }
@@ -324,7 +324,7 @@ error:
 
 PyObject* pysqlite_connection_cursor(pysqlite_Connection* self, PyObject* args, PyObject* kwargs)
 {
-    static char *kwlist[] = {"factory", NULL, NULL};
+    static char *kwlist[] = {"factory", NULL};
     PyObject* factory = NULL;
     PyObject* cursor;
 
@@ -341,14 +341,22 @@ PyObject* pysqlite_connection_cursor(pysqlite_Connection* self, PyObject* args, 
         factory = (PyObject*)&pysqlite_CursorType;
     }
 
-    cursor = PyObject_CallFunction(factory, "O", self);
+    cursor = PyObject_CallFunctionObjArgs(factory, (PyObject *)self, NULL);
+    if (cursor == NULL)
+        return NULL;
+    if (!PyObject_TypeCheck(cursor, &pysqlite_CursorType)) {
+        PyErr_Format(PyExc_TypeError,
+                     "factory must return a cursor, not %.100s",
+                     Py_TYPE(cursor)->tp_name);
+        Py_DECREF(cursor);
+        return NULL;
+    }
 
     _pysqlite_drop_unused_cursor_references(self);
 
     if (cursor && self->row_factory != Py_None) {
-        Py_XDECREF(((pysqlite_Cursor*)cursor)->row_factory);
         Py_INCREF(self->row_factory);
-        ((pysqlite_Cursor*)cursor)->row_factory = self->row_factory;
+        Py_XSETREF(((pysqlite_Cursor *)cursor)->row_factory, self->row_factory);
     }
 
     return cursor;
@@ -459,7 +467,6 @@ PyObject* pysqlite_connection_commit(pysqlite_Connection* self, PyObject* args)
     }
 
     if (self->inTransaction) {
-        pysqlite_do_all_statements(self, ACTION_RESET, 0);
 
         Py_BEGIN_ALLOW_THREADS
         rc = sqlite3_prepare(self->db, "COMMIT", -1, &statement, &tail);
@@ -816,8 +823,7 @@ static void _pysqlite_drop_unused_statement_references(pysqlite_Connection* self
         }
     }
 
-    Py_DECREF(self->statements);
-    self->statements = new_list;
+    Py_SETREF(self->statements, new_list);
 }
 
 static void _pysqlite_drop_unused_cursor_references(pysqlite_Connection* self)
@@ -848,8 +854,7 @@ static void _pysqlite_drop_unused_cursor_references(pysqlite_Connection* self)
         }
     }
 
-    Py_DECREF(self->cursors);
-    self->cursors = new_list;
+    Py_SETREF(self->cursors, new_list);
 }
 
 PyObject* pysqlite_connection_create_function(pysqlite_Connection* self, PyObject* args, PyObject* kwargs)
@@ -1192,6 +1197,9 @@ PyObject* pysqlite_connection_call(pysqlite_Connection* self, PyObject* args, Py
         return NULL;
     }
 
+    if (!_PyArg_NoKeywords(MODULE_NAME ".Connection()", kwargs))
+        return NULL;
+
     if (!PyArg_ParseTuple(args, "O", &sql)) {
         return NULL;
     }
@@ -1242,7 +1250,7 @@ error:
     return (PyObject*)statement;
 }
 
-PyObject* pysqlite_connection_execute(pysqlite_Connection* self, PyObject* args, PyObject* kwargs)
+PyObject* pysqlite_connection_execute(pysqlite_Connection* self, PyObject* args)
 {
     PyObject* cursor = 0;
     PyObject* result = 0;
@@ -1271,7 +1279,7 @@ error:
     return cursor;
 }
 
-PyObject* pysqlite_connection_executemany(pysqlite_Connection* self, PyObject* args, PyObject* kwargs)
+PyObject* pysqlite_connection_executemany(pysqlite_Connection* self, PyObject* args)
 {
     PyObject* cursor = 0;
     PyObject* result = 0;
@@ -1300,7 +1308,7 @@ error:
     return cursor;
 }
 
-PyObject* pysqlite_connection_executescript(pysqlite_Connection* self, PyObject* args, PyObject* kwargs)
+PyObject* pysqlite_connection_executescript(pysqlite_Connection* self, PyObject* args)
 {
     PyObject* cursor = 0;
     PyObject* result = 0;

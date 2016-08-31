@@ -18,6 +18,11 @@ The :mod:`urllib2` module defines functions and classes which help in opening
 URLs (mostly HTTP) in a complex world --- basic and digest authentication,
 redirections, cookies and more.
 
+.. seealso::
+
+    The `Requests package <http://requests.readthedocs.org/>`_
+    is recommended for a higher-level HTTP client interface.
+
 
 The :mod:`urllib2` module defines the following functions:
 
@@ -59,7 +64,7 @@ The :mod:`urllib2` module defines the following functions:
 
    * :meth:`info` --- return the meta-information of the page, such as headers,
      in the form of an :class:`mimetools.Message` instance
-     (see `Quick Reference to HTTP Headers <http://www.cs.tut.fi/~jkorpela/http.html>`_)
+     (see `Quick Reference to HTTP Headers <https://www.cs.tut.fi/~jkorpela/http.html>`_)
 
    * :meth:`getcode` --- return the HTTP status code of the response.
 
@@ -162,7 +167,7 @@ The following classes are provided:
 
    *headers* should be a dictionary, and will be treated as if :meth:`add_header`
    was called with each key and value as arguments.  This is often used to "spoof"
-   the ``User-Agent`` header, which is used by a browser to identify itself --
+   the ``User-Agent`` header value, which is used by a browser to identify itself --
    some HTTP servers only allow requests coming from common browsers as opposed
    to scripts.  For example, Mozilla Firefox may identify itself as ``"Mozilla/5.0
    (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11"``, while :mod:`urllib2`'s
@@ -223,6 +228,11 @@ The following classes are provided:
    is retrieved from the OS X System Configuration Framework.
 
    To disable autodetected proxy pass an empty dictionary.
+
+    .. note::
+
+       ``HTTP_PROXY`` will be ignored if a variable ``REQUEST_METHOD`` is set;
+       see the documentation on :func:`~urllib.getproxies`.
 
 
 .. class:: HTTPPasswordMgr()
@@ -945,6 +955,9 @@ HTTPErrorProcessor Objects
 Examples
 --------
 
+In addition to the examples below, more examples are given in
+:ref:`urllib-howto`.
+
 This example gets the python.org main page and displays the first 100 bytes of
 it::
 
@@ -1011,6 +1024,8 @@ Use the *headers* argument to the :class:`Request` constructor, or::
    import urllib2
    req = urllib2.Request('http://www.example.com/')
    req.add_header('Referer', 'http://www.python.org/')
+   # Customize the default User-Agent header value:
+   req.add_header('User-Agent', 'urllib-example/0.1 (Contact: . . .)')
    r = urllib2.urlopen(req)
 
 :class:`OpenerDirector` automatically adds a :mailheader:`User-Agent` header to

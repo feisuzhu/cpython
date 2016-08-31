@@ -41,7 +41,7 @@ additional methods of invocation:
 
 * When called with standard input connected to a tty device, it prompts for
   commands and executes them until an EOF (an end-of-file character, you can
-  produce that with *Ctrl-D* on UNIX or *Ctrl-Z, Enter* on Windows) is read.
+  produce that with :kbd:`Ctrl-D` on UNIX or :kbd:`Ctrl-Z, Enter` on Windows) is read.
 * When called with a file name argument or with a file as standard input, it
   reads and executes a script from that file.
 * When called with a directory name argument, it reads and executes an
@@ -612,6 +612,17 @@ conflict.
    separated string, it is equivalent to specifying :option:`-W` multiple
    times.
 
+
+.. envvar:: PYTHONHTTPSVERIFY
+
+   If this environment variable is set specifically to ``0``, then it is
+   equivalent to implicitly calling :func:`ssl._https_verify_certificates` with
+   ``enable=False`` when :mod:`ssl` is first imported.
+
+   Refer to the documentation of :func:`ssl._https_verify_certificates` for
+   details.
+
+   .. versionadded:: 2.7.12
 
 Debug-mode variables
 ~~~~~~~~~~~~~~~~~~~~

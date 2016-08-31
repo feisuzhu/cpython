@@ -15,8 +15,7 @@
 The ZIP file format is a common archive and compression standard. This module
 provides tools to create, read, write, append, and list a ZIP file.  Any
 advanced use of this module will require an understanding of the format, as
-defined in `PKZIP Application Note
-<http://www.pkware.com/documents/casestudies/APPNOTE.TXT>`_.
+defined in `PKZIP Application Note`_.
 
 This module does not currently handle multi-disk ZIP files.
 It can handle ZIP files that use the ZIP64 extensions
@@ -83,7 +82,7 @@ The module defines the following items:
 
 .. seealso::
 
-   `PKZIP Application Note <http://www.pkware.com/documents/casestudies/APPNOTE.TXT>`_
+   `PKZIP Application Note`_
       Documentation on the ZIP file format by Phil Katz, the creator of the format and
       algorithms used.
 
@@ -186,8 +185,14 @@ ZipFile Objects
 
    .. note::
 
-      Objects returned by :meth:`.open` can operate independently of the
-      ZipFile.
+      If the ZipFile was created by passing in a file-like object as the  first
+      argument to the constructor, then the object returned by :meth:`.open` shares the
+      ZipFile's file pointer.  Under these  circumstances, the object returned by
+      :meth:`.open` should not  be used after any additional operations are performed
+      on the  ZipFile object.  If the ZipFile was created by passing in a string (the
+      filename) as the first argument to the constructor, then  :meth:`.open` will
+      create a new file object that will be held by the ZipExtFile, allowing it to
+      operate independently of the  ZipFile.
 
    .. note::
 
@@ -205,6 +210,8 @@ ZipFile Objects
    extracted as accurately as possible.  *path* specifies a different directory
    to extract to.  *member* can be a filename or a :class:`ZipInfo` object.
    *pwd* is the password used for encrypted files.
+
+   Returns the normalized path created (a directory or new file).
 
    .. versionadded:: 2.6
 
@@ -427,8 +434,7 @@ Instances have the following attributes:
 
 .. attribute:: ZipInfo.extra
 
-   Expansion field data.  The `PKZIP Application Note
-   <http://www.pkware.com/documents/casestudies/APPNOTE.TXT>`_ contains
+   Expansion field data.  The `PKZIP Application Note`_ contains
    some comments on the internal structure of the data contained in this string.
 
 
@@ -491,3 +497,4 @@ Instances have the following attributes:
 
    Size of the uncompressed file.
 
+.. _PKZIP Application Note: https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT

@@ -70,7 +70,7 @@ is a separate error indicator for each thread.
       Do not compare the return value to a specific exception; use
       :c:func:`PyErr_ExceptionMatches` instead, shown below.  (The comparison could
       easily fail since the exception may be an instance instead of a class, in the
-      case of a class exception, or it may the a subclass of the expected exception.)
+      case of a class exception, or it may be a subclass of the expected exception.)
 
 
 .. c:function:: int PyErr_ExceptionMatches(PyObject *exc)
@@ -404,8 +404,8 @@ is a separate error indicator for each thread.
    :meth:`__del__` method.
 
    The function is called with a single argument *obj* that identifies the context
-   in which the unraisable exception occurred. The repr of *obj* will be printed in
-   the warning message.
+   in which the unraisable exception occurred. If possible,
+   the repr of *obj* will be printed in the warning message.
 
 
 .. _unicodeexceptions:
@@ -493,7 +493,7 @@ level, both in the core and in extension modules.  They are needed if the
 recursive code does not necessarily invoke Python code (which tracks its
 recursion depth automatically).
 
-.. c:function:: int Py_EnterRecursiveCall(char *where)
+.. c:function:: int Py_EnterRecursiveCall(const char *where)
 
    Marks a point where a recursive C-level call is about to be performed.
 

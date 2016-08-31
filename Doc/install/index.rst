@@ -2,13 +2,18 @@
 
 .. _install-index:
 
-*****************************
-  Installing Python Modules
-*****************************
+********************************************
+  Installing Python Modules (Legacy version)
+********************************************
 
 :Author: Greg Ward
 
 .. TODO: Fill in XXX comments
+
+.. seealso::
+
+   :ref:`installing-index`
+      The up to date module installation documentations
 
 .. The audience for this document includes people who don't know anything
    about Python and aren't about to learn the language just in order to
@@ -28,15 +33,15 @@ modules and extensions.
 
 .. note::
 
-   This guide only covers the basic tools for installing extensions that are
-   provided as part of this version of Python. Third party tools offer easier
-   to use and more secure alternatives. Refer to the
-   `quick recommendations section
-   <https://python-packaging-user-guide.readthedocs.org/en/latest/current.html>`__
+   This guide only covers the basic tools for building and distributing
+   extensions that are provided as part of this version of Python. Third party
+   tools offer easier to use and more secure alternatives. Refer to the `quick
+   recommendations section <https://packaging.python.org/en/latest/current/>`__
    in the Python Packaging User Guide for more information.
 
 
 .. _inst-intro:
+
 
 Introduction
 ============
@@ -149,7 +154,7 @@ into.  For example, if you've just downloaded a module source distribution
 
 On Windows, you'd probably download :file:`foo-1.0.zip`.  If you downloaded the
 archive file to :file:`C:\\Temp`, then it would unpack into
-:file:`C:\\Temp\\foo-1.0`; you can use either a archive manipulator with a
+:file:`C:\\Temp\\foo-1.0`; you can use either an archive manipulator with a
 graphical user interface (such as WinZip) or a command-line tool (such as
 :program:`unzip` or :program:`pkunzip`) to unpack the archive.  Then, open a
 command prompt window and run::
@@ -862,12 +867,12 @@ config file will apply.  (Or if other commands that derive values from it are
 run, they will use the values in the config file.)
 
 You can find out the complete list of options for any command using the
-:option:`--help` option, e.g.::
+:option:`!--help` option, e.g.::
 
    python setup.py build --help
 
 and you can find out the complete list of global options by using
-:option:`--help` without a command::
+:option:`!--help` without a command::
 
    python setup.py --help
 
@@ -924,7 +929,7 @@ Let's examine each of the fields in turn.
   to be in Objective C.
 
 * *cpparg* is an argument for the C preprocessor,  and is anything starting with
-  :option:`-I`, :option:`-D`, :option:`-U` or :option:`-C`.
+  :option:`!-I`, :option:`-D`, :option:`!-U` or :option:`-C`.
 
 * *library* is anything ending in :file:`.a` or beginning with :option:`-l` or
   :option:`-L`.
@@ -1009,7 +1014,7 @@ section :ref:`inst-config-files`.)
 
 .. seealso::
 
-   `C++Builder Compiler <http://www.embarcadero.com/downloads>`_
+   `C++Builder Compiler <https://www.embarcadero.com/products>`_
       Information about the free C++ compiler from Borland, including links to the
       download pages.
 
@@ -1052,7 +1057,7 @@ These compilers require some special libraries.  This task is more complex than
 for Borland's C++, because there is no program to convert the library.  First
 you have to create a list of symbols which the Python DLL exports. (You can find
 a good program for this task at
-http://sourceforge.net/projects/mingw/files/MinGW/Extension/pexports/).
+https://sourceforge.net/projects/mingw/files/MinGW/Extension/pexports/).
 
 .. I don't understand what the next line means. --amk
 .. (inclusive the references on data structures.)
@@ -1090,7 +1095,7 @@ normal libraries do.
 .. [#] This also means you could replace all existing COFF-libraries with OMF-libraries
    of the same name.
 
-.. [#] Check http://www.sourceware.org/cygwin/ and http://www.mingw.org/ for more
+.. [#] Check https://www.sourceware.org/cygwin/ and http://www.mingw.org/ for more
    information
 
 .. [#] Then you have no POSIX emulation available, but you also don't need

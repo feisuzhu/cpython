@@ -182,6 +182,14 @@ Glossary
       keys can be any object with :meth:`__hash__`  and :meth:`__eq__` methods.
       Called a hash in Perl.
 
+   dictionary view
+      The objects returned from :meth:`dict.viewkeys`, :meth:`dict.viewvalues`,
+      and :meth:`dict.viewitems` are called dictionary views. They provide a dynamic
+      view on the dictionary’s entries, which means that when the dictionary
+      changes, the view reflects these changes. To force the
+      dictionary view to become a full list use ``list(dictview)``.  See
+      :ref:`dict-views`.
+
    docstring
       A string literal which appears as the first expression in a class,
       function or module.  While ignored when the suite is executed, it is
@@ -284,7 +292,7 @@ Glossary
    generator
       A function which returns an iterator.  It looks like a normal function
       except that it contains :keyword:`yield` statements for producing a series
-      a values usable in a for-loop or that can be retrieved one at a time with
+      of values usable in a for-loop or that can be retrieved one at a time with
       the :func:`next` function. Each :keyword:`yield` temporarily suspends
       processing, remembering the location execution state (including local
       variables and pending try-statements).  When the generator resumes, it
@@ -338,8 +346,8 @@ Glossary
       All of Python's immutable built-in objects are hashable, while no mutable
       containers (such as lists or dictionaries) are.  Objects which are
       instances of user-defined classes are hashable by default; they all
-      compare unequal (except with themselves), and their hash value is their
-      :func:`id`.
+      compare unequal (except with themselves), and their hash value is derived
+      from their :func:`id`.
 
    IDLE
       An Integrated Development Environment for Python.  IDLE is a basic editor
@@ -511,7 +519,8 @@ Glossary
    method resolution order
       Method Resolution Order is the order in which base classes are searched
       for a member during lookup. See `The Python 2.3 Method Resolution Order
-      <https://www.python.org/download/releases/2.3/mro/>`_.
+      <https://www.python.org/download/releases/2.3/mro/>`_ for details of the
+      algorithm used by the Python interpreter since the 2.3 release.
 
    module
       An object that serves as an organizational unit of Python code.  Modules
@@ -712,13 +721,6 @@ Glossary
       the Windows convention ``'\r\n'``, and the old Macintosh convention
       ``'\r'``.  See :pep:`278` and :pep:`3116`, as well as
       :func:`str.splitlines` for an additional use.
-
-   view
-      The objects returned from :meth:`dict.viewkeys`, :meth:`dict.viewvalues`,
-      and :meth:`dict.viewitems` are called dictionary views.  They are lazy
-      sequences that will see changes in the underlying dictionary.  To force
-      the dictionary view to become a full list use ``list(dictview)``.  See
-      :ref:`dict-views`.
 
    virtual environment
       A cooperatively isolated runtime environment that allows Python users

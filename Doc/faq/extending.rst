@@ -45,7 +45,7 @@ very little effort, as long as you're running on a machine with an
 x86-compatible processor.
 
 `Cython <http://cython.org>`_ and its relative `Pyrex
-<http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/>`_ are compilers
+<https://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/>`_ are compilers
 that accept a slightly modified form of Python and generate the corresponding
 C code.  Pyrex makes it possible to write an extension without having to learn
 Python's C API.
@@ -53,10 +53,10 @@ Python's C API.
 If you need to interface to some C or C++ library for which no Python extension
 currently exists, you can try wrapping the library's data types and functions
 with a tool such as `SWIG <http://www.swig.org>`_.  `SIP
-<http://www.riverbankcomputing.co.uk/software/sip/intro>`__, `CXX
+<https://riverbankcomputing.com/software/sip/intro>`__, `CXX
 <http://cxx.sourceforge.net/>`_ `Boost
 <http://www.boost.org/libs/python/doc/index.html>`_, or `Weave
-<http://docs.scipy.org/doc/scipy-dev/reference/tutorial/weave.html>`_ are also
+<https://scipy.github.io/devdocs/tutorial/weave.html>`_ are also
 alternatives for wrapping C++ libraries.
 
 
@@ -156,6 +156,8 @@ The easiest way to do this is to use the StringIO class in the standard library.
 
 Sample code and use for catching stdout:
 
+.. code-block:: pycon
+
    >>> class StdoutCatcher:
    ...     def __init__(self):
    ...         self.data = ''
@@ -219,11 +221,15 @@ How do I debug an extension?
 When using GDB with dynamically loaded extensions, you can't set a breakpoint in
 your extension until your extension is loaded.
 
-In your ``.gdbinit`` file (or interactively), add the command::
+In your ``.gdbinit`` file (or interactively), add the command:
+
+.. code-block:: none
 
    br _PyImport_LoadDynamicModule
 
-Then, when you run GDB::
+Then, when you run GDB:
+
+.. code-block:: shell-session
 
    $ gdb /local/bin/python
    gdb) run myscript.py
@@ -345,7 +351,7 @@ complete example using the GNU readline library (you may want to ignore
      {
        line = readline (prompt);
 
-       if (NULL == line)                          /* CTRL-D pressed */
+       if (NULL == line)                          /* Ctrl-D pressed */
        {
          done = 1;
        }
@@ -440,8 +446,8 @@ extension module using g++ (e.g., ``g++ -shared -o mymodule.so mymodule.o``).
 Can I create an object class with some methods implemented in C and others in Python (e.g. through inheritance)?
 ----------------------------------------------------------------------------------------------------------------
 
-In Python 2.2, you can inherit from built-in classes such as :class:`int`,
-:class:`list`, :class:`dict`, etc.
+Yes, you can inherit from built-in classes such as :class:`int`, :class:`list`,
+:class:`dict`, etc.
 
 The Boost Python Library (BPL, http://www.boost.org/libs/python/doc/index.html)
 provides a way of doing this from C++ (i.e. you can inherit from an extension
@@ -468,6 +474,8 @@ parameter specifications for :c:func:`PyArg_ParseTuple`.
 
 You can check the size of the Unicode character a Python interpreter is using by
 checking the value of sys.maxunicode:
+
+.. code-block:: pycon
 
    >>> import sys
    >>> if sys.maxunicode > 65535:

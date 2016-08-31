@@ -47,8 +47,6 @@ An explanation of some terminology and conventions is in order.
   years for all year input.  When 2-digit years are accepted, they are converted
   according to the POSIX or X/Open standard: values 69-99 are mapped to 1969-1999,
   and values 0--68 are mapped to 2000--2068. Values 100--1899 are always illegal.
-  Note that this is new as of Python 1.5.2(a2); earlier versions, up to Python
-  1.5.1 and 1.5.2a1, would add 1900 to year values below 1900.
 
 .. index::
    single: UTC
@@ -222,12 +220,13 @@ The module defines the following functions and data items:
 
 .. function:: sleep(secs)
 
-   Suspend execution for the given number of seconds.  The argument may be a
-   floating point number to indicate a more precise sleep time. The actual
-   suspension time may be less than that requested because any caught signal will
-   terminate the :func:`sleep` following execution of that signal's catching
-   routine.  Also, the suspension time may be longer than requested by an arbitrary
-   amount because of the scheduling of other activity in the system.
+   Suspend execution of the current thread for the given number of seconds.
+   The argument may be a floating point number to indicate a more precise sleep
+   time. The actual suspension time may be less than that requested because any
+   caught signal will terminate the :func:`sleep` following execution of that
+   signal's catching routine.  Also, the suspension time may be longer than
+   requested by an arbitrary amount because of the scheduling of other activity
+   in the system.
 
 
 .. function:: strftime(format[, t])
@@ -428,9 +427,12 @@ The module defines the following functions and data items:
 
    Note that unlike the C structure, the month value is a range of [1, 12], not
    [0, 11].  A year value will be handled as described under :ref:`Year 2000
-   (Y2K) issues <time-y2kissues>` above.  A ``-1`` argument as the daylight
-   savings flag, passed to :func:`mktime` will usually result in the correct
-   daylight savings state to be filled in.
+   (Y2K) issues <time-y2kissues>` above.
+
+   In calls to :func:`mktime`, :attr:`tm_isdst` may be set to 1 when daylight
+   savings time is in effect, and 0 when it is not.  A value of -1 indicates
+   that this is not known, and will usually result in the correct state being
+   filled in.
 
    When a tuple with an incorrect length is passed to a function expecting a
    :class:`struct_time`, or having elements of the wrong type, a

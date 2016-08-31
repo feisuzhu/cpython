@@ -108,11 +108,11 @@ The special characters are:
 ``*?``, ``+?``, ``??``
    The ``'*'``, ``'+'``, and ``'?'`` qualifiers are all :dfn:`greedy`; they match
    as much text as possible.  Sometimes this behaviour isn't desired; if the RE
-   ``<.*>`` is matched against ``'<H1>title</H1>'``, it will match the entire
-   string, and not just ``'<H1>'``.  Adding ``'?'`` after the qualifier makes it
+   ``<.*>`` is matched against ``<a> b <c>``, it will match the entire
+   string, and not just ``<a>``.  Adding ``?`` after the qualifier makes it
    perform the match in :dfn:`non-greedy` or :dfn:`minimal` fashion; as *few*
-   characters as possible will be matched.  Using ``.*?`` in the previous
-   expression will match only ``'<H1>'``.
+   characters as possible will be matched.  Using the RE ``<.*?>`` will match
+   only ``<a>``.
 
 ``{m}``
    Specifies that exactly *m* copies of the previous RE should be matched; fewer
@@ -276,7 +276,9 @@ The special characters are:
    assertion`. ``(?<=abc)def`` will find a match in ``abcdef``, since the
    lookbehind will back up 3 characters and check if the contained pattern matches.
    The contained pattern must only match strings of some fixed length, meaning that
-   ``abc`` or ``a|b`` are allowed, but ``a*`` and ``a{3,4}`` are not.  Note that
+   ``abc`` or ``a|b`` are allowed, but ``a*`` and ``a{3,4}`` are not.  Group
+   references are not supported even if they match strings of some fixed length.
+   Note that
    patterns which start with positive lookbehind assertions will not match at the
    beginning of the string being searched; you will most likely want to use the
    :func:`search` function rather than the :func:`match` function:
@@ -296,7 +298,8 @@ The special characters are:
    Matches if the current position in the string is not preceded by a match for
    ``...``.  This is called a :dfn:`negative lookbehind assertion`.  Similar to
    positive lookbehind assertions, the contained pattern must only match strings of
-   some fixed length.  Patterns which start with negative lookbehind assertions may
+   some fixed length and shouldn't contain group references.
+   Patterns which start with negative lookbehind assertions may
    match at the beginning of the string being searched.
 
 ``(?(id/name)yes-pattern|no-pattern)``
@@ -511,13 +514,15 @@ form.
 .. data:: X
           VERBOSE
 
-   This flag allows you to write regular expressions that look nicer. Whitespace
-   within the pattern is ignored, except when in a character class or preceded by
-   an unescaped backslash, and, when a line contains a ``'#'`` neither in a
-   character class or preceded by an unescaped backslash, all characters from the
-   leftmost such ``'#'`` through the end of the line are ignored.
+   This flag allows you to write regular expressions that look nicer and are
+   more readable by allowing you to visually separate logical sections of the
+   pattern and add comments. Whitespace within the pattern is ignored, except
+   when in a character class or when preceded by an unescaped backslash.
+   When a line contains a ``#`` that is not in a character class and is not
+   preceded by an unescaped backslash, all characters from the leftmost such
+   ``#`` through the end of the line are ignored.
 
-   That means that the two following regular expression objects that match a
+   This means that the two following regular expression objects that match a
    decimal number are functionally equal::
 
       a = re.compile(r"""\d +  # the integral part
@@ -1115,15 +1120,15 @@ does by default).
 
 For example::
 
-   >>> re.match("c", "abcdef")  # No match
-   >>> re.search("c", "abcdef") # Match
+   >>> re.match("c", "abcdef")    # No match
+   >>> re.search("c", "abcdef")   # Match
    <_sre.SRE_Match object at ...>
 
 Regular expressions beginning with ``'^'`` can be used with :func:`search` to
 restrict the match at the beginning of the string::
 
-   >>> re.match("c", "abcdef")  # No match
-   >>> re.search("^c", "abcdef") # No match
+   >>> re.match("c", "abcdef")    # No match
+   >>> re.search("^c", "abcdef")  # No match
    >>> re.search("^a", "abcdef")  # Match
    <_sre.SRE_Match object at ...>
 
@@ -1204,9 +1209,9 @@ a function to "munge" text, or randomize the order of all the characters
 in each word of a sentence except for the first and last characters::
 
    >>> def repl(m):
-   ...   inner_word = list(m.group(2))
-   ...   random.shuffle(inner_word)
-   ...   return m.group(1) + "".join(inner_word) + m.group(3)
+   ...     inner_word = list(m.group(2))
+   ...     random.shuffle(inner_word)
+   ...     return m.group(1) + "".join(inner_word) + m.group(3)
    >>> text = "Professor Abdolmalek, please report your absences promptly."
    >>> re.sub(r"(\w)(\w+)(\w)", repl, text)
    'Poefsrosr Aealmlobdk, pslaee reorpt your abnseces plmrptoy.'

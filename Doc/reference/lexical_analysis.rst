@@ -109,7 +109,9 @@ Encoding declarations
 If a comment in the first or second line of the Python script matches the
 regular expression ``coding[=:]\s*([-\w.]+)``, this comment is processed as an
 encoding declaration; the first group of this expression names the encoding of
-the source code file. The recommended forms of this expression are ::
+the source code file. The encoding declaration must appear on a line of its
+own. If it is the second line, the first line must also be a comment-only line.
+The recommended forms of an encoding expression are ::
 
    # -*- coding: <encoding-name> -*-
 
@@ -126,8 +128,7 @@ If an encoding is declared, the encoding name must be recognized by Python. The
 encoding is used for all lexical analysis, in particular to find the end of a
 string, and to interpret the contents of Unicode literals. String literals are
 converted to Unicode for syntactical analysis, then converted back to their
-original encoding before interpretation starts. The encoding declaration must
-appear on a line of its own.
+original encoding before interpretation starts.
 
 .. XXX there should be a list of supported encodings.
 
@@ -714,7 +715,10 @@ Operators
 
 .. index:: single: operators
 
-The following tokens are operators::
+The following tokens are operators:
+
+.. code-block:: none
+
 
    +       -       *       **      /       //      %
    <<      >>      &       |       ^       ~
@@ -731,7 +735,9 @@ Delimiters
 
 .. index:: single: delimiters
 
-The following tokens serve as delimiters in the grammar::
+The following tokens serve as delimiters in the grammar:
+
+.. code-block:: none
 
    (       )       [       ]       {       }      @
    ,       :       .       `       =       ;
@@ -744,14 +750,18 @@ of the list, the augmented assignment operators, serve lexically as delimiters,
 but also perform an operation.
 
 The following printing ASCII characters have special meaning as part of other
-tokens or are otherwise significant to the lexical analyzer::
+tokens or are otherwise significant to the lexical analyzer:
+
+.. code-block:: none
 
    '       "       #       \
 
 .. index:: single: ASCII@ASCII
 
 The following printing ASCII characters are not used in Python.  Their
-occurrence outside string literals and comments is an unconditional error::
+occurrence outside string literals and comments is an unconditional error:
+
+.. code-block:: none
 
    $       ?
 

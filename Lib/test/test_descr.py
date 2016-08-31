@@ -2066,7 +2066,7 @@ order (MRO) for bases """
                                  "attr on a property" % attr)
 
         class D(object):
-            __getitem__ = property(lambda s: 1/0)
+            __getitem__ = property(lambda s: 1.0/0.0)
 
         d = D()
         try:
@@ -3300,7 +3300,7 @@ order (MRO) for bases """
             pass
 
         for p in pickle, cPickle:
-            for bin in 0, 1:
+            for bin in range(p.HIGHEST_PROTOCOL + 1):
                 for cls in C, C1, C2:
                     s = p.dumps(cls, bin)
                     cls2 = p.loads(s)
@@ -3358,30 +3358,31 @@ order (MRO) for bases """
                 __slots__ = ['a']
             class D(C):
                 pass
-            try:
-                pickle.dumps(C())
-            except TypeError:
-                pass
-            else:
-                self.fail("should fail: pickle C instance - %s" % base)
-            try:
-                cPickle.dumps(C())
-            except TypeError:
-                pass
-            else:
-                self.fail("should fail: cPickle C instance - %s" % base)
-            try:
-                pickle.dumps(C())
-            except TypeError:
-                pass
-            else:
-                self.fail("should fail: pickle D instance - %s" % base)
-            try:
-                cPickle.dumps(D())
-            except TypeError:
-                pass
-            else:
-                self.fail("should fail: cPickle D instance - %s" % base)
+            for proto in range(2):
+                try:
+                    pickle.dumps(C(), proto)
+                except TypeError:
+                    pass
+                else:
+                    self.fail("should fail: pickle C instance - %s" % base)
+                try:
+                    cPickle.dumps(C(), proto)
+                except TypeError:
+                    pass
+                else:
+                    self.fail("should fail: cPickle C instance - %s" % base)
+                try:
+                    pickle.dumps(C(), proto)
+                except TypeError:
+                    pass
+                else:
+                    self.fail("should fail: pickle D instance - %s" % base)
+                try:
+                    cPickle.dumps(D(), proto)
+                except TypeError:
+                    pass
+                else:
+                    self.fail("should fail: cPickle D instance - %s" % base)
             # Give C a nice generic __getstate__ and __setstate__
             class C(base):
                 __slots__ = ['a']
@@ -3404,34 +3405,38 @@ order (MRO) for bases """
                 pass
             # Now it should work
             x = C()
-            y = pickle.loads(pickle.dumps(x))
-            self.assertNotHasAttr(y, 'a')
-            y = cPickle.loads(cPickle.dumps(x))
-            self.assertNotHasAttr(y, 'a')
+            for proto in range(pickle.HIGHEST_PROTOCOL + 1):
+                y = pickle.loads(pickle.dumps(x, proto))
+                self.assertNotHasAttr(y, 'a')
+                y = cPickle.loads(cPickle.dumps(x, proto))
+                self.assertNotHasAttr(y, 'a')
             x.a = 42
-            y = pickle.loads(pickle.dumps(x))
-            self.assertEqual(y.a, 42)
-            y = cPickle.loads(cPickle.dumps(x))
-            self.assertEqual(y.a, 42)
+            for proto in range(pickle.HIGHEST_PROTOCOL + 1):
+                y = pickle.loads(pickle.dumps(x, proto))
+                self.assertEqual(y.a, 42)
+                y = cPickle.loads(cPickle.dumps(x, proto))
+                self.assertEqual(y.a, 42)
             x = D()
             x.a = 42
             x.b = 100
-            y = pickle.loads(pickle.dumps(x))
-            self.assertEqual(y.a + y.b, 142)
-            y = cPickle.loads(cPickle.dumps(x))
-            self.assertEqual(y.a + y.b, 142)
+            for proto in range(pickle.HIGHEST_PROTOCOL + 1):
+                y = pickle.loads(pickle.dumps(x, proto))
+                self.assertEqual(y.a + y.b, 142)
+                y = cPickle.loads(cPickle.dumps(x, proto))
+                self.assertEqual(y.a + y.b, 142)
             # A subclass that adds a slot should also work
             class E(C):
                 __slots__ = ['b']
             x = E()
             x.a = 42
             x.b = "foo"
-            y = pickle.loads(pickle.dumps(x))
-            self.assertEqual(y.a, x.a)
-            self.assertEqual(y.b, x.b)
-            y = cPickle.loads(cPickle.dumps(x))
-            self.assertEqual(y.a, x.a)
-            self.assertEqual(y.b, x.b)
+            for proto in range(pickle.HIGHEST_PROTOCOL + 1):
+                y = pickle.loads(pickle.dumps(x, proto))
+                self.assertEqual(y.a, x.a)
+                self.assertEqual(y.b, x.b)
+                y = cPickle.loads(cPickle.dumps(x, proto))
+                self.assertEqual(y.a, x.a)
+                self.assertEqual(y.b, x.b)
 
     def test_binary_operator_override(self):
         # Testing overrides of binary operations...
@@ -3718,7 +3723,7 @@ order (MRO) for bases """
         b.a = a
         z = deepcopy(a) # This blew up before
 
-    def test_unintialized_modules(self):
+    def test_uninitialized_modules(self):
         # Testing uninitialized module objects...
         from types import ModuleType as M
         m = M.__new__(M)
@@ -4060,6 +4065,37 @@ order (MRO) for bases """
         else:
             assert 0, "best_base calculation found wanting"
 
+    def test_unsubclassable_types(self):
+        with self.assertRaises(TypeError):
+            class X(types.NoneType):
+                pass
+        with self.assertRaises(TypeError):
+            class X(object, types.NoneType):
+                pass
+        with self.assertRaises(TypeError):
+            class X(types.NoneType, object):
+                pass
+        class O(object):
+            pass
+        with self.assertRaises(TypeError):
+            class X(O, types.NoneType):
+                pass
+        with self.assertRaises(TypeError):
+            class X(types.NoneType, O):
+                pass
+
+        class X(object):
+            pass
+        with self.assertRaises(TypeError):
+            X.__bases__ = types.NoneType,
+        with self.assertRaises(TypeError):
+            X.__bases__ = object, types.NoneType
+        with self.assertRaises(TypeError):
+            X.__bases__ = types.NoneType, object
+        with self.assertRaises(TypeError):
+            X.__bases__ = O, types.NoneType
+        with self.assertRaises(TypeError):
+            X.__bases__ = types.NoneType, O
 
     def test_mutable_bases_with_failing_mro(self):
         # Testing mutable bases with failing mro...
@@ -4663,6 +4699,7 @@ order (MRO) for bases """
         for o in gc.get_objects():
             self.assertIsNot(type(o), X)
 
+
 class DictProxyTests(unittest.TestCase):
     def setUp(self):
         class C(object):
@@ -4727,6 +4764,26 @@ class PTypesLongInitTest(unittest.TestCase):
         type.mro(tuple)
 
 
+class PicklingTests(unittest.TestCase):
+
+    def test_issue24097(self):
+        # Slot name is freed inside __getattr__ and is later used.
+        class S(str):  # Not interned
+            pass
+        class A(object):
+            __slotnames__ = [S('spam')]
+            def __getattr__(self, attr):
+                if attr == 'spam':
+                    A.__slotnames__[:] = [S('spam')]
+                    return 42
+                else:
+                    raise AttributeError
+
+        import copy_reg
+        expected = (copy_reg.__newobj__, (A,), ({}, {'spam': 42}), None, None)
+        self.assertEqual(A().__reduce__(2), expected)
+
+
 def test_main():
     deprecations = [(r'complex divmod\(\), // and % are deprecated$',
                      DeprecationWarning)]
@@ -4738,7 +4795,8 @@ def test_main():
     with test_support.check_warnings(*deprecations):
         # Run all local test cases, with PTypesLongInitTest first.
         test_support.run_unittest(PTypesLongInitTest, OperatorsTest,
-                                  ClassPropertiesAndMethods, DictProxyTests)
+                                  ClassPropertiesAndMethods, DictProxyTests,
+                                  PicklingTests)
 
 if __name__ == "__main__":
     test_main()

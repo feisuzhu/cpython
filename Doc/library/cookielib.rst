@@ -122,7 +122,7 @@ The following classes are provided:
       HTTP cookie classes, principally useful for server-side code.  The
       :mod:`cookielib` and :mod:`Cookie` modules do not depend on each other.
 
-   http://curl.haxx.se/rfc/cookie_spec.html
+   https://curl.haxx.se/rfc/cookie_spec.html
       The specification of the original Netscape cookie protocol.  Though this is
       still the dominant protocol, the 'Netscape cookie protocol' implemented by all
       the major browsers (and :mod:`cookielib`) only bears a passing resemblance to
@@ -546,7 +546,7 @@ Netscape protocol strictness switches:
 
 .. attribute:: DefaultCookiePolicy.strict_ns_unverifiable
 
-   apply RFC 2965 rules on unverifiable transactions even to Netscape cookies
+   Apply RFC 2965 rules on unverifiable transactions even to Netscape cookies.
 
 
 .. attribute:: DefaultCookiePolicy.strict_ns_domain

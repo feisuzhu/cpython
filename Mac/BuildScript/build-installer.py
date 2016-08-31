@@ -206,7 +206,7 @@ def library_recipes():
 
     LT_10_5 = bool(getDeptargetTuple() < (10, 5))
 
-    if getDeptargetTuple() < (10, 6):
+    if not (10, 5) < getDeptargetTuple() < (10, 10):
         # The OpenSSL libs shipped with OS X 10.5 and earlier are
         # hopelessly out-of-date and do not include Apple's tie-in to
         # the root certificates in the user and system keychains via TEA
@@ -226,7 +226,8 @@ def library_recipes():
         # now more obvious with cert checking enabled by default in the
         # standard library.
         #
-        # For builds with 10.6+ SDKs, continue to use the deprecated but
+        # For builds with 10.6 through 10.9 SDKs,
+        # continue to use the deprecated but
         # less out-of-date Apple 0.9.8 libs for now.  While they are less
         # secure than using an up-to-date 1.0.1 version, doing so
         # avoids the big problems of forcing users to have to manage
@@ -234,12 +235,16 @@ def library_recipes():
         # APIs for cert validation from keychains if validation using the
         # standard OpenSSL locations (/System/Library/OpenSSL, normally empty)
         # fails.
+        #
+        # Since Apple removed the header files for the deprecated system
+        # OpenSSL as of the Xcode 7 release (for OS X 10.10+), we do not
+        # have much choice but to build our own copy here, too.
 
         result.extend([
           dict(
-              name="OpenSSL 1.0.1j",
-              url="https://www.openssl.org/source/openssl-1.0.1j.tar.gz",
-              checksum='f7175c9cd3c39bb1907ac8bba9df8ed3',
+              name="OpenSSL 1.0.2h",
+              url="https://www.openssl.org/source/openssl-1.0.2h.tar.gz",
+              checksum='9392e65072ce4b614c1392eefc1f23d0',
               patches=[
                   "openssl_sdk_makedepend.patch",
                    ],
@@ -844,6 +849,11 @@ def build_universal_openssl(basedir, archList):
     separately then lipo them together into fat libraries.
     """
 
+    # OpenSSL fails to build with Xcode 2.5 (on OS X 10.4).
+    # If we are building on a 10.4.x or earlier system,
+    # unilaterally disable assembly code building to avoid the problem.
+    no_asm = int(platform.release().split(".")[0]) < 9
+
     def build_openssl_arch(archbase, arch):
         "Build one architecture of openssl"
         arch_opts = {
@@ -868,6 +878,8 @@ def build_universal_openssl(basedir, archList):
             "--prefix=%s"%os.path.join("/", *FW_VERSION_PREFIX),
             "--openssldir=/System/Library/OpenSSL",
         ]
+        if no_asm:
+            configure_opts.append("no-asm")
         runCommand(" ".join(["perl", "Configure"]
                         + arch_opts[arch] + configure_opts))
         runCommand("make depend OSX_SDK=%s" % SDKPATH)
@@ -1509,8 +1521,6 @@ def buildInstaller():
         else:
             patchFile(os.path.join('resources', fn), os.path.join(rsrcDir, fn))
 
-    shutil.copy("../../LICENSE", os.path.join(rsrcDir, 'License.txt'))
-
 
 def installSize(clear=False, _saved=[]):
     if clear:
@@ -1621,9 +1631,9 @@ def main():
     folder = os.path.join(WORKDIR, "_root", "Applications", "Python %s"%(
         getVersion(),))
     fn = os.path.join(folder, "License.rtf")
-    patchFile("resources/license.rtf",  fn)
+    patchFile("resources/License.rtf",  fn)
     fn = os.path.join(folder, "ReadMe.rtf")
-    patchFile("resources/readme.rtf",  fn)
+    patchFile("resources/ReadMe.rtf",  fn)
     fn = os.path.join(folder, "Update Shell Profile.command")
     patchScript("scripts/postflight.patch-profile",  fn)
     os.chmod(folder, STAT_0o755)
@@ -1633,10 +1643,12 @@ def main():
     buildInstaller()
 
     # And copy the readme into the directory containing the installer
-    patchFile('resources/ReadMe.txt', os.path.join(WORKDIR, 'installer', 'ReadMe.txt'))
+    patchFile('resources/ReadMe.rtf',
+                os.path.join(WORKDIR, 'installer', 'ReadMe.rtf'))
 
     # Ditto for the license file.
-    shutil.copy('../../LICENSE', os.path.join(WORKDIR, 'installer', 'License.txt'))
+    patchFile('resources/License.rtf',
+                os.path.join(WORKDIR, 'installer', 'License.rtf'))
 
     fp = open(os.path.join(WORKDIR, 'installer', 'Build.txt'), 'w')
     fp.write("# BUILD INFO\n")

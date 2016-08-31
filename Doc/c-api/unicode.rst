@@ -234,7 +234,7 @@ APIs:
 
 .. c:function:: PyObject *PyUnicode_FromString(const char *u)
 
-   Create a Unicode object from an UTF-8 encoded null-terminated char buffer
+   Create a Unicode object from a UTF-8 encoded null-terminated char buffer
    *u*.
 
    .. versionadded:: 2.6
@@ -260,7 +260,7 @@ APIs:
    | :attr:`%%`        | *n/a*               | The literal % character.       |
    +-------------------+---------------------+--------------------------------+
    | :attr:`%c`        | int                 | A single character,            |
-   |                   |                     | represented as an C int.       |
+   |                   |                     | represented as a C int.        |
    +-------------------+---------------------+--------------------------------+
    | :attr:`%d`        | int                 | Exactly equivalent to          |
    |                   |                     | ``printf("%d")``.              |
@@ -347,7 +347,7 @@ APIs:
 
 .. c:function:: PyObject* PyUnicode_FromEncodedObject(PyObject *obj, const char *encoding, const char *errors)
 
-   Coerce an encoded object *obj* to an Unicode object and return a reference with
+   Coerce an encoded object *obj* to a Unicode object and return a reference with
    incremented refcount.
 
    String and other char buffer compatible objects are decoded according to the
@@ -547,7 +547,7 @@ These are the UTF-32 codec APIs:
    After completion, *\*byteorder* is set to the current byte order at the end
    of input data.
 
-   In a narrow build codepoints outside the BMP will be decoded as surrogate pairs.
+   In a narrow build code points outside the BMP will be decoded as surrogate pairs.
 
    If *byteorder* is *NULL*, the codec starts in native order mode.
 
@@ -580,7 +580,7 @@ These are the UTF-32 codec APIs:
    mark (U+FEFF). In the other two modes, no BOM mark is prepended.
 
    If *Py_UNICODE_WIDE* is not defined, surrogate pairs will be output
-   as a single codepoint.
+   as a single code point.
 
    Return *NULL* if an exception was raised by the codec.
 
@@ -663,7 +663,7 @@ These are the UTF-16 codec APIs:
 
    If *Py_UNICODE_WIDE* is defined, a single :c:type:`Py_UNICODE` value may get
    represented as a surrogate pair. If it is not defined, each :c:type:`Py_UNICODE`
-   values is interpreted as an UCS-2 character.
+   values is interpreted as a UCS-2 character.
 
    Return *NULL* if an exception was raised by the codec.
 

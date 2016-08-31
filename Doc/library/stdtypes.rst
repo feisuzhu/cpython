@@ -393,19 +393,22 @@ Notes:
 All :class:`numbers.Real` types (:class:`int`, :class:`long`, and
 :class:`float`) also include the following operations:
 
-+--------------------+------------------------------------+--------+
-| Operation          | Result                             | Notes  |
-+====================+====================================+========+
-| ``math.trunc(x)``  | *x* truncated to Integral          |        |
-+--------------------+------------------------------------+--------+
-| ``round(x[, n])``  | *x* rounded to n digits,           |        |
-|                    | rounding ties away from zero. If n |        |
-|                    | is omitted, it defaults to 0.      |        |
-+--------------------+------------------------------------+--------+
-| ``math.floor(x)``  | the greatest integral float <= *x* |        |
-+--------------------+------------------------------------+--------+
-| ``math.ceil(x)``   | the least integral float >= *x*    |        |
-+--------------------+------------------------------------+--------+
++--------------------+---------------------------------------------+
+| Operation          | Result                                      |
++====================+=============================================+
+| :func:`math.trunc(\| *x* truncated to :class:`~numbers.Integral` |
+| x) <math.trunc>`   |                                             |
++--------------------+---------------------------------------------+
+| :func:`round(x[,   | *x* rounded to *n* digits,                  |
+| n]) <round>`       | rounding ties away from zero. If *n*        |
+|                    | is omitted, it defaults to 0.               |
++--------------------+---------------------------------------------+
+| :func:`math.floor(\| the greatest integer as a float <= *x*      |
+| x) <math.floor>`   |                                             |
++--------------------+---------------------------------------------+
+| :func:`math.ceil(x)| the least integer as a float >= *x*         |
+| <math.ceil>`       |                                             |
++--------------------+---------------------------------------------+
 
 .. XXXJH exceptions: overflow (when? what operations?) zerodivision
 
@@ -736,8 +739,8 @@ In the table, *s* and *t* are sequences of the same type; *n*, *i* and *j* are i
 | ``s + t``        | the concatenation of *s* and   | \(6)     |
 |                  | *t*                            |          |
 +------------------+--------------------------------+----------+
-| ``s * n, n * s`` | *n* shallow copies of *s*      | \(2)     |
-|                  | concatenated                   |          |
+| ``s * n, n * s`` | equivalent to adding *s* to    | \(2)     |
+|                  | itself *n* times               |          |
 +------------------+--------------------------------+----------+
 | ``s[i]``         | *i*\ th item of *s*, origin 0  | \(3)     |
 +------------------+--------------------------------+----------+
@@ -789,9 +792,9 @@ Notes:
 
 (2)
    Values of *n* less than ``0`` are treated as ``0`` (which yields an empty
-   sequence of the same type as *s*).  Note also that the copies are shallow;
-   nested structures are not copied.  This often haunts new Python programmers;
-   consider:
+   sequence of the same type as *s*).  Note that items in the sequence *s*
+   are not copied; they are referenced multiple times.  This often haunts
+   new Python programmers; consider:
 
       >>> lists = [[]] * 3
       >>> lists
@@ -801,7 +804,7 @@ Notes:
       [[3], [3], [3]]
 
    What has happened is that ``[[]]`` is a one-element list containing an empty
-   list, so all three elements of ``[[]] * 3`` are (pointers to) this single empty
+   list, so all three elements of ``[[]] * 3`` are references to this single empty
    list.  Modifying any of the elements of ``lists`` modifies this single list.
    You can create a list of different lists this way:
 
@@ -811,6 +814,9 @@ Notes:
       >>> lists[2].append(7)
       >>> lists
       [[3], [5], [7]]
+
+   Further explanation is available in the FAQ entry
+   :ref:`faq-multidimensional-list`.
 
 (3)
    If *i* or *j* is negative, the index is relative to the end of the string:
@@ -960,10 +966,9 @@ string functions based on regular expressions.
 
 .. method:: str.find(sub[, start[, end]])
 
-   Return the lowest index in the string where substring *sub* is found, such
-   that *sub* is contained in the slice ``s[start:end]``.  Optional arguments
-   *start* and *end* are interpreted as in slice notation.  Return ``-1`` if
-   *sub* is not found.
+   Return the lowest index in the string where substring *sub* is found within
+   the slice ``s[start:end]``.  Optional arguments *start* and *end* are
+   interpreted as in slice notation.  Return ``-1`` if *sub* is not found.
 
    .. note::
 
@@ -1212,13 +1217,68 @@ string functions based on regular expressions.
    Line breaks are not included in the resulting list unless *keepends* is
    given and true.
 
-   For example, ``'ab c\n\nde fg\rkl\r\n'.splitlines()`` returns
-   ``['ab c', '', 'de fg', 'kl']``, while the same call with ``splitlines(True)``
-   returns ``['ab c\n', '\n', 'de fg\r', 'kl\r\n']``.
+   Python recognizes ``"\r"``, ``"\n"``, and ``"\r\n"`` as line boundaries for
+   8-bit strings.
+
+   For example::
+
+      >>> 'ab c\n\nde fg\rkl\r\n'.splitlines()
+      ['ab c', '', 'de fg', 'kl']
+      >>> 'ab c\n\nde fg\rkl\r\n'.splitlines(True)
+      ['ab c\n', '\n', 'de fg\r', 'kl\r\n']
 
    Unlike :meth:`~str.split` when a delimiter string *sep* is given, this
    method returns an empty list for the empty string, and a terminal line
-   break does not result in an extra line.
+   break does not result in an extra line::
+
+      >>> "".splitlines()
+      []
+      >>> "One line\n".splitlines()
+      ['One line']
+
+   For comparison, ``split('\n')`` gives::
+
+      >>> ''.split('\n')
+      ['']
+      >>> 'Two lines\n'.split('\n')
+      ['Two lines', '']
+
+.. method:: unicode.splitlines([keepends])
+
+   Return a list of the lines in the string, like :meth:`str.splitlines`.
+   However, the Unicode method splits on the following line boundaries,
+   which are a superset of the :term:`universal newlines` recognized for
+   8-bit strings.
+
+   +-----------------------+-----------------------------+
+   | Representation        | Description                 |
+   +=======================+=============================+
+   | ``\n``                | Line Feed                   |
+   +-----------------------+-----------------------------+
+   | ``\r``                | Carriage Return             |
+   +-----------------------+-----------------------------+
+   | ``\r\n``              | Carriage Return + Line Feed |
+   +-----------------------+-----------------------------+
+   | ``\v`` or ``\x0b``    | Line Tabulation             |
+   +-----------------------+-----------------------------+
+   | ``\f`` or ``\x0c``    | Form Feed                   |
+   +-----------------------+-----------------------------+
+   | ``\x1c``              | File Separator              |
+   +-----------------------+-----------------------------+
+   | ``\x1d``              | Group Separator             |
+   +-----------------------+-----------------------------+
+   | ``\x1e``              | Record Separator            |
+   +-----------------------+-----------------------------+
+   | ``\x85``              | Next Line (C1 Control Code) |
+   +-----------------------+-----------------------------+
+   | ``\u2028``            | Line Separator              |
+   +-----------------------+-----------------------------+
+   | ``\u2029``            | Paragraph Separator         |
+   +-----------------------+-----------------------------+
+
+   .. versionchanged:: 2.7
+
+      ``\v`` and ``\f`` added to list of line boundaries.
 
 
 .. method:: str.startswith(prefix[, start[, end]])
@@ -1610,8 +1670,11 @@ an arbitrary object):
 | ``s.append(x)``              | same as ``s[len(s):len(s)] =   | \(2)                |
 |                              | [x]``                          |                     |
 +------------------------------+--------------------------------+---------------------+
-| ``s.extend(x)``              | same as ``s[len(s):len(s)] =   | \(3)                |
-|                              | x``                            |                     |
+| ``s.extend(t)`` or           | for the most part the same as  | \(3)                |
+| ``s += t``                   | ``s[len(s):len(s)] = t``       |                     |
++------------------------------+--------------------------------+---------------------+
+| ``s *= n``                   | updates *s* with its contents  | \(11)               |
+|                              | repeated *n* times             |                     |
 +------------------------------+--------------------------------+---------------------+
 | ``s.count(x)``               | return number of *i*'s for     |                     |
 |                              | which ``s[i] == x``            |                     |
@@ -1645,7 +1708,7 @@ Notes:
    this misfeature has been deprecated since Python 1.4.
 
 (3)
-   *x* can be any iterable object.
+   *t* can be any iterable object.
 
 (4)
    Raises :exc:`ValueError` when *x* is not found in *s*. When a negative index is
@@ -1717,6 +1780,12 @@ Notes:
       :exc:`ValueError` if it can detect that the list has been mutated during a
       sort.
 
+(11)
+   The value *n* is an integer, or an object implementing
+   :meth:`~object.__index__`.  Zero and negative values of *n* clear
+   the sequence.  Items in the sequence are not copied; they are referenced
+   multiple times, as explained for ``s * n`` under :ref:`typesseq`.
+
 
 .. _types-set:
 
@@ -1768,7 +1837,7 @@ The constructors for both classes work the same:
 
    .. describe:: len(s)
 
-      Return the cardinality of set *s*.
+      Return the number of elements in set *s* (cardinality of *s*).
 
    .. describe:: x in s
 
@@ -2031,16 +2100,32 @@ pairs within braces, for example: ``{'jack': 4098, 'sjoerd': 4127}`` or ``{4098:
       Return the item of *d* with key *key*.  Raises a :exc:`KeyError` if *key*
       is not in the map.
 
+      .. index:: __missing__()
+
+      If a subclass of dict defines a method :meth:`__missing__` and *key*
+      is not present, the ``d[key]`` operation calls that method with the key *key*
+      as argument.  The ``d[key]`` operation then returns or raises whatever is
+      returned or raised by the ``__missing__(key)`` call.
+      No other operations or methods invoke :meth:`__missing__`. If
+      :meth:`__missing__` is not defined, :exc:`KeyError` is raised.
+      :meth:`__missing__` must be a method; it cannot be an instance variable::
+
+          >>> class Counter(dict):
+          ...     def __missing__(self, key):
+          ...         return 0
+          >>> c = Counter()
+          >>> c['red']
+          0
+          >>> c['red'] += 1
+          >>> c['red']
+          1
+
+      The example above shows part of the implementation of
+      :class:`collections.Counter`.  A different ``__missing__`` method is used
+      by :class:`collections.defaultdict`.
+
       .. versionadded:: 2.5
-         If a subclass of dict defines a method :meth:`__missing__`, if the key
-         *key* is not present, the ``d[key]`` operation calls that method with
-         the key *key* as argument.  The ``d[key]`` operation then returns or
-         raises whatever is returned or raised by the ``__missing__(key)`` call
-         if the key is not present. No other operations or methods invoke
-         :meth:`__missing__`. If :meth:`__missing__` is not defined,
-         :exc:`KeyError` is raised.  :meth:`__missing__` must be a method; it
-         cannot be an instance variable. For an example, see
-         :class:`collections.defaultdict`.
+         Recognition of __missing__ methods of dict subclasses.
 
    .. describe:: d[key] = value
 
@@ -2213,6 +2298,9 @@ pairs within braces, for example: ``{'jack': 4098, 'sjoerd': 4127}`` or ``{4098:
       view objects.
 
       .. versionadded:: 2.7
+
+   Dictionaries compare equal if and only if they have the same ``(key,
+   value)`` pairs.
 
 
 .. _dict-views:
@@ -2716,7 +2804,7 @@ is generally interpreted as simple bytes.
    .. attribute:: shape
 
       A tuple of integers the length of :attr:`ndim` giving the shape of the
-      memory as a N-dimensional array.
+      memory as an N-dimensional array.
 
    .. attribute:: ndim
 
@@ -2839,9 +2927,10 @@ an (external) *definition* for a module named *foo* somewhere.)
 A special attribute of every module is :attr:`~object.__dict__`. This is the
 dictionary containing the module's symbol table. Modifying this dictionary will
 actually change the module's symbol table, but direct assignment to the
-:attr:`__dict__` attribute is not possible (you can write
+:attr:`~object.__dict__` attribute is not possible (you can write
 ``m.__dict__['a'] = 1``, which defines ``m.a`` to be ``1``, but you can't write
-``m.__dict__ = {}``).  Modifying :attr:`__dict__` directly is not recommended.
+``m.__dict__ = {}``).  Modifying :attr:`~object.__dict__` directly is
+not recommended.
 
 Modules built into the interpreter are written like this: ``<module 'sys'
 (built-in)>``.  If loaded from a file, they are written as ``<module 'os' from
@@ -2920,12 +3009,12 @@ need to explicitly set it on the underlying function object::
 See :ref:`types` for more information.
 
 
+.. index:: object; code, code object
+
 .. _bltin-code-objects:
 
 Code Objects
 ------------
-
-.. index:: object: code
 
 .. index::
    builtin: compile
@@ -3068,9 +3157,10 @@ types, where they are relevant.  Some of these are not reported by the
    The tuple of base classes of a class object.
 
 
-.. attribute:: class.__name__
+.. attribute:: definition.__name__
 
-   The name of the class or type.
+   The name of the class, type, function, method, descriptor, or
+   generator instance.
 
 
 The following attributes are only supported by :term:`new-style class`\ es.

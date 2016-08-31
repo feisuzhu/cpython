@@ -2,9 +2,6 @@
 /* set object implementation
    Written and maintained by Raymond D. Hettinger <python@rcn.com>
    Derived from Lib/sets.py and Objects/dictobject.c.
-
-   Copyright (c) 2003-2007 Python Software Foundation.
-   All rights reserved.
 */
 
 #include "Python.h"
@@ -787,7 +784,7 @@ frozenset_hash(PyObject *self)
     hash *= PySet_GET_SIZE(self) + 1;
     while (set_next(so, &pos, &entry)) {
         /* Work to increase the bit dispersion for closely spaced hash
-           values.  The is important because some use cases have many
+           values.  This is important because some use cases have many
            combinations of a small number of elements with nearby
            hashes so that many distinct combinations collapse to only
            a handful of distinct hash values. */
@@ -874,8 +871,8 @@ static PyObject *setiter_iternext(setiterobject *si)
     return key;
 
 fail:
-    Py_DECREF(so);
     si->si_set = NULL;
+    Py_DECREF(so);
     return NULL;
 }
 
@@ -1548,9 +1545,15 @@ set_difference(PySetObject *so, PyObject *other)
     if (PyDict_CheckExact(other)) {
         while (set_next(so, &pos, &entry)) {
             setentry entrycopy;
+            int rv;
             entrycopy.hash = entry->hash;
             entrycopy.key = entry->key;
-            if (!_PyDict_Contains(other, entry->key, entry->hash)) {
+            rv = _PyDict_Contains(other, entry->key, entry->hash);
+            if (rv < 0) {
+                Py_DECREF(result);
+                return NULL;
+            }
+            if (!rv) {
                 if (set_add_entry((PySetObject *)result, &entrycopy) == -1) {
                     Py_DECREF(result);
                     return NULL;
@@ -1793,7 +1796,8 @@ PyDoc_STRVAR(issuperset_doc, "Report whether this set contains another set.");
 static PyObject *
 set_richcompare(PySetObject *v, PyObject *w, int op)
 {
-    PyObject *r1, *r2;
+    PyObject *r1;
+    int r2;
 
     if(!PyAnySet_Check(w)) {
         Py_INCREF(Py_NotImplemented);
@@ -1812,9 +1816,11 @@ set_richcompare(PySetObject *v, PyObject *w, int op)
         r1 = set_richcompare(v, w, Py_EQ);
         if (r1 == NULL)
             return NULL;
-        r2 = PyBool_FromLong(PyObject_Not(r1));
+        r2 = PyObject_IsTrue(r1);
         Py_DECREF(r1);
-        return r2;
+        if (r2 < 0)
+            return NULL;
+        return PyBool_FromLong(!r2);
     case Py_LE:
         return set_issubset(v, w);
     case Py_GE:
@@ -1976,7 +1982,7 @@ set_sizeof(PySetObject *so)
 {
     Py_ssize_t res;
 
-    res = sizeof(PySetObject);
+    res = _PyObject_SIZE(Py_TYPE(so));
     if (so->table != so->smalltable)
         res = res + (so->mask + 1) * sizeof(setentry);
     return PyInt_FromSsize_t(res);

@@ -1,5 +1,6 @@
 /*****************************************************************
-  This file should be kept compatible with Python 2.3, see PEP 291.
+  This file contains remnant Python 2.3 compatibility code that is no longer
+  strictly required.
  *****************************************************************/
 
 #include "Python.h"
@@ -11,8 +12,10 @@
 #include "ctypes.h"
 
 
-#define CTYPES_CAPSULE_WCHAR_T "_ctypes/cfield.c wchar_t buffer from unicode"
+#if defined(CTYPES_UNICODE) && !defined(HAVE_USABLE_WCHAR_T)
+#   define CTYPES_CAPSULE_WCHAR_T "_ctypes/cfield.c wchar_t buffer from unicode"
 CTYPES_CAPSULE_INSTANTIATE_DESTRUCTOR(CTYPES_CAPSULE_WCHAR_T)
+#endif
 
 
 /******************************************************************/
@@ -47,7 +50,7 @@ PyCField_FromDesc(PyObject *desc, Py_ssize_t index,
 {
     CFieldObject *self;
     PyObject *proto;
-    Py_ssize_t size, align, length;
+    Py_ssize_t size, align;
     SETFUNC setfunc = NULL;
     GETFUNC getfunc = NULL;
     StgDictObject *dict;
@@ -101,7 +104,6 @@ PyCField_FromDesc(PyObject *desc, Py_ssize_t index,
     }
 
     size = dict->size;
-    length = dict->length;
     proto = desc;
 
     /*  Field descriptors for 'c_char * n' are be scpecial cased to
@@ -769,6 +771,7 @@ I_set_sw(void *ptr, PyObject *value, Py_ssize_t size)
     if (get_ulong(value, &val) < 0)
         return  NULL;
     memcpy(&field, ptr, sizeof(field));
+    field = SWAP_INT(field);
     field = SET(unsigned int, field, (unsigned int)val, size);
     field = SWAP_INT(field);
     memcpy(ptr, &field, sizeof(field));
@@ -1311,7 +1314,7 @@ s_set(void *ptr, PyObject *value, Py_ssize_t length)
         return NULL;
     size = strlen(data);
     if (size < length) {
-        /* This will copy the leading NUL character
+        /* This will copy the trailing NUL character
          * if there is space for it.
          */
         ++size;
@@ -1506,6 +1509,7 @@ BSTR_set(void *ptr, PyObject *value, Py_ssize_t size)
     if (value) {
         Py_ssize_t size = PyUnicode_GET_SIZE(value);
         if ((unsigned) size != size) {
+            Py_DECREF(value);
             PyErr_SetString(PyExc_ValueError, "String too long for BSTR");
             return NULL;
         }

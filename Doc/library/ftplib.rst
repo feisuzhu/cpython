@@ -16,7 +16,7 @@
 This module defines the class :class:`FTP` and a few related items. The
 :class:`FTP` class implements the client side of the FTP protocol.  You can use
 this to write Python programs that perform a variety of automated FTP jobs, such
-as mirroring other ftp servers.  It is also used by the module :mod:`urllib` to
+as mirroring other FTP servers.  It is also used by the module :mod:`urllib` to
 handle URLs that use FTP.  For more information on FTP (File Transfer Protocol),
 see Internet :rfc:`959`.
 
@@ -55,17 +55,25 @@ The module defines the following items:
       *timeout* was added.
 
 
-.. class:: FTP_TLS([host[, user[, passwd[, acct[, keyfile[, certfile[, timeout]]]]]]])
+.. class:: FTP_TLS([host[, user[, passwd[, acct[, keyfile[, certfile[, context[, timeout]]]]]]]])
 
    A :class:`FTP` subclass which adds TLS support to FTP as described in
    :rfc:`4217`.
    Connect as usual to port 21 implicitly securing the FTP control connection
    before authenticating. Securing the data connection requires the user to
-   explicitly ask for it by calling the :meth:`prot_p` method.
-   *keyfile* and *certfile* are optional -- they can contain a PEM formatted
-   private key and certificate chain file name for the SSL connection.
+   explicitly ask for it by calling the :meth:`prot_p` method.  *context*
+   is a :class:`ssl.SSLContext` object which allows bundling SSL configuration
+   options, certificates and private keys into a single (potentially
+   long-lived) structure.  Please read :ref:`ssl-security` for best practices.
+
+   *keyfile* and *certfile* are a legacy alternative to *context* -- they
+   can point to PEM-formatted private key and certificate chain files
+   (respectively) for the SSL connection.
 
    .. versionadded:: 2.7
+
+   .. versionchanged:: 2.7.10
+      The *context* parameter was added.
 
    Here's a sample session using the :class:`FTP_TLS` class:
 
@@ -275,9 +283,9 @@ followed by ``lines`` for the text version or ``binary`` for the binary version.
 
 .. method:: FTP.transfercmd(cmd[, rest])
 
-   Initiate a transfer over the data connection.  If the transfer is active, send a
+   Initiate a transfer over the data connection.  If the transfer is active, send an
    ``EPRT`` or  ``PORT`` command and the transfer command specified by *cmd*, and
-   accept the connection.  If the server is passive, send a ``EPSV`` or ``PASV``
+   accept the connection.  If the server is passive, send an ``EPSV`` or ``PASV``
    command, connect to it, and start the transfer command.  Either way, return the
    socket for the connection.
 
@@ -384,7 +392,7 @@ FTP_TLS Objects
 
 .. attribute:: FTP_TLS.ssl_version
 
-   The SSL version to use (defaults to *TLSv1*).
+   The SSL version to use (defaults to :attr:`ssl.PROTOCOL_SSLv23`).
 
 .. method:: FTP_TLS.auth()
 

@@ -23,9 +23,9 @@
 
 #ifndef MS_WINDOWS
 #define UNIX
-# ifdef __APPLE__
+# ifdef HAVE_FCNTL_H
 #  include <fcntl.h>
-# endif
+# endif /* HAVE_FCNTL_H */
 #endif
 
 #ifdef MS_WINDOWS
@@ -655,7 +655,7 @@ mmap__sizeof__method(mmap_object *self, void *unused)
 {
     Py_ssize_t res;
 
-    res = sizeof(mmap_object);
+    res = _PyObject_SIZE(Py_TYPE(self));
     if (self->tagname)
         res += strlen(self->tagname) + 1;
     return PyLong_FromSsize_t(res);

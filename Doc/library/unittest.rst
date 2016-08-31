@@ -83,11 +83,11 @@ need to derive from a specific class.
       discovery. unittest2 allows you to use these features with earlier
       versions of Python.
 
-   `Simple Smalltalk Testing: With Patterns <http://www.XProgramming.com/testfram.htm>`_
+   `Simple Smalltalk Testing: With Patterns <https://web.archive.org/web/20150315073817/http://www.xprogramming.com/testfram.htm>`_
       Kent Beck's original paper on testing frameworks using the pattern shared
       by :mod:`unittest`.
 
-   `Nose <http://code.google.com/p/python-nose/>`_ and `py.test <http://pytest.org>`_
+   `Nose <https://nose.readthedocs.org/en/latest/>`_ and `py.test <http://pytest.org>`_
       Third-party unittest frameworks with a lighter-weight syntax for writing
       tests.  For example, ``assert func(10) == 42``.
 
@@ -109,37 +109,29 @@ The :mod:`unittest` module provides a rich set of tools for constructing and
 running tests.  This section demonstrates that a small subset of the tools
 suffice to meet the needs of most users.
 
-Here is a short script to test three functions from the :mod:`random` module::
+Here is a short script to test three string methods::
 
-   import random
-   import unittest
+  import unittest
 
-   class TestSequenceFunctions(unittest.TestCase):
+  class TestStringMethods(unittest.TestCase):
 
-       def setUp(self):
-           self.seq = range(10)
+      def test_upper(self):
+          self.assertEqual('foo'.upper(), 'FOO')
 
-       def test_shuffle(self):
-           # make sure the shuffled sequence does not lose any elements
-           random.shuffle(self.seq)
-           self.seq.sort()
-           self.assertEqual(self.seq, range(10))
+      def test_isupper(self):
+          self.assertTrue('FOO'.isupper())
+          self.assertFalse('Foo'.isupper())
 
-           # should raise an exception for an immutable sequence
-           self.assertRaises(TypeError, random.shuffle, (1,2,3))
+      def test_split(self):
+          s = 'hello world'
+          self.assertEqual(s.split(), ['hello', 'world'])
+          # check that s.split fails when the separator is not a string
+          with self.assertRaises(TypeError):
+              s.split(2)
 
-       def test_choice(self):
-           element = random.choice(self.seq)
-           self.assertTrue(element in self.seq)
+  if __name__ == '__main__':
+      unittest.main()
 
-       def test_sample(self):
-           with self.assertRaises(ValueError):
-               random.sample(self.seq, 20)
-           for element in random.sample(self.seq, 5):
-               self.assertTrue(element in self.seq)
-
-   if __name__ == '__main__':
-       unittest.main()
 
 A testcase is created by subclassing :class:`unittest.TestCase`.  The three
 individual tests are defined with methods whose names start with the letters
@@ -147,16 +139,15 @@ individual tests are defined with methods whose names start with the letters
 represent tests.
 
 The crux of each test is a call to :meth:`~TestCase.assertEqual` to check for an
-expected result; :meth:`~TestCase.assertTrue` to verify a condition; or
-:meth:`~TestCase.assertRaises` to verify that an expected exception gets raised.
-These methods are used instead of the :keyword:`assert` statement so the test
-runner can accumulate all test results and produce a report.
+expected result; :meth:`~TestCase.assertTrue` or :meth:`~TestCase.assertFalse`
+to verify a condition; or :meth:`~TestCase.assertRaises` to verify that a
+specific exception gets raised.  These methods are used instead of the
+:keyword:`assert` statement so the test runner can accumulate all test results
+and produce a report.
 
-When a :meth:`~TestCase.setUp` method is defined, the test runner will run that
-method prior to each test.  Likewise, if a :meth:`~TestCase.tearDown` method is
-defined, the test runner will invoke that method after each test.  In the
-example, :meth:`~TestCase.setUp` was used to create a fresh sequence for each
-test.
+The :meth:`~TestCase.setUp` and :meth:`~TestCase.tearDown` methods allow you
+to define instructions that will be executed before and after each test method.
+They are covered in more detail in the section :ref:`organizing-tests`.
 
 The final block shows a simple way to run the tests. :func:`unittest.main`
 provides a command-line interface to the test script.  When run from the command
@@ -172,18 +163,18 @@ Instead of :func:`unittest.main`, there are other ways to run the tests with a
 finer level of control, less terse output, and no requirement to be run from the
 command line.  For example, the last two lines may be replaced with::
 
-   suite = unittest.TestLoader().loadTestsFromTestCase(TestSequenceFunctions)
+   suite = unittest.TestLoader().loadTestsFromTestCase(TestStringMethods)
    unittest.TextTestRunner(verbosity=2).run(suite)
 
 Running the revised script from the interpreter or another script produces the
 following output::
 
-   test_choice (__main__.TestSequenceFunctions) ... ok
-   test_sample (__main__.TestSequenceFunctions) ... ok
-   test_shuffle (__main__.TestSequenceFunctions) ... ok
+   test_isupper (__main__.TestStringMethods) ... ok
+   test_split (__main__.TestStringMethods) ... ok
+   test_upper (__main__.TestStringMethods) ... ok
 
    ----------------------------------------------------------------------
-   Ran 3 tests in 0.110s
+   Ran 3 tests in 0.001s
 
    OK
 
@@ -235,8 +226,8 @@ Command-line options
 
 .. cmdoption:: -c, --catch
 
-   Control-C during the test run waits for the current test to end and then
-   reports all the results so far. A second control-C raises the normal
+   :kbd:`Control-C` during the test run waits for the current test to end and then
+   reports all the results so far. A second :kbd:`Control-C` raises the normal
    :exc:`KeyboardInterrupt` exception.
 
    See `Signal Handling`_ for the functions that provide this functionality.
@@ -295,8 +286,8 @@ The :option:`-s`, :option:`-p`, and :option:`-t` options can be passed in
 as positional arguments in that order. The following two command lines
 are equivalent::
 
-   python -m unittest discover -s project_directory -p '*_test.py'
-   python -m unittest discover project_directory '*_test.py'
+   python -m unittest discover -s project_directory -p "*_test.py"
+   python -m unittest discover project_directory "*_test.py"
 
 As well as being a path it is possible to pass a package name, for example
 ``myproject.subpackage.test``, as the start directory. The package name you
@@ -577,7 +568,7 @@ Skipping tests and expected failures
 .. versionadded:: 2.7
 
 Unittest supports skipping individual test methods and even whole classes of
-tests.  In addition, it supports marking a test as a "expected failure," a test
+tests.  In addition, it supports marking a test as an "expected failure," a test
 that is broken and will fail, but shouldn't be counted as a failure on a
 :class:`TestResult`.
 
@@ -729,10 +720,12 @@ Test cases
       Method called immediately after the test method has been called and the
       result recorded.  This is called even if the test method raised an
       exception, so the implementation in subclasses may need to be particularly
-      careful about checking internal state.  Any exception, other than :exc:`AssertionError`
-      or :exc:`SkipTest`, raised by this method will be considered an error rather than a
-      test failure.  This method will only be called if the :meth:`setUp` succeeds,
-      regardless of the outcome of the test method. The default implementation does nothing.
+      careful about checking internal state.  Any exception, other than
+      :exc:`AssertionError` or :exc:`SkipTest`, raised by this method will be
+      considered an additional error rather than a test failure (thus increasing
+      the total number of reported errors). This method will only be called if
+      the :meth:`setUp` succeeds, regardless of the outcome of the test method.
+      The default implementation does nothing.
 
 
    .. method:: setUpClass()
@@ -792,8 +785,9 @@ Test cases
 
    .. _assert-methods:
 
-   The :class:`TestCase` class provides a number of methods to check for and
-   report failures, such as:
+   The :class:`TestCase` class provides several assert methods to check for and
+   report failures.  The following table lists the most commonly used methods
+   (see the tables below for more assert methods):
 
    +-----------------------------------------+-----------------------------+---------------+
    | Method                                  | Checks that                 | New in        |
@@ -1772,9 +1766,10 @@ Loading and running tests
    instead of repeatedly creating new instances.
 
 
-.. class:: TextTestRunner(stream=sys.stderr, descriptions=True, verbosity=1)
+.. class:: TextTestRunner(stream=sys.stderr, descriptions=True, verbosity=1, \
+                          failfast=False, buffer=False, resultclass=None)
 
-   A basic test runner implementation which prints results on standard error.  It
+   A basic test runner implementation which prints results on standard error. It
    has a few configurable parameters, but is essentially very simple.  Graphical
    applications which run test suites should provide alternate implementations.
 

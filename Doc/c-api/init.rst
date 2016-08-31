@@ -297,7 +297,7 @@ Process-wide parameters
       It is recommended that applications embedding the Python interpreter
       for purposes other than executing a single script pass 0 as *updatepath*,
       and update :data:`sys.path` themselves if desired.
-      See `CVE-2008-5983 <http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-5983>`_.
+      See `CVE-2008-5983 <https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-5983>`_.
 
       On versions before 2.6.6, you can achieve the same effect by manually
       popping the first :data:`sys.path` element after having called
@@ -642,7 +642,7 @@ with sub-interpreters:
    .. versionadded:: 2.3
 
 
-.. c:function:: PyThreadState PyGILState_GetThisThreadState()
+.. c:function:: PyThreadState* PyGILState_GetThisThreadState()
 
    Get the current thread state for this thread.  May return ``NULL`` if no
    GILState API has been used on the current thread.  Note that the main thread
@@ -1136,7 +1136,7 @@ These functions are only intended to be used by advanced debugging tools.
 
 .. c:function:: PyThreadState * PyInterpreterState_ThreadHead(PyInterpreterState *interp)
 
-   Return the a pointer to the first :c:type:`PyThreadState` object in the list of
+   Return the pointer to the first :c:type:`PyThreadState` object in the list of
    threads associated with the interpreter *interp*.
 
    .. versionadded:: 2.2

@@ -513,7 +513,7 @@ PyAPI_FUNC(int) PyUnicode_Resize(
     Py_ssize_t length           /* New length */
     );
 
-/* Coerce obj to an Unicode object and return a reference with
+/* Coerce obj to a Unicode object and return a reference with
    *incremented* refcount.
 
    Coercion is done in the following way:
@@ -536,7 +536,7 @@ PyAPI_FUNC(PyObject*) PyUnicode_FromEncodedObject(
     const char *errors          /* error handling */
     );
 
-/* Coerce obj to an Unicode object and return a reference with
+/* Coerce obj to a Unicode object and return a reference with
    *incremented* refcount.
 
    Unicode objects are passed back as-is (subclasses are converted to
@@ -1138,7 +1138,7 @@ PyAPI_FUNC(int) PyUnicode_EncodeDecimal(
 
    These are capable of handling Unicode objects and strings on input
    (we refer to them as strings in the descriptions) and return
-   Unicode objects or integers as apporpriate. */
+   Unicode objects or integers as appropriate. */
 
 /* Concat two strings giving a new Unicode string. */
 
@@ -1288,7 +1288,7 @@ PyAPI_FUNC(int) PyUnicode_Compare(
 /* Rich compare two strings and return one of the following:
 
    - NULL in case an exception was raised
-   - Py_True or Py_False for successfuly comparisons
+   - Py_True or Py_False for successful comparisons
    - Py_NotImplemented in case the type combination is unknown
 
    Note that Py_EQ and Py_NE comparisons can cause a UnicodeWarning in
@@ -1307,7 +1307,7 @@ PyAPI_FUNC(PyObject *) PyUnicode_RichCompare(
     int op                      /* Operation: Py_EQ, Py_NE, Py_GT, etc. */
     );
 
-/* Apply a argument tuple or dictionary to a format string and return
+/* Apply an argument tuple or dictionary to a format string and return
    the resulting Unicode string. */
 
 PyAPI_FUNC(PyObject *) PyUnicode_Format(
@@ -1318,7 +1318,7 @@ PyAPI_FUNC(PyObject *) PyUnicode_Format(
 /* Checks whether element is contained in container and return 1/0
    accordingly.
 
-   element has to coerce to an one element Unicode string. -1 is
+   element has to coerce to a one element Unicode string. -1 is
    returned in case of an error. */
 
 PyAPI_FUNC(int) PyUnicode_Contains(
