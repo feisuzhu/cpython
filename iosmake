@@ -2,7 +2,7 @@
 
 set -x
 
-PYTHON_VERSION="2.7.10"
+PYTHON_VERSION="2.7.12"
 
 PYDEBUG="--with-pydebug"
 PYDEBUG=""
