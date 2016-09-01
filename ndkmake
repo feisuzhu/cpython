@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-PYTHON_VERSION="2.7.9"
+PYTHON_VERSION="2.7.11"
 
 SHARED="--enable-shared"
 # SHARED=""

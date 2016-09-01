@@ -1,12 +1,13 @@
 #!/bin/sh
 
-export ANDROID_NDK=~/android-ndk-r10d
+export ANDROID_NDK=~/android-ndk-r12b
 export ANDROID_ABI="x86"
 export ANDROID_NATIVE_API_LEVEL="android-15"
-export PATH="$ANDROID_NDK/toolchains/x86-4.8/prebuilt/linux-x86_64/bin/:$ANDROID_NDK:$ANDROID_NDK/tools:/usr/local/bin:/usr/bin:/bin"
+export PATH="$ANDROID_NDK/toolchains/x86-4.9/prebuilt/linux-x86_64/bin/:$ANDROID_NDK:$ANDROID_NDK/tools:/usr/local/bin:/usr/bin:/bin"
 
 export ARCH=$ANDROID_ABI
-export CFLAGS="-DANDROID -mandroid -g -fno-omit-frame-pointer --sysroot $ANDROID_NDK/platforms/$ANDROID_NATIVE_API_LEVEL/arch-x86"
+export CFLAGS="-mandroid -g -fno-omit-frame-pointer --sysroot $ANDROID_NDK/platforms/$ANDROID_NATIVE_API_LEVEL/arch-x86"
+export CPPFLAGS="-DANDROID"
 
 export CXXFLAGS="$CFLAGS"
 export CC="i686-linux-android-gcc $CFLAGS"
@@ -14,4 +15,3 @@ export CXX="i686-linux-android-g++ $CXXFLAGS"
 export AR="i686-linux-android-ar"
 export RANLIB="i686-linux-android-ranlib"
 export STRIP="i686-linux-android-strip --strip-unneeded"
-
