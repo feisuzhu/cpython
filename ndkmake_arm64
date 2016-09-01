@@ -1,0 +1,70 @@
+#!/bin/bash -x
+
+PYTHON_VERSION="2.7.11"
+
+SHARED="--enable-shared"
+# SHARED=""
+
+PYDEBUG="--with-pydebug"
+PYDEBUG=""
+
+BASEDIR=`pwd`
+output_dir=$BASEDIR/ndkbuild
+rm -rf $output_dir/arm
+
+if [ ! -f $output_dir/host/bin/python ]; then
+    mkdir -p $output_dir/host
+
+    echo > Modules/Setup.local
+    # create Python Host version
+    ./configure --prefix=$output_dir/host
+
+    cd $BASEDIR/Modules/gevent110ext/c-ares
+    rm ares_{build,config}.h
+    CONFIG_COMMANDS= CONFIG_FILES= ./configure
+
+    cd $BASEDIR/Modules/gevent110ext/libev
+    rm config.h
+    ./configure
+
+    cd $BASEDIR
+
+    nice make -j8
+    nice make -j8 Parser/pgen
+    mv Parser/pgen $output_dir/host
+    make install
+    make clean
+fi
+
+. ndkenv_arm64
+
+mkdir -p $output_dir/arm
+
+# ???? what it does?
+## fix setup.py
+#mv setup.py setup.py.orig
+#cat setup.py.orig | awk '{ if (NR==316) {print "    " $0} else {print $0}}' > setup.py
+
+MY_HOSTPYTHON=$output_dir/host/bin/python
+MY_HOSTPGEN=$output_dir/host/pgen
+
+if [ x$1 != xnoconf ]; then
+    echo SSL=/home/proton/androidlibs/openssl_arm64 > Modules/Setup.local
+
+    if ! ./configure CONFIG_SITE=config.site.ndk LDFLAGS="-Wl,--allow-shlib-undefined" HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu $SHARED --prefix="$output_dir/arm" --disable-ipv6 $PYDEBUG; then
+        exit 1;
+    fi
+
+    cd $BASEDIR/Modules/gevent110ext/c-ares
+    rm ares_build.h
+    rm ares_config.h
+    CONFIG_COMMANDS= CONFIG_FILES= ./configure --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu
+
+    cd $BASEDIR/Modules/gevent110ext/libev
+    rm config.h
+    ./configure --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu
+
+    cd $BASEDIR
+fi
+sed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
+nice make -j8 HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN CROSS_COMPILE=arm-linux-androideabi- CROSS_COMPILE_TARGET=yes
