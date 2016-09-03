@@ -6,10 +6,10 @@
 struct PyGeventAresChannelObject;
 
 /* "gevent/ares.pyx":245
- * 
- * 
+ *
+ *
  * cdef public class channel [object PyGeventAresChannelObject, type PyGeventAresChannel_Type]:             # <<<<<<<<<<<<<<
- * 
+ *
  *     cdef public object loop
  */
 struct PyGeventAresChannelObject {
@@ -40,7 +40,7 @@ __PYX_EXTERN_C DL_IMPORT(PyTypeObject) PyGeventAresChannel_Type;
 #endif /* !__PYX_HAVE_API__gevent__ares */
 
 #if PY_MAJOR_VERSION < 3
-PyMODINIT_FUNC initares(void);
+PyMODINIT_FUNC initgevent_ares(void);
 #else
 PyMODINIT_FUNC PyInit_ares(void);
 #endif

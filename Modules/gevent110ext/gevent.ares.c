@@ -496,8 +496,8 @@ struct PyGeventAresChannelObject;
 struct __pyx_opt_args_6gevent_4ares__convert_cares_flags;
 
 /* "gevent/ares.pyx":137
- * 
- * 
+ *
+ *
  * cpdef _convert_cares_flags(int flags, int default=cares.ARES_NI_LOOKUPHOST|cares.ARES_NI_LOOKUPSERVICE):             # <<<<<<<<<<<<<<
  *     if _cares_flag_map is None:
  *         _prepare_cares_flag_map()
@@ -508,8 +508,8 @@ struct __pyx_opt_args_6gevent_4ares__convert_cares_flags {
 };
 
 /* "gevent/ares.pyx":164
- * 
- * 
+ *
+ *
  * cdef class result:             # <<<<<<<<<<<<<<
  *     cdef public object value
  *     cdef public object exception
@@ -522,10 +522,10 @@ struct __pyx_obj_6gevent_4ares_result {
 
 
 /* "gevent/ares.pyx":245
- * 
- * 
+ *
+ *
  * cdef public class channel [object PyGeventAresChannelObject, type PyGeventAresChannel_Type]:             # <<<<<<<<<<<<<<
- * 
+ *
  *     cdef public object loop
  */
 struct PyGeventAresChannelObject {
@@ -1254,8 +1254,8 @@ static PyObject *__pyx_codeobj__7;
 static PyObject *__pyx_codeobj__9;
 
 /* "gevent/ares.pyx":126
- * 
- * 
+ *
+ *
  * cdef _prepare_cares_flag_map():             # <<<<<<<<<<<<<<
  *     global _cares_flag_map
  *     import _socket
@@ -1351,7 +1351,7 @@ static PyObject *__pyx_f_6gevent_4ares__prepare_cares_flag_map(void) {
  *         (getattr(_socket, 'NI_NOFQDN', 4), cares.ARES_NI_NOFQDN),
  *         (getattr(_socket, 'NI_NAMEREQD', 8), cares.ARES_NI_NAMEREQD),             # <<<<<<<<<<<<<<
  *         (getattr(_socket, 'NI_DGRAM', 16), cares.ARES_NI_DGRAM)]
- * 
+ *
  */
   __pyx_t_2 = __Pyx_GetAttr3(__pyx_v__socket, __pyx_n_s_NI_NAMEREQD, __pyx_int_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -1370,8 +1370,8 @@ static PyObject *__pyx_f_6gevent_4ares__prepare_cares_flag_map(void) {
  *         (getattr(_socket, 'NI_NOFQDN', 4), cares.ARES_NI_NOFQDN),
  *         (getattr(_socket, 'NI_NAMEREQD', 8), cares.ARES_NI_NAMEREQD),
  *         (getattr(_socket, 'NI_DGRAM', 16), cares.ARES_NI_DGRAM)]             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_t_1 = __Pyx_GetAttr3(__pyx_v__socket, __pyx_n_s_NI_DGRAM, __pyx_int_16); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 134, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -1414,8 +1414,8 @@ static PyObject *__pyx_f_6gevent_4ares__prepare_cares_flag_map(void) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "gevent/ares.pyx":126
- * 
- * 
+ *
+ *
  * cdef _prepare_cares_flag_map():             # <<<<<<<<<<<<<<
  *     global _cares_flag_map
  *     import _socket
@@ -1442,8 +1442,8 @@ static PyObject *__pyx_f_6gevent_4ares__prepare_cares_flag_map(void) {
 }
 
 /* "gevent/ares.pyx":137
- * 
- * 
+ *
+ *
  * cpdef _convert_cares_flags(int flags, int default=cares.ARES_NI_LOOKUPHOST|cares.ARES_NI_LOOKUPSERVICE):             # <<<<<<<<<<<<<<
  *     if _cares_flag_map is None:
  *         _prepare_cares_flag_map()
@@ -1475,7 +1475,7 @@ static PyObject *__pyx_f_6gevent_4ares__convert_cares_flags(int __pyx_v_flags, C
   }
 
   /* "gevent/ares.pyx":138
- * 
+ *
  * cpdef _convert_cares_flags(int flags, int default=cares.ARES_NI_LOOKUPHOST|cares.ARES_NI_LOOKUPSERVICE):
  *     if _cares_flag_map is None:             # <<<<<<<<<<<<<<
  *         _prepare_cares_flag_map()
@@ -1500,7 +1500,7 @@ static PyObject *__pyx_f_6gevent_4ares__convert_cares_flags(int __pyx_v_flags, C
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
     /* "gevent/ares.pyx":138
- * 
+ *
  * cpdef _convert_cares_flags(int flags, int default=cares.ARES_NI_LOOKUPHOST|cares.ARES_NI_LOOKUPSERVICE):
  *     if _cares_flag_map is None:             # <<<<<<<<<<<<<<
  *         _prepare_cares_flag_map()
@@ -1571,11 +1571,11 @@ static PyObject *__pyx_f_6gevent_4ares__convert_cares_flags(int __pyx_v_flags, C
       }
       #if CYTHON_COMPILING_IN_CPYTHON
       if (likely(PyTuple_CheckExact(sequence))) {
-        __pyx_t_7 = PyTuple_GET_ITEM(sequence, 0); 
-        __pyx_t_8 = PyTuple_GET_ITEM(sequence, 1); 
+        __pyx_t_7 = PyTuple_GET_ITEM(sequence, 0);
+        __pyx_t_8 = PyTuple_GET_ITEM(sequence, 1);
       } else {
-        __pyx_t_7 = PyList_GET_ITEM(sequence, 0); 
-        __pyx_t_8 = PyList_GET_ITEM(sequence, 1); 
+        __pyx_t_7 = PyList_GET_ITEM(sequence, 0);
+        __pyx_t_8 = PyList_GET_ITEM(sequence, 1);
       }
       __Pyx_INCREF(__pyx_t_7);
       __Pyx_INCREF(__pyx_t_8);
@@ -1687,7 +1687,7 @@ static PyObject *__pyx_f_6gevent_4ares__convert_cares_flags(int __pyx_v_flags, C
  *         if not flags:
  *             return default             # <<<<<<<<<<<<<<
  *     raise gaierror(-1, "Bad value for ai_flags: 0x%x" % flags)
- * 
+ *
  */
       __Pyx_XDECREF(__pyx_r);
       __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_default); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 145, __pyx_L1_error)
@@ -1720,8 +1720,8 @@ static PyObject *__pyx_f_6gevent_4ares__convert_cares_flags(int __pyx_v_flags, C
  *         if not flags:
  *             return default
  *     raise gaierror(-1, "Bad value for ai_flags: 0x%x" % flags)             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_t_7 = __Pyx_GetModuleGlobalName(__pyx_n_s_gaierror); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 146, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
@@ -1762,8 +1762,8 @@ static PyObject *__pyx_f_6gevent_4ares__convert_cares_flags(int __pyx_v_flags, C
   __PYX_ERR(0, 146, __pyx_L1_error)
 
   /* "gevent/ares.pyx":137
- * 
- * 
+ *
+ *
  * cpdef _convert_cares_flags(int flags, int default=cares.ARES_NI_LOOKUPHOST|cares.ARES_NI_LOOKUPSERVICE):             # <<<<<<<<<<<<<<
  *     if _cares_flag_map is None:
  *         _prepare_cares_flag_map()
@@ -1877,11 +1877,11 @@ static PyObject *__pyx_pf_6gevent_4ares__convert_cares_flags(CYTHON_UNUSED PyObj
 }
 
 /* "gevent/ares.pyx":149
- * 
- * 
+ *
+ *
  * cpdef strerror(code):             # <<<<<<<<<<<<<<
  *     return '%s: %s' % (_ares_errors.get(code) or code, cares.ares_strerror(code))
- * 
+ *
  */
 
 static PyObject *__pyx_pw_6gevent_4ares_3strerror(PyObject *__pyx_self, PyObject *__pyx_v_code); /*proto*/
@@ -1898,11 +1898,11 @@ static PyObject *__pyx_f_6gevent_4ares_strerror(PyObject *__pyx_v_code, CYTHON_U
   __Pyx_RefNannySetupContext("strerror", 0);
 
   /* "gevent/ares.pyx":150
- * 
+ *
  * cpdef strerror(code):
  *     return '%s: %s' % (_ares_errors.get(code) or code, cares.ares_strerror(code))             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_ares_errors); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 150, __pyx_L1_error)
@@ -1966,11 +1966,11 @@ static PyObject *__pyx_f_6gevent_4ares_strerror(PyObject *__pyx_v_code, CYTHON_U
   goto __pyx_L0;
 
   /* "gevent/ares.pyx":149
- * 
- * 
+ *
+ *
  * cpdef strerror(code):             # <<<<<<<<<<<<<<
  *     return '%s: %s' % (_ares_errors.get(code) or code, cares.ares_strerror(code))
- * 
+ *
  */
 
   /* function exit code */
@@ -2025,8 +2025,8 @@ static PyObject *__pyx_pf_6gevent_4ares_2strerror(CYTHON_UNUSED PyObject *__pyx_
 }
 
 /* "gevent/ares.pyx":157
- * 
- * 
+ *
+ *
  * cdef void gevent_sock_state_callback(void *data, int s, int read, int write):             # <<<<<<<<<<<<<<
  *     if not data:
  *         return
@@ -2040,7 +2040,7 @@ static void __pyx_f_6gevent_4ares_gevent_sock_state_callback(void *__pyx_v_data,
   __Pyx_RefNannySetupContext("gevent_sock_state_callback", 0);
 
   /* "gevent/ares.pyx":158
- * 
+ *
  * cdef void gevent_sock_state_callback(void *data, int s, int read, int write):
  *     if not data:             # <<<<<<<<<<<<<<
  *         return
@@ -2059,7 +2059,7 @@ static void __pyx_f_6gevent_4ares_gevent_sock_state_callback(void *__pyx_v_data,
     goto __pyx_L0;
 
     /* "gevent/ares.pyx":158
- * 
+ *
  * cdef void gevent_sock_state_callback(void *data, int s, int read, int write):
  *     if not data:             # <<<<<<<<<<<<<<
  *         return
@@ -2072,7 +2072,7 @@ static void __pyx_f_6gevent_4ares_gevent_sock_state_callback(void *__pyx_v_data,
  *         return
  *     cdef channel ch = <channel>data             # <<<<<<<<<<<<<<
  *     ch._sock_state_callback(s, read, write)
- * 
+ *
  */
   __pyx_t_2 = ((PyObject *)__pyx_v_data);
   __Pyx_INCREF(__pyx_t_2);
@@ -2083,16 +2083,16 @@ static void __pyx_f_6gevent_4ares_gevent_sock_state_callback(void *__pyx_v_data,
  *         return
  *     cdef channel ch = <channel>data
  *     ch._sock_state_callback(s, read, write)             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_t_2 = ((struct __pyx_vtabstruct_6gevent_4ares_channel *)__pyx_v_ch->__pyx_vtab)->_sock_state_callback(__pyx_v_ch, __pyx_v_s, __pyx_v_read, __pyx_v_write); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "gevent/ares.pyx":157
- * 
- * 
+ *
+ *
  * cdef void gevent_sock_state_callback(void *data, int s, int read, int write):             # <<<<<<<<<<<<<<
  *     if not data:
  *         return
@@ -2110,7 +2110,7 @@ static void __pyx_f_6gevent_4ares_gevent_sock_state_callback(void *__pyx_v_data,
 
 /* "gevent/ares.pyx":168
  *     cdef public object exception
- * 
+ *
  *     def __init__(self, object value=None, object exception=None):             # <<<<<<<<<<<<<<
  *         self.value = value
  *         self.exception = exception
@@ -2186,11 +2186,11 @@ static int __pyx_pf_6gevent_4ares_6result___init__(struct __pyx_obj_6gevent_4are
   __Pyx_RefNannySetupContext("__init__", 0);
 
   /* "gevent/ares.pyx":169
- * 
+ *
  *     def __init__(self, object value=None, object exception=None):
  *         self.value = value             # <<<<<<<<<<<<<<
  *         self.exception = exception
- * 
+ *
  */
   __Pyx_INCREF(__pyx_v_value);
   __Pyx_GIVEREF(__pyx_v_value);
@@ -2202,7 +2202,7 @@ static int __pyx_pf_6gevent_4ares_6result___init__(struct __pyx_obj_6gevent_4are
  *     def __init__(self, object value=None, object exception=None):
  *         self.value = value
  *         self.exception = exception             # <<<<<<<<<<<<<<
- * 
+ *
  *     def __repr__(self):
  */
   __Pyx_INCREF(__pyx_v_exception);
@@ -2213,7 +2213,7 @@ static int __pyx_pf_6gevent_4ares_6result___init__(struct __pyx_obj_6gevent_4are
 
   /* "gevent/ares.pyx":168
  *     cdef public object exception
- * 
+ *
  *     def __init__(self, object value=None, object exception=None):             # <<<<<<<<<<<<<<
  *         self.value = value
  *         self.exception = exception
@@ -2227,7 +2227,7 @@ static int __pyx_pf_6gevent_4ares_6result___init__(struct __pyx_obj_6gevent_4are
 
 /* "gevent/ares.pyx":172
  *         self.exception = exception
- * 
+ *
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         if self.exception is None:
  *             return '%s(%r)' % (self.__class__.__name__, self.value)
@@ -2256,7 +2256,7 @@ static PyObject *__pyx_pf_6gevent_4ares_6result_2__repr__(struct __pyx_obj_6geve
   __Pyx_RefNannySetupContext("__repr__", 0);
 
   /* "gevent/ares.pyx":173
- * 
+ *
  *     def __repr__(self):
  *         if self.exception is None:             # <<<<<<<<<<<<<<
  *             return '%s(%r)' % (self.__class__.__name__, self.value)
@@ -2295,7 +2295,7 @@ static PyObject *__pyx_pf_6gevent_4ares_6result_2__repr__(struct __pyx_obj_6geve
     goto __pyx_L0;
 
     /* "gevent/ares.pyx":173
- * 
+ *
  *     def __repr__(self):
  *         if self.exception is None:             # <<<<<<<<<<<<<<
  *             return '%s(%r)' % (self.__class__.__name__, self.value)
@@ -2356,7 +2356,7 @@ static PyObject *__pyx_pf_6gevent_4ares_6result_2__repr__(struct __pyx_obj_6geve
  *         else:
  *             return '%s(value=%r, exception=%r)' % (self.__class__.__name__, self.value, self.exception)             # <<<<<<<<<<<<<<
  *         # add repr_recursive precaution
- * 
+ *
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
@@ -2386,7 +2386,7 @@ static PyObject *__pyx_pf_6gevent_4ares_6result_2__repr__(struct __pyx_obj_6geve
 
   /* "gevent/ares.pyx":172
  *         self.exception = exception
- * 
+ *
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         if self.exception is None:
  *             return '%s(%r)' % (self.__class__.__name__, self.value)
@@ -2406,10 +2406,10 @@ static PyObject *__pyx_pf_6gevent_4ares_6result_2__repr__(struct __pyx_obj_6geve
 
 /* "gevent/ares.pyx":181
  *         # add repr_recursive precaution
- * 
+ *
  *     def successful(self):             # <<<<<<<<<<<<<<
  *         return self.exception is None
- * 
+ *
  */
 
 /* Python wrapper */
@@ -2433,10 +2433,10 @@ static PyObject *__pyx_pf_6gevent_4ares_6result_4successful(struct __pyx_obj_6ge
   __Pyx_RefNannySetupContext("successful", 0);
 
   /* "gevent/ares.pyx":182
- * 
+ *
  *     def successful(self):
  *         return self.exception is None             # <<<<<<<<<<<<<<
- * 
+ *
  *     def get(self):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -2449,10 +2449,10 @@ static PyObject *__pyx_pf_6gevent_4ares_6result_4successful(struct __pyx_obj_6ge
 
   /* "gevent/ares.pyx":181
  *         # add repr_recursive precaution
- * 
+ *
  *     def successful(self):             # <<<<<<<<<<<<<<
  *         return self.exception is None
- * 
+ *
  */
 
   /* function exit code */
@@ -2468,7 +2468,7 @@ static PyObject *__pyx_pf_6gevent_4ares_6result_4successful(struct __pyx_obj_6ge
 
 /* "gevent/ares.pyx":184
  *         return self.exception is None
- * 
+ *
  *     def get(self):             # <<<<<<<<<<<<<<
  *         if self.exception is not None:
  *             raise self.exception
@@ -2495,7 +2495,7 @@ static PyObject *__pyx_pf_6gevent_4ares_6result_6get(struct __pyx_obj_6gevent_4a
   __Pyx_RefNannySetupContext("get", 0);
 
   /* "gevent/ares.pyx":185
- * 
+ *
  *     def get(self):
  *         if self.exception is not None:             # <<<<<<<<<<<<<<
  *             raise self.exception
@@ -2510,13 +2510,13 @@ static PyObject *__pyx_pf_6gevent_4ares_6result_6get(struct __pyx_obj_6gevent_4a
  *         if self.exception is not None:
  *             raise self.exception             # <<<<<<<<<<<<<<
  *         return self.value
- * 
+ *
  */
     __Pyx_Raise(__pyx_v_self->exception, 0, 0, 0);
     __PYX_ERR(0, 186, __pyx_L1_error)
 
     /* "gevent/ares.pyx":185
- * 
+ *
  *     def get(self):
  *         if self.exception is not None:             # <<<<<<<<<<<<<<
  *             raise self.exception
@@ -2528,8 +2528,8 @@ static PyObject *__pyx_pf_6gevent_4ares_6result_6get(struct __pyx_obj_6gevent_4a
  *         if self.exception is not None:
  *             raise self.exception
  *         return self.value             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_self->value);
@@ -2538,7 +2538,7 @@ static PyObject *__pyx_pf_6gevent_4ares_6result_6get(struct __pyx_obj_6gevent_4a
 
   /* "gevent/ares.pyx":184
  *         return self.exception is None
- * 
+ *
  *     def get(self):             # <<<<<<<<<<<<<<
  *         if self.exception is not None:
  *             raise self.exception
@@ -2555,11 +2555,11 @@ static PyObject *__pyx_pf_6gevent_4ares_6result_6get(struct __pyx_obj_6gevent_4a
 }
 
 /* "gevent/ares.pyx":165
- * 
+ *
  * cdef class result:
  *     cdef public object value             # <<<<<<<<<<<<<<
  *     cdef public object exception
- * 
+ *
  */
 
 /* Python wrapper */
@@ -2653,7 +2653,7 @@ static int __pyx_pf_6gevent_4ares_6result_5value_4__del__(struct __pyx_obj_6geve
  * cdef class result:
  *     cdef public object value
  *     cdef public object exception             # <<<<<<<<<<<<<<
- * 
+ *
  *     def __init__(self, object value=None, object exception=None):
  */
 
@@ -2746,7 +2746,7 @@ static int __pyx_pf_6gevent_4ares_6result_9exception_4__del__(struct __pyx_obj_6
 
 /* "gevent/ares.pyx":192
  * class ares_host_result(tuple):
- * 
+ *
  *     def __new__(cls, family, iterable):             # <<<<<<<<<<<<<<
  *         cdef object self = tuple.__new__(cls, iterable)
  *         self.family = family
@@ -2832,7 +2832,7 @@ static PyObject *__pyx_pf_6gevent_4ares_16ares_host_result___new__(CYTHON_UNUSED
   __Pyx_RefNannySetupContext("__new__", 0);
 
   /* "gevent/ares.pyx":193
- * 
+ *
  *     def __new__(cls, family, iterable):
  *         cdef object self = tuple.__new__(cls, iterable)             # <<<<<<<<<<<<<<
  *         self.family = family
@@ -2875,7 +2875,7 @@ static PyObject *__pyx_pf_6gevent_4ares_16ares_host_result___new__(CYTHON_UNUSED
  *         cdef object self = tuple.__new__(cls, iterable)
  *         self.family = family             # <<<<<<<<<<<<<<
  *         return self
- * 
+ *
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_family, __pyx_v_family) < 0) __PYX_ERR(0, 194, __pyx_L1_error)
 
@@ -2883,7 +2883,7 @@ static PyObject *__pyx_pf_6gevent_4ares_16ares_host_result___new__(CYTHON_UNUSED
  *         cdef object self = tuple.__new__(cls, iterable)
  *         self.family = family
  *         return self             # <<<<<<<<<<<<<<
- * 
+ *
  *     def __getnewargs__(self):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -2893,7 +2893,7 @@ static PyObject *__pyx_pf_6gevent_4ares_16ares_host_result___new__(CYTHON_UNUSED
 
   /* "gevent/ares.pyx":192
  * class ares_host_result(tuple):
- * 
+ *
  *     def __new__(cls, family, iterable):             # <<<<<<<<<<<<<<
  *         cdef object self = tuple.__new__(cls, iterable)
  *         self.family = family
@@ -2916,10 +2916,10 @@ static PyObject *__pyx_pf_6gevent_4ares_16ares_host_result___new__(CYTHON_UNUSED
 
 /* "gevent/ares.pyx":197
  *         return self
- * 
+ *
  *     def __getnewargs__(self):             # <<<<<<<<<<<<<<
  *         return (self.family, tuple(self))
- * 
+ *
  */
 
 /* Python wrapper */
@@ -2945,11 +2945,11 @@ static PyObject *__pyx_pf_6gevent_4ares_16ares_host_result_2__getnewargs__(CYTHO
   __Pyx_RefNannySetupContext("__getnewargs__", 0);
 
   /* "gevent/ares.pyx":198
- * 
+ *
  *     def __getnewargs__(self):
  *         return (self.family, tuple(self))             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_family); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 198, __pyx_L1_error)
@@ -2970,10 +2970,10 @@ static PyObject *__pyx_pf_6gevent_4ares_16ares_host_result_2__getnewargs__(CYTHO
 
   /* "gevent/ares.pyx":197
  *         return self
- * 
+ *
  *     def __getnewargs__(self):             # <<<<<<<<<<<<<<
  *         return (self.family, tuple(self))
- * 
+ *
  */
 
   /* function exit code */
@@ -2990,8 +2990,8 @@ static PyObject *__pyx_pf_6gevent_4ares_16ares_host_result_2__getnewargs__(CYTHO
 }
 
 /* "gevent/ares.pyx":201
- * 
- * 
+ *
+ *
  * cdef void gevent_ares_host_callback(void *arg, int status, int timeouts, hostent* host):             # <<<<<<<<<<<<<<
  *     cdef channel channel
  *     cdef object callback
@@ -3043,8 +3043,8 @@ static void __pyx_f_6gevent_4ares_gevent_ares_host_callback(void *__pyx_v_arg, i
       __PYX_ERR(0, 204, __pyx_L1_error)
     }
     #if CYTHON_COMPILING_IN_CPYTHON
-    __pyx_t_2 = PyTuple_GET_ITEM(sequence, 0); 
-    __pyx_t_3 = PyTuple_GET_ITEM(sequence, 1); 
+    __pyx_t_2 = PyTuple_GET_ITEM(sequence, 0);
+    __pyx_t_3 = PyTuple_GET_ITEM(sequence, 1);
     __Pyx_INCREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_t_3);
     #else
@@ -3487,7 +3487,7 @@ static void __pyx_f_6gevent_4ares_gevent_ares_host_callback(void *__pyx_v_arg, i
  *                 callback(result(host_result))
  *     except:             # <<<<<<<<<<<<<<
  *         channel.loop.handle_error(callback, *sys.exc_info())
- * 
+ *
  */
     /*except:*/ {
       __Pyx_AddTraceback("gevent.ares.gevent_ares_host_callback", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -3500,8 +3500,8 @@ static void __pyx_f_6gevent_4ares_gevent_ares_host_callback(void *__pyx_v_arg, i
  *                 callback(result(host_result))
  *     except:
  *         channel.loop.handle_error(callback, *sys.exc_info())             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
       __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_v_channel->loop, __pyx_n_s_handle_error); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 218, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_13);
@@ -3575,8 +3575,8 @@ static void __pyx_f_6gevent_4ares_gevent_ares_host_callback(void *__pyx_v_arg, i
   }
 
   /* "gevent/ares.pyx":201
- * 
- * 
+ *
+ *
  * cdef void gevent_ares_host_callback(void *arg, int status, int timeouts, hostent* host):             # <<<<<<<<<<<<<<
  *     cdef channel channel
  *     cdef object callback
@@ -3602,8 +3602,8 @@ static void __pyx_f_6gevent_4ares_gevent_ares_host_callback(void *__pyx_v_arg, i
 }
 
 /* "gevent/ares.pyx":221
- * 
- * 
+ *
+ *
  * cdef void gevent_ares_nameinfo_callback(void *arg, int status, int timeouts, char *c_node, char *c_service):             # <<<<<<<<<<<<<<
  *     cdef channel channel
  *     cdef object callback
@@ -3652,8 +3652,8 @@ static void __pyx_f_6gevent_4ares_gevent_ares_nameinfo_callback(void *__pyx_v_ar
       __PYX_ERR(0, 224, __pyx_L1_error)
     }
     #if CYTHON_COMPILING_IN_CPYTHON
-    __pyx_t_2 = PyTuple_GET_ITEM(sequence, 0); 
-    __pyx_t_3 = PyTuple_GET_ITEM(sequence, 1); 
+    __pyx_t_2 = PyTuple_GET_ITEM(sequence, 0);
+    __pyx_t_3 = PyTuple_GET_ITEM(sequence, 1);
     __Pyx_INCREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_t_3);
     #else
@@ -3972,7 +3972,7 @@ static void __pyx_f_6gevent_4ares_gevent_ares_nameinfo_callback(void *__pyx_v_ar
  *             callback(result((node, service)))
  *     except:             # <<<<<<<<<<<<<<
  *         channel.loop.handle_error(callback, *sys.exc_info())
- * 
+ *
  */
     /*except:*/ {
       __Pyx_AddTraceback("gevent.ares.gevent_ares_nameinfo_callback", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -3985,8 +3985,8 @@ static void __pyx_f_6gevent_4ares_gevent_ares_nameinfo_callback(void *__pyx_v_ar
  *             callback(result((node, service)))
  *     except:
  *         channel.loop.handle_error(callback, *sys.exc_info())             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_channel->loop, __pyx_n_s_handle_error); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 242, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_2);
@@ -4060,8 +4060,8 @@ static void __pyx_f_6gevent_4ares_gevent_ares_nameinfo_callback(void *__pyx_v_ar
   }
 
   /* "gevent/ares.pyx":221
- * 
- * 
+ *
+ *
  * cdef void gevent_ares_nameinfo_callback(void *arg, int status, int timeouts, char *c_node, char *c_service):             # <<<<<<<<<<<<<<
  *     cdef channel channel
  *     cdef object callback
@@ -4089,7 +4089,7 @@ static void __pyx_f_6gevent_4ares_gevent_ares_nameinfo_callback(void *__pyx_v_ar
 
 /* "gevent/ares.pyx":252
  *     cdef public object _timer
- * 
+ *
  *     def __init__(self, object loop, flags=None, timeout=None, tries=None, ndots=None,             # <<<<<<<<<<<<<<
  *                  udp_port=None, tcp_port=None, servers=None):
  *         cdef ares_channeldata* channel = NULL
@@ -4118,7 +4118,7 @@ static int __pyx_pw_6gevent_4ares_7channel_1__init__(PyObject *__pyx_v_self, PyO
     values[4] = ((PyObject *)Py_None);
 
     /* "gevent/ares.pyx":253
- * 
+ *
  *     def __init__(self, object loop, flags=None, timeout=None, tries=None, ndots=None,
  *                  udp_port=None, tcp_port=None, servers=None):             # <<<<<<<<<<<<<<
  *         cdef ares_channeldata* channel = NULL
@@ -4221,7 +4221,7 @@ static int __pyx_pw_6gevent_4ares_7channel_1__init__(PyObject *__pyx_v_self, PyO
 
   /* "gevent/ares.pyx":252
  *     cdef public object _timer
- * 
+ *
  *     def __init__(self, object loop, flags=None, timeout=None, tries=None, ndots=None,             # <<<<<<<<<<<<<<
  *                  udp_port=None, tcp_port=None, servers=None):
  *         cdef ares_channeldata* channel = NULL
@@ -4895,7 +4895,7 @@ static int __pyx_pf_6gevent_4ares_7channel___init__(struct PyGeventAresChannelOb
  *         except:
  *             self.destroy()             # <<<<<<<<<<<<<<
  *             raise
- * 
+ *
  */
       __pyx_t_9 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_destroy); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 292, __pyx_L13_except_error)
       __Pyx_GOTREF(__pyx_t_9);
@@ -4923,14 +4923,14 @@ static int __pyx_pf_6gevent_4ares_7channel___init__(struct PyGeventAresChannelOb
  *         except:
  *             self.destroy()
  *             raise             # <<<<<<<<<<<<<<
- * 
+ *
  *     def __repr__(self):
  */
       __Pyx_GIVEREF(__pyx_t_3);
       __Pyx_GIVEREF(__pyx_t_7);
       __Pyx_XGIVEREF(__pyx_t_8);
       __Pyx_ErrRestoreWithState(__pyx_t_3, __pyx_t_7, __pyx_t_8);
-      __pyx_t_3 = 0; __pyx_t_7 = 0; __pyx_t_8 = 0; 
+      __pyx_t_3 = 0; __pyx_t_7 = 0; __pyx_t_8 = 0;
       __PYX_ERR(0, 293, __pyx_L13_except_error)
     }
     __pyx_L13_except_error:;
@@ -4953,7 +4953,7 @@ static int __pyx_pf_6gevent_4ares_7channel___init__(struct PyGeventAresChannelOb
 
   /* "gevent/ares.pyx":252
  *     cdef public object _timer
- * 
+ *
  *     def __init__(self, object loop, flags=None, timeout=None, tries=None, ndots=None,             # <<<<<<<<<<<<<<
  *                  udp_port=None, tcp_port=None, servers=None):
  *         cdef ares_channeldata* channel = NULL
@@ -4978,7 +4978,7 @@ static int __pyx_pf_6gevent_4ares_7channel___init__(struct PyGeventAresChannelOb
 
 /* "gevent/ares.pyx":295
  *             raise
- * 
+ *
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         args = (self.__class__.__name__, id(self), self._timer, len(self._watchers))
  *         return '<%s at 0x%x _timer=%r _watchers[%s]>' % args
@@ -5009,11 +5009,11 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_2__repr__(struct PyGeventAresCh
   __Pyx_RefNannySetupContext("__repr__", 0);
 
   /* "gevent/ares.pyx":296
- * 
+ *
  *     def __repr__(self):
  *         args = (self.__class__.__name__, id(self), self._timer, len(self._watchers))             # <<<<<<<<<<<<<<
  *         return '<%s at 0x%x _timer=%r _watchers[%s]>' % args
- * 
+ *
  */
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_class); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -5059,7 +5059,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_2__repr__(struct PyGeventAresCh
  *     def __repr__(self):
  *         args = (self.__class__.__name__, id(self), self._timer, len(self._watchers))
  *         return '<%s at 0x%x _timer=%r _watchers[%s]>' % args             # <<<<<<<<<<<<<<
- * 
+ *
  *     def destroy(self):
  */
   __Pyx_XDECREF(__pyx_r);
@@ -5071,7 +5071,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_2__repr__(struct PyGeventAresCh
 
   /* "gevent/ares.pyx":295
  *             raise
- * 
+ *
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         args = (self.__class__.__name__, id(self), self._timer, len(self._watchers))
  *         return '<%s at 0x%x _timer=%r _watchers[%s]>' % args
@@ -5094,7 +5094,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_2__repr__(struct PyGeventAresCh
 
 /* "gevent/ares.pyx":299
  *         return '<%s at 0x%x _timer=%r _watchers[%s]>' % args
- * 
+ *
  *     def destroy(self):             # <<<<<<<<<<<<<<
  *         if self.channel:
  *             # XXX ares_library_cleanup?
@@ -5124,7 +5124,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_4destroy(struct PyGeventAresCha
   __Pyx_RefNannySetupContext("destroy", 0);
 
   /* "gevent/ares.pyx":300
- * 
+ *
  *     def destroy(self):
  *         if self.channel:             # <<<<<<<<<<<<<<
  *             # XXX ares_library_cleanup?
@@ -5169,7 +5169,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_4destroy(struct PyGeventAresCha
  *             self._watchers.clear()
  *             self._timer.stop()             # <<<<<<<<<<<<<<
  *             self.loop = None
- * 
+ *
  */
     __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->_timer, __pyx_n_s_stop); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 305, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
@@ -5197,7 +5197,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_4destroy(struct PyGeventAresCha
  *             self._watchers.clear()
  *             self._timer.stop()
  *             self.loop = None             # <<<<<<<<<<<<<<
- * 
+ *
  *     def __dealloc__(self):
  */
     __Pyx_INCREF(Py_None);
@@ -5207,7 +5207,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_4destroy(struct PyGeventAresCha
     __pyx_v_self->loop = Py_None;
 
     /* "gevent/ares.pyx":300
- * 
+ *
  *     def destroy(self):
  *         if self.channel:             # <<<<<<<<<<<<<<
  *             # XXX ares_library_cleanup?
@@ -5217,7 +5217,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_4destroy(struct PyGeventAresCha
 
   /* "gevent/ares.pyx":299
  *         return '<%s at 0x%x _timer=%r _watchers[%s]>' % args
- * 
+ *
  *     def destroy(self):             # <<<<<<<<<<<<<<
  *         if self.channel:
  *             # XXX ares_library_cleanup?
@@ -5240,7 +5240,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_4destroy(struct PyGeventAresCha
 
 /* "gevent/ares.pyx":308
  *             self.loop = None
- * 
+ *
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         if self.channel:
  *             # XXX ares_library_cleanup?
@@ -5263,7 +5263,7 @@ static void __pyx_pf_6gevent_4ares_7channel_6__dealloc__(struct PyGeventAresChan
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
   /* "gevent/ares.pyx":309
- * 
+ *
  *     def __dealloc__(self):
  *         if self.channel:             # <<<<<<<<<<<<<<
  *             # XXX ares_library_cleanup?
@@ -5277,7 +5277,7 @@ static void __pyx_pf_6gevent_4ares_7channel_6__dealloc__(struct PyGeventAresChan
  *             # XXX ares_library_cleanup?
  *             cares.ares_destroy(self.channel)             # <<<<<<<<<<<<<<
  *             self.channel = NULL
- * 
+ *
  */
     ares_destroy(__pyx_v_self->channel);
 
@@ -5285,13 +5285,13 @@ static void __pyx_pf_6gevent_4ares_7channel_6__dealloc__(struct PyGeventAresChan
  *             # XXX ares_library_cleanup?
  *             cares.ares_destroy(self.channel)
  *             self.channel = NULL             # <<<<<<<<<<<<<<
- * 
+ *
  *     def set_servers(self, servers=None):
  */
     __pyx_v_self->channel = NULL;
 
     /* "gevent/ares.pyx":309
- * 
+ *
  *     def __dealloc__(self):
  *         if self.channel:             # <<<<<<<<<<<<<<
  *             # XXX ares_library_cleanup?
@@ -5301,7 +5301,7 @@ static void __pyx_pf_6gevent_4ares_7channel_6__dealloc__(struct PyGeventAresChan
 
   /* "gevent/ares.pyx":308
  *             self.loop = None
- * 
+ *
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         if self.channel:
  *             # XXX ares_library_cleanup?
@@ -5313,7 +5313,7 @@ static void __pyx_pf_6gevent_4ares_7channel_6__dealloc__(struct PyGeventAresChan
 
 /* "gevent/ares.pyx":314
  *             self.channel = NULL
- * 
+ *
  *     def set_servers(self, servers=None):             # <<<<<<<<<<<<<<
  *         if not self.channel:
  *             raise gaierror(cares.ARES_EDESTRUCTION, 'this ares channel has been destroyed')
@@ -5406,7 +5406,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_8set_servers(struct PyGeventAre
   __Pyx_INCREF(__pyx_v_servers);
 
   /* "gevent/ares.pyx":315
- * 
+ *
  *     def set_servers(self, servers=None):
  *         if not self.channel:             # <<<<<<<<<<<<<<
  *             raise gaierror(cares.ARES_EDESTRUCTION, 'this ares channel has been destroyed')
@@ -5458,7 +5458,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_8set_servers(struct PyGeventAre
     __PYX_ERR(0, 316, __pyx_L1_error)
 
     /* "gevent/ares.pyx":315
- * 
+ *
  *     def set_servers(self, servers=None):
  *         if not self.channel:             # <<<<<<<<<<<<<<
  *             raise gaierror(cares.ARES_EDESTRUCTION, 'this ares channel has been destroyed')
@@ -5687,7 +5687,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_8set_servers(struct PyGeventAre
  *                         server = server.encode('ascii')
  *                     string = <char*?>server
  */
-        __pyx_t_1 = PyUnicode_Check(__pyx_v_server); 
+        __pyx_t_1 = PyUnicode_Check(__pyx_v_server);
         __pyx_t_8 = (__pyx_t_1 != 0);
         if (__pyx_t_8) {
 
@@ -5953,7 +5953,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_8set_servers(struct PyGeventAre
  *                     raise ValueError(strerror(index))
  *             finally:
  *                 free(c_servers)             # <<<<<<<<<<<<<<
- * 
+ *
  *     # this crashes c-ares
  */
     /*finally:*/ {
@@ -6006,7 +6006,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_8set_servers(struct PyGeventAre
 
   /* "gevent/ares.pyx":314
  *             self.channel = NULL
- * 
+ *
  *     def set_servers(self, servers=None):             # <<<<<<<<<<<<<<
  *         if not self.channel:
  *             raise gaierror(cares.ARES_EDESTRUCTION, 'this ares channel has been destroyed')
@@ -6034,7 +6034,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_8set_servers(struct PyGeventAre
 
 /* "gevent/ares.pyx":358
  *     #    cares.ares_cancel(self.channel)
- * 
+ *
  *     cdef _sock_state_callback(self, int socket, int read, int write):             # <<<<<<<<<<<<<<
  *         if not self.channel:
  *             return
@@ -6057,7 +6057,7 @@ static PyObject *__pyx_f_6gevent_4ares_7channel__sock_state_callback(struct PyGe
   __Pyx_RefNannySetupContext("_sock_state_callback", 0);
 
   /* "gevent/ares.pyx":359
- * 
+ *
  *     cdef _sock_state_callback(self, int socket, int read, int write):
  *         if not self.channel:             # <<<<<<<<<<<<<<
  *             return
@@ -6078,7 +6078,7 @@ static PyObject *__pyx_f_6gevent_4ares_7channel__sock_state_callback(struct PyGe
     goto __pyx_L0;
 
     /* "gevent/ares.pyx":359
- * 
+ *
  *     cdef _sock_state_callback(self, int socket, int read, int write):
  *         if not self.channel:             # <<<<<<<<<<<<<<
  *             return
@@ -6516,7 +6516,7 @@ static PyObject *__pyx_f_6gevent_4ares_7channel__sock_state_callback(struct PyGe
  *             return
  *         watcher.start(self._process_fd, watcher, pass_events=True)             # <<<<<<<<<<<<<<
  *         self._timer.again(self._on_timer)
- * 
+ *
  */
   __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_watcher, __pyx_n_s_start); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 383, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
@@ -6544,7 +6544,7 @@ static PyObject *__pyx_f_6gevent_4ares_7channel__sock_state_callback(struct PyGe
  *             return
  *         watcher.start(self._process_fd, watcher, pass_events=True)
  *         self._timer.again(self._on_timer)             # <<<<<<<<<<<<<<
- * 
+ *
  *     def _on_timer(self):
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->_timer, __pyx_n_s_again); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 384, __pyx_L1_error)
@@ -6581,7 +6581,7 @@ static PyObject *__pyx_f_6gevent_4ares_7channel__sock_state_callback(struct PyGe
 
   /* "gevent/ares.pyx":358
  *     #    cares.ares_cancel(self.channel)
- * 
+ *
  *     cdef _sock_state_callback(self, int socket, int read, int write):             # <<<<<<<<<<<<<<
  *         if not self.channel:
  *             return
@@ -6608,10 +6608,10 @@ static PyObject *__pyx_f_6gevent_4ares_7channel__sock_state_callback(struct PyGe
 
 /* "gevent/ares.pyx":386
  *         self._timer.again(self._on_timer)
- * 
+ *
  *     def _on_timer(self):             # <<<<<<<<<<<<<<
  *         cares.ares_process_fd(self.channel, cares.ARES_SOCKET_BAD, cares.ARES_SOCKET_BAD)
- * 
+ *
  */
 
 /* Python wrapper */
@@ -6633,20 +6633,20 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_10_on_timer(struct PyGeventAres
   __Pyx_RefNannySetupContext("_on_timer", 0);
 
   /* "gevent/ares.pyx":387
- * 
+ *
  *     def _on_timer(self):
  *         cares.ares_process_fd(self.channel, cares.ARES_SOCKET_BAD, cares.ARES_SOCKET_BAD)             # <<<<<<<<<<<<<<
- * 
+ *
  *     def _process_fd(self, int events, object watcher):
  */
   ares_process_fd(__pyx_v_self->channel, ARES_SOCKET_BAD, ARES_SOCKET_BAD);
 
   /* "gevent/ares.pyx":386
  *         self._timer.again(self._on_timer)
- * 
+ *
  *     def _on_timer(self):             # <<<<<<<<<<<<<<
  *         cares.ares_process_fd(self.channel, cares.ARES_SOCKET_BAD, cares.ARES_SOCKET_BAD)
- * 
+ *
  */
 
   /* function exit code */
@@ -6658,7 +6658,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_10_on_timer(struct PyGeventAres
 
 /* "gevent/ares.pyx":389
  *         cares.ares_process_fd(self.channel, cares.ARES_SOCKET_BAD, cares.ARES_SOCKET_BAD)
- * 
+ *
  *     def _process_fd(self, int events, object watcher):             # <<<<<<<<<<<<<<
  *         if not self.channel:
  *             return
@@ -6733,7 +6733,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_12_process_fd(struct PyGeventAr
   __Pyx_RefNannySetupContext("_process_fd", 0);
 
   /* "gevent/ares.pyx":390
- * 
+ *
  *     def _process_fd(self, int events, object watcher):
  *         if not self.channel:             # <<<<<<<<<<<<<<
  *             return
@@ -6754,7 +6754,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_12_process_fd(struct PyGeventAr
     goto __pyx_L0;
 
     /* "gevent/ares.pyx":390
- * 
+ *
  *     def _process_fd(self, int events, object watcher):
  *         if not self.channel:             # <<<<<<<<<<<<<<
  *             return
@@ -6827,7 +6827,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_12_process_fd(struct PyGeventAr
  *         if not (events & EV_WRITE):
  *             write_fd = cares.ARES_SOCKET_BAD             # <<<<<<<<<<<<<<
  *         cares.ares_process_fd(self.channel, read_fd, write_fd)
- * 
+ *
  */
     __pyx_v_write_fd = ARES_SOCKET_BAD;
 
@@ -6844,14 +6844,14 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_12_process_fd(struct PyGeventAr
  *         if not (events & EV_WRITE):
  *             write_fd = cares.ARES_SOCKET_BAD
  *         cares.ares_process_fd(self.channel, read_fd, write_fd)             # <<<<<<<<<<<<<<
- * 
+ *
  *     def gethostbyname(self, object callback, char* name, int family=AF_INET):
  */
   ares_process_fd(__pyx_v_self->channel, __pyx_v_read_fd, __pyx_v_write_fd);
 
   /* "gevent/ares.pyx":389
  *         cares.ares_process_fd(self.channel, cares.ARES_SOCKET_BAD, cares.ARES_SOCKET_BAD)
- * 
+ *
  *     def _process_fd(self, int events, object watcher):             # <<<<<<<<<<<<<<
  *         if not self.channel:
  *             return
@@ -6872,7 +6872,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_12_process_fd(struct PyGeventAr
 
 /* "gevent/ares.pyx":400
  *         cares.ares_process_fd(self.channel, read_fd, write_fd)
- * 
+ *
  *     def gethostbyname(self, object callback, char* name, int family=AF_INET):             # <<<<<<<<<<<<<<
  *         if not self.channel:
  *             raise gaierror(cares.ARES_EDESTRUCTION, 'this ares channel has been destroyed')
@@ -6965,7 +6965,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_14gethostbyname(struct PyGevent
   __Pyx_RefNannySetupContext("gethostbyname", 0);
 
   /* "gevent/ares.pyx":401
- * 
+ *
  *     def gethostbyname(self, object callback, char* name, int family=AF_INET):
  *         if not self.channel:             # <<<<<<<<<<<<<<
  *             raise gaierror(cares.ARES_EDESTRUCTION, 'this ares channel has been destroyed')
@@ -7017,7 +7017,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_14gethostbyname(struct PyGevent
     __PYX_ERR(0, 402, __pyx_L1_error)
 
     /* "gevent/ares.pyx":401
- * 
+ *
  *     def gethostbyname(self, object callback, char* name, int family=AF_INET):
  *         if not self.channel:             # <<<<<<<<<<<<<<
  *             raise gaierror(cares.ARES_EDESTRUCTION, 'this ares channel has been destroyed')
@@ -7048,7 +7048,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_14gethostbyname(struct PyGevent
  *         cdef object arg = (self, callback)
  *         Py_INCREF(<PyObjectPtr>arg)             # <<<<<<<<<<<<<<
  *         cares.ares_gethostbyname(self.channel, name, family, <void*>gevent_ares_host_callback, <void*>arg)
- * 
+ *
  */
   Py_INCREF(((PyObject*)__pyx_v_arg));
 
@@ -7056,14 +7056,14 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_14gethostbyname(struct PyGevent
  *         cdef object arg = (self, callback)
  *         Py_INCREF(<PyObjectPtr>arg)
  *         cares.ares_gethostbyname(self.channel, name, family, <void*>gevent_ares_host_callback, <void*>arg)             # <<<<<<<<<<<<<<
- * 
+ *
  *     def gethostbyaddr(self, object callback, char* addr):
  */
   ares_gethostbyname(__pyx_v_self->channel, __pyx_v_name, __pyx_v_family, ((void *)__pyx_f_6gevent_4ares_gevent_ares_host_callback), ((void *)__pyx_v_arg));
 
   /* "gevent/ares.pyx":400
  *         cares.ares_process_fd(self.channel, read_fd, write_fd)
- * 
+ *
  *     def gethostbyname(self, object callback, char* name, int family=AF_INET):             # <<<<<<<<<<<<<<
  *         if not self.channel:
  *             raise gaierror(cares.ARES_EDESTRUCTION, 'this ares channel has been destroyed')
@@ -7089,7 +7089,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_14gethostbyname(struct PyGevent
 
 /* "gevent/ares.pyx":408
  *         cares.ares_gethostbyname(self.channel, name, family, <void*>gevent_ares_host_callback, <void*>arg)
- * 
+ *
  *     def gethostbyaddr(self, object callback, char* addr):             # <<<<<<<<<<<<<<
  *         if not self.channel:
  *             raise gaierror(cares.ARES_EDESTRUCTION, 'this ares channel has been destroyed')
@@ -7170,7 +7170,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_16gethostbyaddr(struct PyGevent
   __Pyx_RefNannySetupContext("gethostbyaddr", 0);
 
   /* "gevent/ares.pyx":409
- * 
+ *
  *     def gethostbyaddr(self, object callback, char* addr):
  *         if not self.channel:             # <<<<<<<<<<<<<<
  *             raise gaierror(cares.ARES_EDESTRUCTION, 'this ares channel has been destroyed')
@@ -7222,7 +7222,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_16gethostbyaddr(struct PyGevent
     __PYX_ERR(0, 410, __pyx_L1_error)
 
     /* "gevent/ares.pyx":409
- * 
+ *
  *     def gethostbyaddr(self, object callback, char* addr):
  *         if not self.channel:             # <<<<<<<<<<<<<<
  *             raise gaierror(cares.ARES_EDESTRUCTION, 'this ares channel has been destroyed')
@@ -7376,7 +7376,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_16gethostbyaddr(struct PyGevent
  *         cdef object arg = (self, callback)
  *         Py_INCREF(<PyObjectPtr>arg)             # <<<<<<<<<<<<<<
  *         cares.ares_gethostbyaddr(self.channel, addr_packed, length, family, <void*>gevent_ares_host_callback, <void*>arg)
- * 
+ *
  */
   Py_INCREF(((PyObject*)__pyx_v_arg));
 
@@ -7384,14 +7384,14 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_16gethostbyaddr(struct PyGevent
  *         cdef object arg = (self, callback)
  *         Py_INCREF(<PyObjectPtr>arg)
  *         cares.ares_gethostbyaddr(self.channel, addr_packed, length, family, <void*>gevent_ares_host_callback, <void*>arg)             # <<<<<<<<<<<<<<
- * 
+ *
  *     cpdef _getnameinfo(self, object callback, tuple sockaddr, int flags):
  */
   ares_gethostbyaddr(__pyx_v_self->channel, __pyx_v_addr_packed, __pyx_v_length, __pyx_v_family, ((void *)__pyx_f_6gevent_4ares_gevent_ares_host_callback), ((void *)__pyx_v_arg));
 
   /* "gevent/ares.pyx":408
  *         cares.ares_gethostbyname(self.channel, name, family, <void*>gevent_ares_host_callback, <void*>arg)
- * 
+ *
  *     def gethostbyaddr(self, object callback, char* addr):             # <<<<<<<<<<<<<<
  *         if not self.channel:
  *             raise gaierror(cares.ARES_EDESTRUCTION, 'this ares channel has been destroyed')
@@ -7417,7 +7417,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_16gethostbyaddr(struct PyGevent
 
 /* "gevent/ares.pyx":427
  *         cares.ares_gethostbyaddr(self.channel, addr_packed, length, family, <void*>gevent_ares_host_callback, <void*>arg)
- * 
+ *
  *     cpdef _getnameinfo(self, object callback, tuple sockaddr, int flags):             # <<<<<<<<<<<<<<
  *         if not self.channel:
  *             raise gaierror(cares.ARES_EDESTRUCTION, 'this ares channel has been destroyed')
@@ -7496,7 +7496,7 @@ static PyObject *__pyx_f_6gevent_4ares_7channel__getnameinfo(struct PyGeventAres
   }
 
   /* "gevent/ares.pyx":428
- * 
+ *
  *     cpdef _getnameinfo(self, object callback, tuple sockaddr, int flags):
  *         if not self.channel:             # <<<<<<<<<<<<<<
  *             raise gaierror(cares.ARES_EDESTRUCTION, 'this ares channel has been destroyed')
@@ -7548,7 +7548,7 @@ static PyObject *__pyx_f_6gevent_4ares_7channel__getnameinfo(struct PyGeventAres
     __PYX_ERR(0, 429, __pyx_L1_error)
 
     /* "gevent/ares.pyx":428
- * 
+ *
  *     cpdef _getnameinfo(self, object callback, tuple sockaddr, int flags):
  *         if not self.channel:             # <<<<<<<<<<<<<<
  *             raise gaierror(cares.ARES_EDESTRUCTION, 'this ares channel has been destroyed')
@@ -7823,7 +7823,7 @@ static PyObject *__pyx_f_6gevent_4ares_7channel__getnameinfo(struct PyGeventAres
  *         Py_INCREF(<PyObjectPtr>arg)
  *         cdef sockaddr_t* x = <sockaddr_t*>&sa6             # <<<<<<<<<<<<<<
  *         cares.ares_getnameinfo(self.channel, x, length, flags, <void*>gevent_ares_nameinfo_callback, <void*>arg)
- * 
+ *
  */
   __pyx_v_x = ((struct sockaddr *)(&__pyx_v_sa6));
 
@@ -7831,14 +7831,14 @@ static PyObject *__pyx_f_6gevent_4ares_7channel__getnameinfo(struct PyGeventAres
  *         Py_INCREF(<PyObjectPtr>arg)
  *         cdef sockaddr_t* x = <sockaddr_t*>&sa6
  *         cares.ares_getnameinfo(self.channel, x, length, flags, <void*>gevent_ares_nameinfo_callback, <void*>arg)             # <<<<<<<<<<<<<<
- * 
+ *
  *     def getnameinfo(self, object callback, tuple sockaddr, int flags):
  */
   ares_getnameinfo(__pyx_v_self->channel, __pyx_v_x, __pyx_v_length, __pyx_v_flags, ((void *)__pyx_f_6gevent_4ares_gevent_ares_nameinfo_callback), ((void *)__pyx_v_arg));
 
   /* "gevent/ares.pyx":427
  *         cares.ares_gethostbyaddr(self.channel, addr_packed, length, family, <void*>gevent_ares_host_callback, <void*>arg)
- * 
+ *
  *     cpdef _getnameinfo(self, object callback, tuple sockaddr, int flags):             # <<<<<<<<<<<<<<
  *         if not self.channel:
  *             raise gaierror(cares.ARES_EDESTRUCTION, 'this ares channel has been destroyed')
@@ -7960,7 +7960,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_18_getnameinfo(struct PyGeventA
 
 /* "gevent/ares.pyx":448
  *         cares.ares_getnameinfo(self.channel, x, length, flags, <void*>gevent_ares_nameinfo_callback, <void*>arg)
- * 
+ *
  *     def getnameinfo(self, object callback, tuple sockaddr, int flags):             # <<<<<<<<<<<<<<
  *         return self._getnameinfo(callback, sockaddr, _convert_cares_flags(flags))
  */
@@ -8045,7 +8045,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_20getnameinfo(struct PyGeventAr
   __Pyx_RefNannySetupContext("getnameinfo", 0);
 
   /* "gevent/ares.pyx":449
- * 
+ *
  *     def getnameinfo(self, object callback, tuple sockaddr, int flags):
  *         return self._getnameinfo(callback, sockaddr, _convert_cares_flags(flags))             # <<<<<<<<<<<<<<
  */
@@ -8062,7 +8062,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_20getnameinfo(struct PyGeventAr
 
   /* "gevent/ares.pyx":448
  *         cares.ares_getnameinfo(self.channel, x, length, flags, <void*>gevent_ares_nameinfo_callback, <void*>arg)
- * 
+ *
  *     def getnameinfo(self, object callback, tuple sockaddr, int flags):             # <<<<<<<<<<<<<<
  *         return self._getnameinfo(callback, sockaddr, _convert_cares_flags(flags))
  */
@@ -8080,7 +8080,7 @@ static PyObject *__pyx_pf_6gevent_4ares_7channel_20getnameinfo(struct PyGeventAr
 
 /* "gevent/ares.pyx":247
  * cdef public class channel [object PyGeventAresChannelObject, type PyGeventAresChannel_Type]:
- * 
+ *
  *     cdef public object loop             # <<<<<<<<<<<<<<
  *     cdef ares_channeldata* channel
  *     cdef public dict _watchers
@@ -8178,7 +8178,7 @@ static int __pyx_pf_6gevent_4ares_7channel_4loop_4__del__(struct PyGeventAresCha
  *     cdef ares_channeldata* channel
  *     cdef public dict _watchers             # <<<<<<<<<<<<<<
  *     cdef public object _timer
- * 
+ *
  */
 
 /* Python wrapper */
@@ -8282,7 +8282,7 @@ static int __pyx_pf_6gevent_4ares_7channel_9_watchers_4__del__(struct PyGeventAr
  *     cdef ares_channeldata* channel
  *     cdef public dict _watchers
  *     cdef public object _timer             # <<<<<<<<<<<<<<
- * 
+ *
  *     def __init__(self, object loop, flags=None, timeout=None, tries=None, ndots=None,
  */
 
@@ -8895,7 +8895,7 @@ static int __Pyx_InitCachedConstants(void) {
 
   /* "gevent/ares.pyx":192
  * class ares_host_result(tuple):
- * 
+ *
  *     def __new__(cls, family, iterable):             # <<<<<<<<<<<<<<
  *         cdef object self = tuple.__new__(cls, iterable)
  *         self.family = family
@@ -8907,10 +8907,10 @@ static int __Pyx_InitCachedConstants(void) {
 
   /* "gevent/ares.pyx":197
  *         return self
- * 
+ *
  *     def __getnewargs__(self):             # <<<<<<<<<<<<<<
  *         return (self.family, tuple(self))
- * 
+ *
  */
   __pyx_tuple__8 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 197, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__8);
@@ -8939,8 +8939,8 @@ static int __Pyx_InitGlobals(void) {
 }
 
 #if PY_MAJOR_VERSION < 3
-PyMODINIT_FUNC initares(void); /*proto*/
-PyMODINIT_FUNC initares(void)
+PyMODINIT_FUNC initgevent_ares(void); /*proto*/
+PyMODINIT_FUNC initgevent_ares(void)
 #else
 PyMODINIT_FUNC PyInit_ares(void); /*proto*/
 PyMODINIT_FUNC PyInit_ares(void)
@@ -9012,7 +9012,7 @@ PyMODINIT_FUNC PyInit_ares(void)
   #endif
   /*--- Module creation code ---*/
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("ares", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("gevent_ares", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -9086,8 +9086,8 @@ PyMODINIT_FUNC PyInit_ares(void)
  * import sys
  * from python cimport *
  * from _socket import gaierror             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -9104,10 +9104,10 @@ PyMODINIT_FUNC PyInit_ares(void)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "gevent/ares.pyx":8
- * 
- * 
+ *
+ *
  * __all__ = ['channel']             # <<<<<<<<<<<<<<
- * 
+ *
  * cdef object string_types
  */
   __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 8, __pyx_L1_error)
@@ -9120,7 +9120,7 @@ PyMODINIT_FUNC PyInit_ares(void)
 
   /* "gevent/ares.pyx":13
  * cdef object text_type
- * 
+ *
  * if sys.version_info[0] >= 3:             # <<<<<<<<<<<<<<
  *     string_types = str,
  *     text_type = str
@@ -9140,7 +9140,7 @@ PyMODINIT_FUNC PyInit_ares(void)
   if (__pyx_t_3) {
 
     /* "gevent/ares.pyx":14
- * 
+ *
  * if sys.version_info[0] >= 3:
  *     string_types = str,             # <<<<<<<<<<<<<<
  *     text_type = str
@@ -9170,7 +9170,7 @@ PyMODINIT_FUNC PyInit_ares(void)
 
     /* "gevent/ares.pyx":13
  * cdef object text_type
- * 
+ *
  * if sys.version_info[0] >= 3:             # <<<<<<<<<<<<<<
  *     string_types = str,
  *     text_type = str
@@ -9183,7 +9183,7 @@ PyMODINIT_FUNC PyInit_ares(void)
  * else:
  *     string_types = __builtins__.basestring,             # <<<<<<<<<<<<<<
  *     text_type = __builtins__.unicode
- * 
+ *
  */
   /*else*/ {
     __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_builtins); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
@@ -9205,7 +9205,7 @@ PyMODINIT_FUNC PyInit_ares(void)
  * else:
  *     string_types = __builtins__.basestring,
  *     text_type = __builtins__.unicode             # <<<<<<<<<<<<<<
- * 
+ *
  * TIMEOUT = 1
  */
     __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_builtins); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
@@ -9222,16 +9222,16 @@ PyMODINIT_FUNC PyInit_ares(void)
 
   /* "gevent/ares.pyx":20
  *     text_type = __builtins__.unicode
- * 
+ *
  * TIMEOUT = 1             # <<<<<<<<<<<<<<
- * 
+ *
  * DEF EV_READ = 1
  */
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_TIMEOUT, __pyx_int_1) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
 
   /* "gevent/ares.pyx":58
- * 
- * 
+ *
+ *
  * ARES_SUCCESS = cares.ARES_SUCCESS             # <<<<<<<<<<<<<<
  * ARES_ENODATA = cares.ARES_ENODATA
  * ARES_EFORMERR = cares.ARES_EFORMERR
@@ -9242,7 +9242,7 @@ PyMODINIT_FUNC PyInit_ares(void)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "gevent/ares.pyx":59
- * 
+ *
  * ARES_SUCCESS = cares.ARES_SUCCESS
  * ARES_ENODATA = cares.ARES_ENODATA             # <<<<<<<<<<<<<<
  * ARES_EFORMERR = cares.ARES_EFORMERR
@@ -9510,7 +9510,7 @@ PyMODINIT_FUNC PyInit_ares(void)
  * ARES_ELOADIPHLPAPI = cares.ARES_ELOADIPHLPAPI
  * ARES_EADDRGETNETWORKPARAMS = cares.ARES_EADDRGETNETWORKPARAMS             # <<<<<<<<<<<<<<
  * ARES_ECANCELLED = cares.ARES_ECANCELLED
- * 
+ *
  */
   __pyx_t_2 = __Pyx_PyInt_From_int(ARES_EADDRGETNETWORKPARAMS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -9521,7 +9521,7 @@ PyMODINIT_FUNC PyInit_ares(void)
  * ARES_ELOADIPHLPAPI = cares.ARES_ELOADIPHLPAPI
  * ARES_EADDRGETNETWORKPARAMS = cares.ARES_EADDRGETNETWORKPARAMS
  * ARES_ECANCELLED = cares.ARES_ECANCELLED             # <<<<<<<<<<<<<<
- * 
+ *
  * ARES_FLAG_USEVC = cares.ARES_FLAG_USEVC
  */
   __pyx_t_2 = __Pyx_PyInt_From_int(ARES_ECANCELLED); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
@@ -9531,7 +9531,7 @@ PyMODINIT_FUNC PyInit_ares(void)
 
   /* "gevent/ares.pyx":84
  * ARES_ECANCELLED = cares.ARES_ECANCELLED
- * 
+ *
  * ARES_FLAG_USEVC = cares.ARES_FLAG_USEVC             # <<<<<<<<<<<<<<
  * ARES_FLAG_PRIMARY = cares.ARES_FLAG_PRIMARY
  * ARES_FLAG_IGNTC = cares.ARES_FLAG_IGNTC
@@ -9542,7 +9542,7 @@ PyMODINIT_FUNC PyInit_ares(void)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "gevent/ares.pyx":85
- * 
+ *
  * ARES_FLAG_USEVC = cares.ARES_FLAG_USEVC
  * ARES_FLAG_PRIMARY = cares.ARES_FLAG_PRIMARY             # <<<<<<<<<<<<<<
  * ARES_FLAG_IGNTC = cares.ARES_FLAG_IGNTC
@@ -9606,7 +9606,7 @@ PyMODINIT_FUNC PyInit_ares(void)
  * ARES_FLAG_NOSEARCH = cares.ARES_FLAG_NOSEARCH
  * ARES_FLAG_NOALIASES = cares.ARES_FLAG_NOALIASES             # <<<<<<<<<<<<<<
  * ARES_FLAG_NOCHECKRESP = cares.ARES_FLAG_NOCHECKRESP
- * 
+ *
  */
   __pyx_t_2 = __Pyx_PyInt_From_int(ARES_FLAG_NOALIASES); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -9617,8 +9617,8 @@ PyMODINIT_FUNC PyInit_ares(void)
  * ARES_FLAG_NOSEARCH = cares.ARES_FLAG_NOSEARCH
  * ARES_FLAG_NOALIASES = cares.ARES_FLAG_NOALIASES
  * ARES_FLAG_NOCHECKRESP = cares.ARES_FLAG_NOCHECKRESP             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_t_2 = __Pyx_PyInt_From_int(ARES_FLAG_NOCHECKRESP); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 91, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -9626,7 +9626,7 @@ PyMODINIT_FUNC PyInit_ares(void)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "gevent/ares.pyx":95
- * 
+ *
  * _ares_errors = dict([
  *                 (cares.ARES_SUCCESS, 'ARES_SUCCESS'),             # <<<<<<<<<<<<<<
  *                 (cares.ARES_ENODATA, 'ARES_ENODATA'),
@@ -10044,7 +10044,7 @@ PyMODINIT_FUNC PyInit_ares(void)
  *                 (cares.ARES_ELOADIPHLPAPI, 'ARES_ELOADIPHLPAPI'),
  *                 (cares.ARES_EADDRGETNETWORKPARAMS, 'ARES_EADDRGETNETWORKPARAMS'),             # <<<<<<<<<<<<<<
  *                 (cares.ARES_ECANCELLED, 'ARES_ECANCELLED')])
- * 
+ *
  */
   __pyx_t_2 = __Pyx_PyInt_From_int(ARES_EADDRGETNETWORKPARAMS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -10061,8 +10061,8 @@ PyMODINIT_FUNC PyInit_ares(void)
  *                 (cares.ARES_ELOADIPHLPAPI, 'ARES_ELOADIPHLPAPI'),
  *                 (cares.ARES_EADDRGETNETWORKPARAMS, 'ARES_EADDRGETNETWORKPARAMS'),
  *                 (cares.ARES_ECANCELLED, 'ARES_ECANCELLED')])             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   __pyx_t_2 = __Pyx_PyInt_From_int(ARES_ECANCELLED); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 119, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -10076,8 +10076,8 @@ PyMODINIT_FUNC PyInit_ares(void)
   __pyx_t_2 = 0;
 
   /* "gevent/ares.pyx":94
- * 
- * 
+ *
+ *
  * _ares_errors = dict([             # <<<<<<<<<<<<<<
  *                 (cares.ARES_SUCCESS, 'ARES_SUCCESS'),
  *                 (cares.ARES_ENODATA, 'ARES_ENODATA'),
@@ -10171,17 +10171,17 @@ PyMODINIT_FUNC PyInit_ares(void)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "gevent/ares.pyx":123
- * 
+ *
  * # maps c-ares flag to _socket module flag
  * _cares_flag_map = None             # <<<<<<<<<<<<<<
- * 
- * 
+ *
+ *
  */
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_cares_flag_map, Py_None) < 0) __PYX_ERR(0, 123, __pyx_L1_error)
 
   /* "gevent/ares.pyx":137
- * 
- * 
+ *
+ *
  * cpdef _convert_cares_flags(int flags, int default=cares.ARES_NI_LOOKUPHOST|cares.ARES_NI_LOOKUPSERVICE):             # <<<<<<<<<<<<<<
  *     if _cares_flag_map is None:
  *         _prepare_cares_flag_map()
@@ -10190,11 +10190,11 @@ PyMODINIT_FUNC PyInit_ares(void)
   __pyx_k_ = (ARES_NI_LOOKUPHOST | ARES_NI_LOOKUPSERVICE);
 
   /* "gevent/ares.pyx":153
- * 
- * 
+ *
+ *
  * class InvalidIP(ValueError):             # <<<<<<<<<<<<<<
  *     pass
- * 
+ *
  */
   __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 153, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -10214,10 +10214,10 @@ PyMODINIT_FUNC PyInit_ares(void)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "gevent/ares.pyx":190
- * 
- * 
+ *
+ *
  * class ares_host_result(tuple):             # <<<<<<<<<<<<<<
- * 
+ *
  *     def __new__(cls, family, iterable):
  */
   __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 190, __pyx_L1_error)
@@ -10232,7 +10232,7 @@ PyMODINIT_FUNC PyInit_ares(void)
 
   /* "gevent/ares.pyx":192
  * class ares_host_result(tuple):
- * 
+ *
  *     def __new__(cls, family, iterable):             # <<<<<<<<<<<<<<
  *         cdef object self = tuple.__new__(cls, iterable)
  *         self.family = family
@@ -10244,10 +10244,10 @@ PyMODINIT_FUNC PyInit_ares(void)
 
   /* "gevent/ares.pyx":197
  *         return self
- * 
+ *
  *     def __getnewargs__(self):             # <<<<<<<<<<<<<<
  *         return (self.family, tuple(self))
- * 
+ *
  */
   __pyx_t_25 = __Pyx_CyFunction_NewEx(&__pyx_mdef_6gevent_4ares_16ares_host_result_3__getnewargs__, 0, __pyx_n_s_ares_host_result___getnewargs, NULL, __pyx_n_s_gevent_ares, __pyx_d, ((PyObject *)__pyx_codeobj__9)); if (unlikely(!__pyx_t_25)) __PYX_ERR(0, 197, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_25);
@@ -10255,10 +10255,10 @@ PyMODINIT_FUNC PyInit_ares(void)
   __Pyx_DECREF(__pyx_t_25); __pyx_t_25 = 0;
 
   /* "gevent/ares.pyx":190
- * 
- * 
+ *
+ *
  * class ares_host_result(tuple):             # <<<<<<<<<<<<<<
- * 
+ *
  *     def __new__(cls, family, iterable):
  */
   __pyx_t_25 = __Pyx_Py3ClassCreate(__pyx_t_27, __pyx_n_s_ares_host_result, __pyx_t_2, __pyx_t_26, NULL, 0, 1); if (unlikely(!__pyx_t_25)) __PYX_ERR(0, 190, __pyx_L1_error)
@@ -10271,7 +10271,7 @@ PyMODINIT_FUNC PyInit_ares(void)
 
   /* "gevent/ares.pyx":400
  *         cares.ares_process_fd(self.channel, read_fd, write_fd)
- * 
+ *
  *     def gethostbyname(self, object callback, char* name, int family=AF_INET):             # <<<<<<<<<<<<<<
  *         if not self.channel:
  *             raise gaierror(cares.ARES_EDESTRUCTION, 'this ares channel has been destroyed')

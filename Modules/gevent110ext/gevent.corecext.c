@@ -42913,8 +42913,8 @@ static int __Pyx_InitGlobals(void) {
 }
 
 #if PY_MAJOR_VERSION < 3
-PyMODINIT_FUNC initcorecext(void); /*proto*/
-PyMODINIT_FUNC initcorecext(void)
+PyMODINIT_FUNC initgevent_core(void); /*proto*/
+PyMODINIT_FUNC initgevent_core(void)
 #else
 PyMODINIT_FUNC PyInit_corecext(void); /*proto*/
 PyMODINIT_FUNC PyInit_corecext(void)
@@ -42977,7 +42977,7 @@ PyMODINIT_FUNC PyInit_corecext(void)
   #endif
   /*--- Module creation code ---*/
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("corecext", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("gevent_core", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -43000,8 +43000,8 @@ PyMODINIT_FUNC PyInit_corecext(void)
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "gevent.corecext")) {
-      if (unlikely(PyDict_SetItemString(modules, "gevent.corecext", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "gevent.core")) {
+      if (unlikely(PyDict_SetItemString(modules, "gevent.core", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif

@@ -5351,8 +5351,8 @@ static int __Pyx_InitGlobals(void) {
 }
 
 #if PY_MAJOR_VERSION < 3
-PyMODINIT_FUNC init_semaphore(void); /*proto*/
-PyMODINIT_FUNC init_semaphore(void)
+PyMODINIT_FUNC initgevent_semaphore(void); /*proto*/
+PyMODINIT_FUNC initgevent_semaphore(void)
 #else
 PyMODINIT_FUNC PyInit__semaphore(void); /*proto*/
 PyMODINIT_FUNC PyInit__semaphore(void)
@@ -5399,7 +5399,7 @@ PyMODINIT_FUNC PyInit__semaphore(void)
   #endif
   /*--- Module creation code ---*/
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("_semaphore", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("gevent_semaphore", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
