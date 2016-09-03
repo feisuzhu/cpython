@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -x -e
 
 PYTHON_VERSION="2.7.12"
 
@@ -50,27 +50,27 @@ function build
     make clean
 
     SDK_PATH=$(xcrun -sdk $SDK --show-sdk-path)
-    #GCC=$(xcrun -sdk $SDK -find gcc)
     GCC=$(xcrun -sdk $SDK -find gcc)
     FLAGS=$@
     export CC="${GCC} -arch ${ARCH} -isysroot ${SDK_PATH} $FLAGS"
     export CXX=$CC
-
-    if ! ./configure CONFIG_SITE=config.site.ndk HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --prefix="/tmp/pyios/$OUTPUT" --host=$HOST --build=x86_64-apple-darwin14.3.0 --disable-toolbox-glue --disable-ipv6 $PYDEBUG; then
-        exit 1;
-    fi
 
     cd $BASEDIR/Modules/gevent110ext/c-ares
     rm -f ares_build.h ares_config.h
     CONFIG_COMMANDS= CONFIG_FILES= ./configure --host=$HOST --build=x86_64-apple-darwin14.3.0
 
     cd $BASEDIR/Modules/gevent110ext/libev
+
     rm -f config.h
     ./configure --host=$HOST --build=x86_64-apple-darwin14.3.0
 
+    if ! ./configure CONFIG_SITE=config.site.ndk HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --prefix="/tmp/pyios/$OUTPUT" --host=$HOST --build=x86_64-apple-darwin14.3.0 --disable-toolbox-glue --disable-ipv6 $PYDEBUG; then
+        exit 1;
+    fi
+
     cd $BASEDIR
 
-    sed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
+    gsed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
     nice make -j4 HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN CROSS_COMPILE=$HOST- CROSS_COMPILE_TARGET=yes
     mv libpython2.7.a /tmp/pyios/$OUTPUT
 }
