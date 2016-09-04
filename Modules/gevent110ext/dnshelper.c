@@ -4,6 +4,8 @@
 #include "ares_setup.h"
 #endif
 
+#include <arpa/inet.h>
+
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
 #endif
@@ -12,6 +14,7 @@
 
 #include "cares_ntop.h"
 #include "cares_pton.h"
+
 
 #if PY_VERSION_HEX < 0x02060000
   #define PyUnicode_FromString         PyString_FromString
