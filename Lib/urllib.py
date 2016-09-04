@@ -1436,7 +1436,7 @@ def proxy_bypass_environment(host, proxies=None):
     return 0
 
 
-if sys.platform == 'darwin':
+if False and sys.platform == 'darwin':
     from _scproxy import _get_proxy_settings, _get_proxies
 
     def proxy_bypass_macosx_sysconf(host):
