@@ -69,7 +69,7 @@ function build
     ./configure CONFIG_SITE=config.site.ndk HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --prefix="/tmp/pyios/$OUTPUT" --host=$HOST --build=x86_64-apple-darwin14.3.0 --disable-toolbox-glue --disable-ipv6 $PYDEBUG
 
     gsed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
-    nice make -j4 HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN CROSS_COMPILE=$HOST- CROSS_COMPILE_TARGET=yes
+    nice make -j4 HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN CROSS_COMPILE=$HOST- CROSS_COMPILE_TARGET=yes libpython2.7.a
     mv libpython2.7.a /tmp/pyios/$OUTPUT
 }
 
