@@ -12,7 +12,7 @@ output_dir=$BASEDIR/iosbuild
 rm -rf $output_dir/arm
 
 if [ ! -f $output_dir/host/bin/python ]; then
-    make clean
+    make clean || true
 
     mkdir -p $output_dir/host
     # create Python Host version
@@ -40,7 +40,7 @@ MY_HOSTPGEN=$output_dir/host/pgen
 
 function build
 {
-    make clean
+    make clean || true
 
     local HOST=$1; local ARCH=$2; local SDK=$3; local OUTPUT=$4
     shift 4
