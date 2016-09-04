@@ -12,6 +12,8 @@ output_dir=$BASEDIR/iosbuild
 rm -rf $output_dir/arm
 
 if [ ! -f $output_dir/host/bin/python ]; then
+    make clean
+
     mkdir -p $output_dir/host
     # create Python Host version
     export CC=
@@ -31,7 +33,6 @@ if [ ! -f $output_dir/host/bin/python ]; then
     nice make -j4 Parser/pgen
     mv Parser/pgen $output_dir/host
     make install
-    make clean
 fi
 
 MY_HOSTPYTHON=$output_dir/host/bin/python
@@ -47,8 +48,6 @@ function build
 
     mkdir -p /tmp/pyios/$OUTPUT
 
-    make clean
-
     SDK_PATH=$(xcrun -sdk $SDK --show-sdk-path)
     GCC=$(xcrun -sdk $SDK -find gcc)
     FLAGS=$@
@@ -56,19 +55,18 @@ function build
     export CXX=$CC
 
     cd $BASEDIR/Modules/gevent110ext/c-ares
-    rm -f ares_build.h ares_config.h
+    rm -f ares_build.h ares_config.h Makefile
     CONFIG_COMMANDS= CONFIG_FILES= ./configure --host=$HOST --build=x86_64-apple-darwin14.3.0
 
     cd $BASEDIR/Modules/gevent110ext/libev
 
-    rm -f config.h
+    rm -f config.h Makefile
     ./configure --host=$HOST --build=x86_64-apple-darwin14.3.0
 
-    if ! ./configure CONFIG_SITE=config.site.ndk HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --prefix="/tmp/pyios/$OUTPUT" --host=$HOST --build=x86_64-apple-darwin14.3.0 --disable-toolbox-glue --disable-ipv6 $PYDEBUG; then
-        exit 1;
-    fi
-
     cd $BASEDIR
+
+    rm -f Makefile
+    ./configure CONFIG_SITE=config.site.ndk HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --prefix="/tmp/pyios/$OUTPUT" --host=$HOST --build=x86_64-apple-darwin14.3.0 $PYDEBUG
 
     gsed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
     nice make -j4 HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN CROSS_COMPILE=$HOST- CROSS_COMPILE_TARGET=yes
