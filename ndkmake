@@ -64,6 +64,26 @@ if [ x$1 != xnoconf ]; then
     rm config.h
     ./configure --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu
 
+    cd $BASEDIR/Modules/_ctypes/libffi
+    ./configure --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu
+    cat <<END >> Modules/Setup.local
+_ctypes \
+    _ctypes/_ctypes.c \
+    _ctypes/callbacks.c \
+    _ctypes/callproc.c \
+    _ctypes/stgdict.c \
+    _ctypes/cfield.c \
+END
+    python <<END >> Modules/Setup.local
+execfile('Modules/Setup.local/arm-unknown-linux-androideabi/fficonfig.py')
+for i in ffi_sources:
+    print "    _ctypes/libffi/%s" % i
+END
+    cat <<END >> Modules/Setup.local
+-IModules/_ctypes
+-IModules/_ctypes/libffi/include
+END
+
     cd $BASEDIR
 fi
 sed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
