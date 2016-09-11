@@ -50,6 +50,33 @@ MY_HOSTPGEN=$output_dir/host/pgen
 if [ x$1 != xnoconf ]; then
     echo SSL=/home/proton/androidlibs/openssl_i686 > Modules/Setup.local
 
+    cd $BASEDIR/Modules/_ctypes/libffi
+    ./configure --host=i686-linux-android --build=x86_64-unknown-linux-gnu
+
+    cd $BASEDIR
+    cat <<CTYPES >> Modules/Setup.local
+_ctypes \\
+    _ctypes/_ctypes.c \\
+    _ctypes/callbacks.c \\
+    _ctypes/callproc.c \\
+    _ctypes/stgdict.c \\
+    _ctypes/cfield.c \\
+CTYPES
+
+    python <<LIBFFI >> Modules/Setup.local
+execfile('Modules/_ctypes/libffi/i686-pc-linux-android/fficonfig.py')
+for i in ffi_sources:
+    print "    _ctypes/libffi/%s \\\\" % i
+LIBFFI
+
+    cat <<CTYPESINCLUDE >> Modules/Setup.local
+    -IModules/_ctypes \\
+    -IModules/_ctypes/libffi \\
+    -IModules/_ctypes/libffi/include \\
+    -IModules/_ctypes/libffi/i686-pc-linux-android \\
+    -IModules/_ctypes/libffi/i686-pc-linux-android/include
+CTYPESINCLUDE
+
     if ! ./configure CONFIG_SITE=config.site.ndk LDFLAGS="-Wl,--allow-shlib-undefined" HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --host=i686-linux-android --build=x86_64-unknown-linux-gnu $SHARED --prefix="$output_dir/x86" --disable-ipv6 $PYDEBUG; then
         exit 1;
     fi
@@ -67,3 +94,4 @@ if [ x$1 != xnoconf ]; then
 fi
 sed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
 nice make -j8 HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN CROSS_COMPILE=i686-linux-android- CROSS_COMPILE_TARGET=yes libpython2.7.so
+strip libpython2.7.so

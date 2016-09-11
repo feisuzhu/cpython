@@ -71,11 +71,11 @@ for i in ffi_sources:
 LIBFFI
 
     cat <<CTYPESINCLUDE >> Modules/Setup.local
--IModules/_ctypes \\
--IModules/_ctypes/libffi \\
--IModules/_ctypes/libffi/include \\
--IModules/_ctypes/libffi/arm-unknown-linux-androideabi \\
--IModules/_ctypes/libffi/arm-unknown-linux-androideabi/include
+    -IModules/_ctypes \\
+    -IModules/_ctypes/libffi \\
+    -IModules/_ctypes/libffi/include \\
+    -IModules/_ctypes/libffi/arm-unknown-linux-androideabi \\
+    -IModules/_ctypes/libffi/arm-unknown-linux-androideabi/include
 CTYPESINCLUDE
 
 
@@ -96,3 +96,4 @@ CTYPESINCLUDE
 fi
 sed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
 nice make -j8 HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN CROSS_COMPILE=arm-linux-androideabi- CROSS_COMPILE_TARGET=yes libpython2.7.so
+strip libpython2.7.so
