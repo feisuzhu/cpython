@@ -168,6 +168,7 @@ sed -e 's/[ 	]*#.*//' -e '/^[ 	]*$/d' |
 			-rpath)		libs="$libs $arg"; skip=libs;;
 			--rpath)	libs="$libs $arg"; skip=libs;;
 			-[A-Zl]*)	libs="$libs $arg";;
+			*.S)		libs="$libs $arg";;
 			*.a)		libs="$libs $arg";;
 			*.so)		libs="$libs $arg";;
 			*.sl)		libs="$libs $arg";;

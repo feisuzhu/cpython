@@ -66,23 +66,27 @@ if [ x$1 != xnoconf ]; then
 
     cd $BASEDIR/Modules/_ctypes/libffi
     ./configure --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu
-    cat <<END >> Modules/Setup.local
-_ctypes \
-    _ctypes/_ctypes.c \
-    _ctypes/callbacks.c \
-    _ctypes/callproc.c \
-    _ctypes/stgdict.c \
-    _ctypes/cfield.c \
-END
-    python <<END >> Modules/Setup.local
-execfile('Modules/Setup.local/arm-unknown-linux-androideabi/fficonfig.py')
+
+    cd $BASEDIR
+    cat <<CTYPES >> Modules/Setup.local
+_ctypes \\
+    _ctypes/_ctypes.c \\
+    _ctypes/callbacks.c \\
+    _ctypes/callproc.c \\
+    _ctypes/stgdict.c \\
+    _ctypes/cfield.c \\
+CTYPES
+
+    python <<LIBFFI >> Modules/Setup.local
+execfile('Modules/_ctypes/libffi/arm-unknown-linux-androideabi/fficonfig.py')
 for i in ffi_sources:
-    print "    _ctypes/libffi/%s" % i
-END
-    cat <<END >> Modules/Setup.local
--IModules/_ctypes
+    print "    _ctypes/libffi/%s \\\\" % i
+LIBFFI
+
+    cat <<CTYPESINCLUDE >> Modules/Setup.local
+-IModules/_ctypes \\
 -IModules/_ctypes/libffi/include
-END
+CTYPESINCLUDE
 
     cd $BASEDIR
 fi
