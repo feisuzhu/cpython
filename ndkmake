@@ -96,4 +96,4 @@ CTYPESINCLUDE
 fi
 sed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
 nice make -j8 HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN CROSS_COMPILE=arm-linux-androideabi- CROSS_COMPILE_TARGET=yes libpython2.7.so
-strip libpython2.7.so
+$STRIP libpython2.7.so
