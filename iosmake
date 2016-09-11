@@ -64,6 +64,17 @@ function build
     ./configure --host=$HOST --build=x86_64-apple-darwin14.3.0
 
     cd $BASEDIR
+    cat <<CTYPES >> Modules/Setup.local
+_ctypes \\
+    _ctypes/_ctypes.c \\
+    _ctypes/callbacks.c \\
+    _ctypes/callproc.c \\
+    _ctypes/stgdict.c \\
+    _ctypes/cfield.c \\
+    -lffi \\
+    -L/Users/Proton/libs/libffi \\
+    -I/Users/Proton/dev/libffi/build_iphoneos-$ARCH/include
+CTYPES
 
     rm -f Makefile
     ./configure CONFIG_SITE=config.site.ndk HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --prefix="/tmp/pyios/$OUTPUT" --host=$HOST --build=x86_64-apple-darwin14.3.0 --disable-toolbox-glue --disable-ipv6 $PYDEBUG
