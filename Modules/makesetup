@@ -168,7 +168,6 @@ sed -e 's/[ 	]*#.*//' -e '/^[ 	]*$/d' |
 			-rpath)		libs="$libs $arg"; skip=libs;;
 			--rpath)	libs="$libs $arg"; skip=libs;;
 			-[A-Zl]*)	libs="$libs $arg";;
-			*.S)		libs="$libs $arg";;
 			*.a)		libs="$libs $arg";;
 			*.so)		libs="$libs $arg";;
 			*.sl)		libs="$libs $arg";;
@@ -178,6 +177,7 @@ sed -e 's/[ 	]*#.*//' -e '/^[ 	]*$/d' |
 			*.[cC])		srcs="$srcs $arg";;
 			*.m)		srcs="$srcs $arg";; # Objective-C src
 			*.cc)		srcs="$srcs $arg";;
+			*.S)		srcs="$srcs $arg";;
 			*.c++)		srcs="$srcs $arg";;
 			*.cxx)		srcs="$srcs $arg";;
 			*.cpp)		srcs="$srcs $arg";;
@@ -205,6 +205,7 @@ sed -e 's/[ 	]*#.*//' -e '/^[ 	]*$/d' |
 		do
 			case $src in
 			*.c)   obj=`basename $src .c`.o; cc='$(CC)';;
+			*.S)   obj=`basename $src .S`.o; cc='$(CC)';;
 			*.cc)  obj=`basename $src .cc`.o; cc='$(CXX)';;
 			*.c++) obj=`basename $src .c++`.o; cc='$(CXX)';;
 			*.C)   obj=`basename $src .C`.o; cc='$(CXX)';;
