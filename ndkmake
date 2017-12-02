@@ -79,7 +79,7 @@ LIBFFI
 CTYPESINCLUDE
 
 
-    if ! ./configure CONFIG_SITE=config.site.ndk LDFLAGS="-Wl,--allow-shlib-undefined" HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu $SHARED --prefix="$output_dir/arm" --disable-ipv6 $PYDEBUG; then
+    if ! ./configure CONFIG_SITE=config.site.ndk LDFLAGS="-Wl,--allow-shlib-undefined" HOSTPYTHON=$MY_HOSTPYTHON HOSTPGEN=$MY_HOSTPGEN --host=arm-linux-androideabi --build=x86_64-unknown-linux-gnu $SHARED --prefix="$output_dir/arm" --enable-ipv6 $PYDEBUG; then
         exit 1;
     fi
 
