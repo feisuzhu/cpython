@@ -3,6 +3,9 @@
 #include <windows.h>
 #else
 #include <fcntl.h>
+#if defined(HAVE_GETRANDOM) || defined(HAVE_GETENTROPY)
+int getentropy(void *buf, size_t buflen);
+#endif
 #endif
 
 #ifdef Py_DEBUG

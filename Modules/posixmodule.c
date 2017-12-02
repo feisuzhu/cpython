@@ -118,7 +118,6 @@ corresponding Unix manual entries for more information on calls.");
 #define HAVE_OPENDIR    1
 #define HAVE_PIPE       1
 #define HAVE_POPEN      1
-#define HAVE_SYSTEM     1
 #define HAVE_WAIT       1
 #else
 #ifdef _MSC_VER         /* Microsoft compiler */
@@ -127,7 +126,6 @@ corresponding Unix manual entries for more information on calls.");
 #define HAVE_EXECV      1
 #define HAVE_PIPE       1
 #define HAVE_POPEN      1
-#define HAVE_SYSTEM     1
 #define HAVE_CWAIT      1
 #define HAVE_FSYNC      1
 #define fsync _commit
@@ -153,7 +151,6 @@ corresponding Unix manual entries for more information on calls.");
 #ifndef __rtems__
 #define HAVE_POPEN      1
 #endif
-#define HAVE_SYSTEM     1
 #define HAVE_WAIT       1
 #define HAVE_TTYNAME    1
 #endif  /* PYOS_OS2 && PYCC_GCC && __VMS */
@@ -2826,26 +2823,6 @@ posix_stat(PyObject *self, PyObject *args)
     return posix_do_stat(self, args, "et:stat", STAT, NULL, NULL);
 #endif
 }
-
-
-#ifdef HAVE_SYSTEM
-PyDoc_STRVAR(posix_system__doc__,
-"system(command) -> exit_status\n\n\
-Execute the command (a string) in a subshell.");
-
-static PyObject *
-posix_system(PyObject *self, PyObject *args)
-{
-    char *command;
-    long sts;
-    if (!PyArg_ParseTuple(args, "s:system", &command))
-        return NULL;
-    Py_BEGIN_ALLOW_THREADS
-    sts = system(command);
-    Py_END_ALLOW_THREADS
-    return PyInt_FromLong(sts);
-}
-#endif
 
 
 PyDoc_STRVAR(posix_umask__doc__,
@@ -8873,9 +8850,6 @@ static PyMethodDef posix_methods[] = {
 #ifdef HAVE_SYMLINK
     {"symlink",         posix_symlink, METH_VARARGS, posix_symlink__doc__},
 #endif /* HAVE_SYMLINK */
-#ifdef HAVE_SYSTEM
-    {"system",          posix_system, METH_VARARGS, posix_system__doc__},
-#endif
     {"umask",           posix_umask, METH_VARARGS, posix_umask__doc__},
 #ifdef HAVE_UNAME
     {"uname",           posix_uname, METH_NOARGS, posix_uname__doc__},
