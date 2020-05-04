@@ -606,7 +606,7 @@ class PyBuildExt(build_ext):
                     for line in fp.readlines():
                         if line.startswith("gcc version"):
                             is_gcc = True
-                        elif line.startswith("clang version"):
+                        elif "clang version" in line:
                             is_clang = True
                         elif line.startswith("#include <...>"):
                             in_incdirs = True
@@ -802,8 +802,8 @@ class PyBuildExt(build_ext):
         # pwd(3)
         self.add(Extension('pwd', ['pwdmodule.c']))
         # grp(3)
-        if not VXWORKS:
-            self.add(Extension('grp', ['grpmodule.c']))
+        # if not VXWORKS:
+        #     self.add(Extension('grp', ['grpmodule.c']))
         # spwd, shadow passwords
         if (self.config_h_vars.get('HAVE_GETSPNAM', False) or
                 self.config_h_vars.get('HAVE_GETSPENT', False)):
@@ -1345,7 +1345,7 @@ class PyBuildExt(build_ext):
 
     def detect_sqlite(self):
         # The sqlite interface
-        sqlite_setup_debug = False   # verbose debug prints from this script?
+        sqlite_setup_debug = True   # verbose debug prints from this script?
 
         # We hunt for #define SQLITE_VERSION "n.n.n"
         # We need to find >= sqlite version 3.3.9, for sqlite3_prepare_v2
@@ -1359,6 +1359,12 @@ class PyBuildExt(build_ext):
                              ]
         if CROSS_COMPILING:
             sqlite_inc_paths = []
+
+        # FUCK YOU
+        sqlite_inc_paths = [
+            '/home/proton/androidlibs/sqlite/arm64/include',
+        ]
+
         MIN_SQLITE_VERSION_NUMBER = (3, 7, 2)
         MIN_SQLITE_VERSION = ".".join([str(x)
                                     for x in MIN_SQLITE_VERSION_NUMBER])
@@ -1513,17 +1519,11 @@ class PyBuildExt(build_ext):
                         version = line.split()[2]
                         break
             if version >= version_req:
-                if (self.compiler.find_library_file(self.lib_dirs, 'z')):
-                    if MACOS:
-                        zlib_extra_link_args = ('-Wl,-search_paths_first',)
-                    else:
-                        zlib_extra_link_args = ()
-                    self.add(Extension('zlib', ['zlibmodule.c'],
-                                       libraries=['z'],
-                                       extra_link_args=zlib_extra_link_args))
-                    have_zlib = True
-                else:
-                    self.missing.append('zlib')
+                zlib_extra_link_args = ()
+                self.add(Extension('zlib', ['zlibmodule.c'],
+                                    libraries=['z'],
+                                    extra_link_args=zlib_extra_link_args))
+                have_zlib = True
             else:
                 self.missing.append('zlib')
         else:
@@ -1693,7 +1693,7 @@ class PyBuildExt(build_ext):
         if TEST_EXTENSIONS:
             self.detect_test_extensions()
         self.detect_readline_curses()
-        self.detect_crypt()
+        # self.detect_crypt()
         self.detect_socket()
         self.detect_openssl_hashlib()
         self.detect_hash_builtins()
@@ -1709,7 +1709,7 @@ class PyBuildExt(build_ext):
         self.detect_multiprocessing()
         if not self.detect_tkinter():
             self.missing.append('_tkinter')
-        self.detect_uuid()
+        # self.detect_uuid()
 
 ##         # Uncomment these lines if you want to play with xxmodule.c
 ##         self.add(Extension('xx', ['xxmodule.c']))
@@ -2046,6 +2046,11 @@ class PyBuildExt(build_ext):
             # OS X 10.5 comes with libffi.dylib; the include files are
             # in /usr/include/ffi
             ffi_inc_dirs.append('/usr/include/ffi')
+
+        # FUCK YOU
+        ffi_inc_dirs = [
+            '/home/proton/androidlibs/libffi/arm64/include',
+        ]
 
         ffi_inc = [sysconfig.get_config_var("LIBFFI_INCLUDEDIR")]
         if not ffi_inc or ffi_inc[0] == '':
