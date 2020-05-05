@@ -564,6 +564,8 @@ class PyBuildExt(build_ext):
                     for line in fp.readlines():
                         if line.startswith("gcc version"):
                             is_gcc = True
+                        elif "clang version" in line:
+                            is_gcc = True
                         elif line.startswith("#include <...>"):
                             in_incdirs = True
                         elif line.startswith("End of search list"):
@@ -771,16 +773,6 @@ class PyBuildExt(build_ext):
             # May be necessary on AIX for flock function
             libs = ['bsd']
         exts.append( Extension('fcntl', ['fcntlmodule.c'], libraries=libs) )
-        # pwd(3)
-        exts.append( Extension('pwd', ['pwdmodule.c']) )
-        # grp(3)
-        exts.append( Extension('grp', ['grpmodule.c']) )
-        # spwd, shadow passwords
-        if (config_h_vars.get('HAVE_GETSPNAM', False) or
-                config_h_vars.get('HAVE_GETSPENT', False)):
-            exts.append( Extension('spwd', ['spwdmodule.c']) )
-        else:
-            missing.append('spwd')
 
         # select(2); not on ancient System V
         exts.append( Extension('select', ['selectmodule.c']) )
@@ -907,7 +899,6 @@ class PyBuildExt(build_ext):
             libs = ['crypt']
         else:
             libs = []
-        exts.append( Extension('_crypt', ['_cryptmodule.c'], libraries=libs) )
 
         # CSV files
         exts.append( Extension('_csv', ['_csv.c']) )
@@ -1180,6 +1171,12 @@ class PyBuildExt(build_ext):
                              ]
         if cross_compiling:
             sqlite_inc_paths = []
+
+        # FUCK YOU
+        sqlite_inc_paths = [
+            '/home/proton/androidlibs/sqlite/arm64/include',
+        ]
+        # --------
         MIN_SQLITE_VERSION_NUMBER = (3, 3, 9)
         MIN_SQLITE_VERSION = ".".join([str(x)
                                     for x in MIN_SQLITE_VERSION_NUMBER])
@@ -1449,38 +1446,11 @@ class PyBuildExt(build_ext):
         #
         # You can upgrade zlib to version 1.1.4 yourself by going to
         # http://www.gzip.org/zlib/
-        zlib_inc = find_file('zlib.h', [], inc_dirs)
-        have_zlib = False
-        if zlib_inc is not None:
-            zlib_h = zlib_inc[0] + '/zlib.h'
-            version = '"0.0.0"'
-            version_req = '"1.1.3"'
-            if host_platform == 'darwin' and is_macosx_sdk_path(zlib_h):
-                zlib_h = os.path.join(macosx_sdk_root(), zlib_h[1:])
-            with open(zlib_h) as fp:
-                while 1:
-                    line = fp.readline()
-                    if not line:
-                        break
-                    if line.startswith('#define ZLIB_VERSION'):
-                        version = line.split()[2]
-                        break
-            if version >= version_req:
-                if (self.compiler.find_library_file(lib_dirs, 'z')):
-                    if host_platform == "darwin":
-                        zlib_extra_link_args = ('-Wl,-search_paths_first',)
-                    else:
-                        zlib_extra_link_args = ()
-                    exts.append( Extension('zlib', ['zlibmodule.c'],
-                                           libraries = ['z'],
-                                           extra_link_args = zlib_extra_link_args))
-                    have_zlib = True
-                else:
-                    missing.append('zlib')
-            else:
-                missing.append('zlib')
-        else:
-            missing.append('zlib')
+        zlib_extra_link_args = ()
+        exts.append( Extension('zlib', ['zlibmodule.c'],
+                                libraries = ['z'],
+                                extra_link_args = zlib_extra_link_args))
+        have_zlib = True
 
         # Helper module for various ascii-encoders.  Uses zlib for an optimized
         # crc32 if we have it.  Otherwise binascii uses its own.
@@ -1667,19 +1637,6 @@ class PyBuildExt(build_ext):
 
         if '_tkinter' not in [e.name for e in self.extensions]:
             missing.append('_tkinter')
-
-        # Build the _uuid module if possible
-        uuid_incs = find_file("uuid.h", inc_dirs, ["/usr/include/uuid"])
-        if uuid_incs is not None:
-            if self.compiler.find_library_file(lib_dirs, 'uuid'):
-                uuid_libs = ['uuid']
-            else:
-                uuid_libs = []
-            self.extensions.append(Extension('_uuid', ['_uuidmodule.c'],
-                                   libraries=uuid_libs,
-                                   include_dirs=uuid_incs))
-        else:
-            missing.append('_uuid')
 
 ##         # Uncomment these lines if you want to play with xxmodule.c
 ##         ext = Extension('xx', ['xxmodule.c'])
@@ -1972,6 +1929,10 @@ class PyBuildExt(build_ext):
         return True
 
     def detect_ctypes(self, inc_dirs, lib_dirs):
+        # FUCK YOU
+        inc_dirs = ['/home/proton/androidlibs/libffi/arm64/include']
+        lib_dirs = ['/home/proton/androidlibs/libffi/arm64/lib']
+        # --------
         self.use_system_libffi = False
         include_dirs = []
         extra_compile_args = []

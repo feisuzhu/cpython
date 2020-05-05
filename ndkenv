@@ -1,0 +1,31 @@
+#!/bin/bash
+
+export NDK=$HOME/android-ndk-r21
+export PATH="$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/:$NDK:/usr/local/bin:/usr/bin:/bin"
+# export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/darwin-x86_64
+export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64
+# Only choose one of these, depending on your device...
+export TARGET=aarch64-linux-android
+# export TARGET=armv7a-linux-androideabi
+# export TARGET=i686-linux-android
+# export TARGET=x86_64-linux-android
+# Set this to your minSdkVersion.
+export API=24
+# Configure and build.
+export AR=$TOOLCHAIN/bin/$TARGET-ar
+export AS=$TOOLCHAIN/bin/$TARGET-as
+export CC=$TOOLCHAIN/bin/$TARGET$API-clang
+export CXX=$TOOLCHAIN/bin/$TARGET$API-clang++
+export LD=$TOOLCHAIN/bin/$TARGET-ld
+export RANLIB=$TOOLCHAIN/bin/$TARGET-ranlib
+export STRIP=$TOOLCHAIN/bin/$TARGET-strip
+export READELF=$TOOLCHAIN/bin/$TARGET-readelf
+export CFLAGS="-Wno-unused-value -Wno-empty-body -Qunused-arguments"
+
+function add-lib {
+    export CFLAGS="$CFLAGS -I$HOME/androidlibs/$2/$1/include"
+    export LDFLAGS="$LDFLAGS -L$HOME/androidlibs/$2/$1/lib"
+}
+
+add-lib arm64 libffi
+add-lib arm64 sqlite

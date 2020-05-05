@@ -1,0 +1,18 @@
+#!/bin/bash -x
+
+make clean
+./configure --enable-shared --enable-ipv6 --prefix=$(pwd)/../cpython.build/build
+make -j16
+make install
+
+. ./ndkenv
+
+cat <<EOF > /tmp/python-config.site
+ac_cv_file__dev_ptmx=no
+ac_cv_file__dev_ptc=no
+EOF
+
+make clean
+./configure CONFIG_SITE=/tmp/python-config.site --host $TARGET --build=x86_64-unknown-linux-gnu --enable-shared --enable-ipv6 --prefix=$(pwd)/../cpython.build/android-aarch64 --with-openssl=$HOME/androidlibs/openssl/arm64
+make -j16
+make install
